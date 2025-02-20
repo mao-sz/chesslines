@@ -1,0 +1,19 @@
+.board {
+    --size: 500px;
+
+    display: flex;
+    flex-direction: column;
+    outline: 1px solid black;
+    height: var(--size);
+    width: var(--size);
+
+    & > div {
+        display: flex;
+        flex: 1;
+    }
+}
+
+.square {
+    flex: 1;
+    outline: 1px solid blue;
+}
