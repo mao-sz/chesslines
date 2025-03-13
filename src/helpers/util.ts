@@ -4,3 +4,7 @@ export function expandEmptySquares(FENRow: string): string[] {
         .map((char) => (Number(char) ? Array(Number(char)).fill(null) : char))
         .flat();
 }
+
+export function getPosition(FEN: string): string {
+    return FEN.split(' ')[0];
+}

@@ -10,6 +10,7 @@ const RANK = [8, 7, 6, 5, 4, 3, 2, 1, 0];
 const FILE = 'abcdefgh';
 
 export function Chessboard({ line }: ChessboardProps) {
+    // TODO: Handle activePlayer and success responses
     const { position, playMove } = useChess(line);
     const [fromSquare, setFromSquare] = useState<string | null>(null);
 
