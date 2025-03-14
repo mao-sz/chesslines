@@ -1,3 +1,7 @@
+export function reverse(str: string): string {
+    return str.split('').reverse().join('');
+}
+
 export function expandEmptySquares(FENRow: string): string[] {
     const chars = FENRow.split('');
     return chars

@@ -1,18 +1,20 @@
 import { MouseEvent, useState } from 'react';
 import { useChess } from '../helpers/hooks';
-import { expandEmptySquares } from '../helpers/util';
+import { expandEmptySquares, reverse } from '../helpers/util';
 import { Square } from './Square';
 import styles from './chessboard.module.css';
+import { Colour } from '../types';
 
-type ChessboardProps = { line: string };
+type ChessboardProps = { line: string; playerColour: Colour };
 
 const RANK = [8, 7, 6, 5, 4, 3, 2, 1, 0];
 const FILE = 'abcdefgh';
 
-export function Chessboard({ line }: ChessboardProps) {
-    // TODO: Handle activePlayer and success responses
-    const { position, playMove } = useChess(line);
+export function Chessboard({ line, playerColour }: ChessboardProps) {
+    // TODO: Handle success responses
+    const { position, playMove, success } = useChess(line, playerColour);
     const [fromSquare, setFromSquare] = useState<string | null>(null);
+    const displayPosition = playerColour === 'w' ? position : reverse(position);
 
     function handleSquareClick(e: MouseEvent): void {
         const square = e.currentTarget as HTMLDivElement;
@@ -28,14 +30,18 @@ export function Chessboard({ line }: ChessboardProps) {
 
     return (
         <div className={styles.board}>
-            {position.split('/').map((row, rank) => (
+            {displayPosition.split('/').map((row, rank) => (
                 <div key={rank}>
                     {expandEmptySquares(row).map((square, file) => (
                         <Square
                             key={file}
                             contains={square}
-                            rank={RANK[rank]}
-                            file={FILE[file]}
+                            rank={playerColour === 'w' ? RANK[rank] : rank + 1}
+                            file={
+                                playerColour === 'w'
+                                    ? FILE[file]
+                                    : reverse(FILE)[file]
+                            }
                             registerSquare={handleSquareClick}
                         />
                     ))}
