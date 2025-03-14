@@ -1,5 +1,6 @@
 import { MouseEvent } from 'react';
 import styles from './chessboard.module.css';
+import { Piece } from './Piece';
 
 type SquareProps = {
     contains: string | null;
@@ -40,7 +41,7 @@ export function Square({
             onClick={registerSquare}
             onContextMenu={clearMove}
         >
-            {contains}
+            <Piece piece={contains} />
         </button>
     );
 }
