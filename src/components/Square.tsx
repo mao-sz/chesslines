@@ -6,9 +6,16 @@ type SquareProps = {
     rank: number;
     file: string;
     registerSquare: (e: MouseEvent) => void;
+    clearMove: (e: MouseEvent) => void;
 };
 
-export function Square({ contains, rank, file, registerSquare }: SquareProps) {
+export function Square({
+    contains,
+    rank,
+    file,
+    registerSquare,
+    clearMove,
+}: SquareProps) {
     return (
         <div
             className={styles.square}
@@ -16,6 +23,7 @@ export function Square({ contains, rank, file, registerSquare }: SquareProps) {
             data-file={file}
             data-contains={contains}
             onClick={registerSquare}
+            onContextMenu={clearMove}
         >
             {contains}
         </div>

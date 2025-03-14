@@ -2,8 +2,8 @@ import { MouseEvent, useState } from 'react';
 import { useChess } from '../helpers/hooks';
 import { expandEmptySquares, reverse } from '../helpers/util';
 import { Square } from './Square';
-import styles from './chessboard.module.css';
 import { Colour } from '../types';
+import styles from './chessboard.module.css';
 
 type ChessboardProps = { line: string; playerColour: Colour };
 
@@ -18,7 +18,12 @@ export function Chessboard({ line, playerColour }: ChessboardProps) {
 
     function handleSquareClick(e: MouseEvent): void {
         const square = e.currentTarget as HTMLDivElement;
-        const { rank, file } = square.dataset;
+        const { rank, file, contains } = square.dataset;
+
+        // clicking empty square
+        if (!fromSquare && !contains) {
+            return;
+        }
 
         if (!fromSquare) {
             setFromSquare(`${file}${rank}`);
@@ -26,6 +31,11 @@ export function Chessboard({ line, playerColour }: ChessboardProps) {
             playMove({ from: fromSquare, to: `${file}${rank}` });
             setFromSquare(null);
         }
+    }
+
+    function clearMove(e: MouseEvent): void {
+        e.preventDefault();
+        setFromSquare(null);
     }
 
     return (
@@ -43,6 +53,7 @@ export function Chessboard({ line, playerColour }: ChessboardProps) {
                                     : reverse(FILE)[file]
                             }
                             registerSquare={handleSquareClick}
+                            clearMove={clearMove}
                         />
                     ))}
                 </div>
