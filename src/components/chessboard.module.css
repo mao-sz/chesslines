@@ -33,3 +33,7 @@
 .selected {
     background-color: #44882273;
 }
+
+.incorrect {
+    text-align: center;
+}
