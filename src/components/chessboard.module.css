@@ -1,9 +1,12 @@
 .board {
     --size: 500px;
 
+    margin: auto;
+
     display: flex;
     flex-direction: column;
-    outline: 1px solid black;
+    border-radius: 4px;
+    overflow: clip;
     height: var(--size);
     width: var(--size);
 
@@ -15,5 +18,18 @@
 
 .square {
     flex: 1;
-    outline: 1px solid blue;
+    cursor: pointer;
+    border: none;
+}
+
+.dark {
+    background-color: #b17346;
+}
+
+.light {
+    background-color: #f2e2c5;
+}
+
+.selected {
+    background-color: #44882273;
 }

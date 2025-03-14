@@ -20,12 +20,17 @@ export function Chessboard({ line, playerColour }: ChessboardProps) {
         const square = e.currentTarget as HTMLDivElement;
         const { rank, file, contains } = square.dataset;
 
-        // clicking empty square
+        // clicking empty square but not moving piece
         if (!fromSquare && !contains) {
             return;
         }
 
-        if (!fromSquare) {
+        const isOwnPiece =
+            playerColour === 'w'
+                ? contains && contains.toUpperCase() === contains
+                : contains && contains.toLowerCase() === contains;
+
+        if (!fromSquare || isOwnPiece) {
             setFromSquare(`${file}${rank}`);
         } else {
             playMove({ from: fromSquare, to: `${file}${rank}` });
@@ -52,6 +57,7 @@ export function Chessboard({ line, playerColour }: ChessboardProps) {
                                     ? FILE[file]
                                     : reverse(FILE)[file]
                             }
+                            selectedSquare={fromSquare}
                             registerSquare={handleSquareClick}
                             clearMove={clearMove}
                         />
