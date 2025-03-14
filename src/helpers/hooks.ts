@@ -13,34 +13,33 @@ export function useChess(PGN: string, playerColour: Colour) {
         comparison.current.toNthPosition(playerColour === 'w' ? 0 : 1);
         isNewChess.current = false;
     }
-    const startingFEN = comparison.current.toFEN();
-
-    const userBoard = useRef(new Chess(startingFEN));
 
     const [success, setSuccess] = useState(true);
-    const [position, setPosition] = useState(getPosition(startingFEN));
+    const [position, setPosition] = useState(
+        getPosition(comparison.current.toFEN())
+    );
 
     function playMove(move: MoveInfo): void {
-        const [error] = userBoard.current.playMove(move);
+        const userBoard = new Chess(comparison.current.toFEN());
+        const [error] = userBoard.playMove(move);
         if (error) {
             return;
         }
 
-        comparison.current.toNextPosition();
+        const correctMove =
+            userBoard.toFEN() === comparison.current.toNextPosition().toFEN();
 
-        const currentFEN = userBoard.current.toFEN();
-        const correctMove = currentFEN === comparison.current.toFEN();
-
-        // TODO: Play opponent move after correct move
         if (correctMove) {
-            setPosition(getPosition(currentFEN));
+            // then play opponent move
+            setPosition(
+                getPosition(comparison.current.toNextPosition().toFEN())
+            );
             setSuccess(true);
         } else {
             comparison.current.toPreviousPosition();
-            userBoard.current.toPreviousPosition();
             setSuccess(false);
         }
     }
 
-    return { position, success, playMove };
+    return { position, playMove, success };
 }
