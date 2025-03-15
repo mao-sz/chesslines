@@ -1,23 +1,26 @@
 import { MouseEvent, useState } from 'react';
-import { useChess } from '../helpers/hooks';
 import { expandEmptySquares, reverse } from '../helpers/util';
 import { Square } from './Square';
-import { Colour } from '../types';
+import { Colour, MoveInfo, StateSetter } from '../types';
 import styles from './chessboard.module.css';
 
-type ChessboardProps = { line: string; playerColour: Colour };
+type ChessboardProps = {
+    position: string;
+    playerColour: Colour;
+    playMove: (move: MoveInfo) => void;
+    setShouldShowFeedback: StateSetter<boolean>;
+};
 
 const RANK = [8, 7, 6, 5, 4, 3, 2, 1, 0];
 const FILE = 'abcdefgh';
 
-export function Chessboard({ line, playerColour }: ChessboardProps) {
-    const { position, playMove, moveSuccess, lineSuccess } = useChess(
-        line,
-        playerColour
-    );
+export function Chessboard({
+    position,
+    playerColour,
+    playMove,
+    setShouldShowFeedback,
+}: ChessboardProps) {
     const [fromSquare, setFromSquare] = useState<string | null>(null);
-    const [shouldShowFeedback, setShouldShowFeedback] = useState(false);
-
     const displayPosition = playerColour === 'w' ? position : reverse(position);
 
     function handleSquareClick(e: MouseEvent): void {
@@ -55,36 +58,26 @@ export function Chessboard({ line, playerColour }: ChessboardProps) {
     }
 
     return (
-        <>
-            <div className={styles.board}>
-                {displayPosition.split('/').map((row, rank) => (
-                    <div key={rank}>
-                        {expandEmptySquares(row).map((square, file) => (
-                            <Square
-                                key={file}
-                                contains={square}
-                                rank={
-                                    playerColour === 'w' ? RANK[rank] : rank + 1
-                                }
-                                file={
-                                    playerColour === 'w'
-                                        ? FILE[file]
-                                        : reverse(FILE)[file]
-                                }
-                                selectedSquare={fromSquare}
-                                registerSquare={handleSquareClick}
-                                clearMove={clearMove}
-                            />
-                        ))}
-                    </div>
-                ))}
-            </div>
-
-            {/* TODO: Move these up to the Trainer page as separate elements - lift useChess to Trainer as well */}
-            {!moveSuccess && shouldShowFeedback && (
-                <p className={styles.incorrect}>Incorrect</p>
-            )}
-            {lineSuccess && <p>Well done!</p>}
-        </>
+        <div className={styles.board}>
+            {displayPosition.split('/').map((row, rank) => (
+                <div key={rank}>
+                    {expandEmptySquares(row).map((square, file) => (
+                        <Square
+                            key={file}
+                            contains={square}
+                            rank={playerColour === 'w' ? RANK[rank] : rank + 1}
+                            file={
+                                playerColour === 'w'
+                                    ? FILE[file]
+                                    : reverse(FILE)[file]
+                            }
+                            selectedSquare={fromSquare}
+                            registerSquare={handleSquareClick}
+                            clearMove={clearMove}
+                        />
+                    ))}
+                </div>
+            ))}
+        </div>
     );
 }

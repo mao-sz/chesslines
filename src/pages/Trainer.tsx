@@ -1,10 +1,33 @@
+import { useState } from 'react';
 import { Chessboard } from '../components/Chessboard';
+import { useChess } from '../helpers/hooks';
+import { Line } from '../types';
+import styles from './trainer.module.css';
 
 export function Trainer() {
+    // TODO: Remove after testing
+    const pgn = '1. e4 e5 2. Nc3 Nf6 3. f4 exf4 4. e5';
+    const playerColour = 'w';
+
+    const { position, playMove, moveSuccess, lineSuccess } = useChess(
+        pgn,
+        playerColour
+    );
+    const [shouldShowFeedback, setShouldShowFeedback] = useState(false);
+
     return (
-        <Chessboard
-            line="1. e4 c5 2. Nf3 Nc6 3. d4 cxd4 4. Nxd4 Nf6 5. Nc3 e6"
-            playerColour="w"
-        />
+        <>
+            <Chessboard
+                position={position}
+                playerColour={playerColour}
+                playMove={playMove}
+                setShouldShowFeedback={setShouldShowFeedback}
+            />
+
+            {!moveSuccess && shouldShowFeedback && (
+                <p className={styles.incorrect}>Incorrect</p>
+            )}
+            {lineSuccess && <p>Well done!</p>}
+        </>
     );
 }
