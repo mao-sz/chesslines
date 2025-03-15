@@ -1,3 +1,5 @@
+import { Trainer } from './pages/Trainer';
+
 export function App() {
-    return <></>;
+    return <Trainer />;
 }
