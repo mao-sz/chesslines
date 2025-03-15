@@ -11,7 +11,10 @@ const RANK = [8, 7, 6, 5, 4, 3, 2, 1, 0];
 const FILE = 'abcdefgh';
 
 export function Chessboard({ line, playerColour }: ChessboardProps) {
-    const { position, playMove, success } = useChess(line, playerColour);
+    const { position, playMove, moveSuccess, lineSuccess } = useChess(
+        line,
+        playerColour
+    );
     const [fromSquare, setFromSquare] = useState<string | null>(null);
     const [shouldShowFeedback, setShouldShowFeedback] = useState(false);
 
@@ -32,13 +35,16 @@ export function Chessboard({ line, playerColour }: ChessboardProps) {
                 ? contains && contains.toUpperCase() === contains
                 : contains && contains.toLowerCase() === contains;
 
-        if (!fromSquare || isOwnPiece) {
-            setFromSquare(`${file}${rank}`);
-            setShouldShowFeedback(false);
-        } else {
+        if (fromSquare) {
             playMove({ from: fromSquare, to: `${file}${rank}` });
             setFromSquare(null);
             setShouldShowFeedback(true);
+        } else if (isOwnPiece) {
+            setFromSquare(`${file}${rank}`);
+            setShouldShowFeedback(false);
+        } else {
+            // don't highlight if enemy piece selected to move
+            return;
         }
     }
 
@@ -73,9 +79,12 @@ export function Chessboard({ line, playerColour }: ChessboardProps) {
                     </div>
                 ))}
             </div>
-            {!success && shouldShowFeedback && (
+
+            {/* TODO: Move these up to the Trainer page as separate elements - lift useChess to Trainer as well */}
+            {!moveSuccess && shouldShowFeedback && (
                 <p className={styles.incorrect}>Incorrect</p>
             )}
+            {lineSuccess && <p>Well done!</p>}
         </>
     );
 }

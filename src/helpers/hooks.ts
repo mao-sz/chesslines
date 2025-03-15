@@ -6,6 +6,7 @@ import { getPosition } from './util';
 export function useChess(PGN: string, playerColour: Colour) {
     const isNewChess = useRef(true);
     const comparison = useRef(new Chess(PGN, { isPGN: true }));
+    const finalPosition = useRef(comparison.current.toFEN());
 
     // Set the comparison board to first userBoarded position - only want to run on component mount, not every call
     // useEffect not suitable here as this must occur before creating the user chessboard
@@ -14,12 +15,18 @@ export function useChess(PGN: string, playerColour: Colour) {
         isNewChess.current = false;
     }
 
-    const [success, setSuccess] = useState(true);
+    const [lineSuccess, setLineSuccess] = useState(false);
+    const [moveSuccess, setMoveSuccess] = useState(true);
     const [position, setPosition] = useState(
         getPosition(comparison.current.toFEN())
     );
 
     function playMove(move: MoveInfo): void {
+        // no more to play!
+        if (lineSuccess) {
+            return;
+        }
+
         const userBoard = new Chess(comparison.current.toFEN());
         const [error] = userBoard.playMove(move);
         if (error) {
@@ -34,12 +41,14 @@ export function useChess(PGN: string, playerColour: Colour) {
             setPosition(
                 getPosition(comparison.current.toNextPosition().toFEN())
             );
-            setSuccess(true);
+            setMoveSuccess(true);
         } else {
             comparison.current.toPreviousPosition();
-            setSuccess(false);
+            setMoveSuccess(false);
         }
+
+        setLineSuccess(comparison.current.toFEN() === finalPosition.current);
     }
 
-    return { position, playMove, success };
+    return { position, playMove, moveSuccess, lineSuccess };
 }
