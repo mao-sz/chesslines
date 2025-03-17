@@ -1,17 +1,32 @@
 import { Chess } from '@maoshizhong/chess';
-import { useRef, useState } from 'react';
-import type { Colour, MoveInfo } from '../types';
-import { getPosition } from './util';
+import { useLayoutEffect, useRef, useState } from 'react';
+import type { Line, MoveInfo } from '../types';
+import { getPosition, toShuffled } from './util';
 
-export function useChess(PGN: string, playerColour: Colour) {
+export function useShuffledLines(lines: Line[]) {
+    const [shuffledLines, setShuffledLines] = useState(toShuffled(lines));
+    const [currentLine, setCurrentLine] = useState(shuffledLines[0]);
+    return {
+        currentLine: currentLine,
+        progress: lines.length - shuffledLines.length + 1,
+        toNextLine() {
+            const remainingLines = shuffledLines.slice(1);
+            setShuffledLines(remainingLines);
+            setCurrentLine(remainingLines[0]);
+        },
+    };
+}
+
+export function useChess({ pgn, player }: Line, key: number) {
     const isNewChess = useRef(true);
-    const comparison = useRef(new Chess(PGN, { isPGN: true }));
+    const comparison = useRef(new Chess(pgn, { isPGN: true }));
     const finalPosition = useRef(comparison.current.toFEN());
 
     // Set the comparison board to first userBoarded position - only want to run on component mount, not every call
     // useEffect not suitable here as this must occur before creating the user chessboard
     if (isNewChess.current) {
-        comparison.current.toNthPosition(playerColour === 'w' ? 0 : 1);
+        console.log('initial pos');
+        comparison.current.toNthPosition(player === 'w' ? 0 : 1);
         isNewChess.current = false;
     }
 
@@ -20,6 +35,21 @@ export function useChess(PGN: string, playerColour: Colour) {
     const [position, setPosition] = useState(
         getPosition(comparison.current.toFEN())
     );
+
+    // When key changes (new line), reset everything to initial state.
+    // Need to do it manually because calling toNextLine from useShuffledLines
+    // isn't enough to trigger a fresh Chess instance.
+    // Layout effect used to prevent flash of new line's end position from being painted
+    useLayoutEffect(() => {
+        comparison.current = new Chess(pgn, { isPGN: true });
+        finalPosition.current = comparison.current.toFEN();
+        comparison.current.toNthPosition(player === 'w' ? 0 : 1);
+
+        setLineSuccess(false);
+        setMoveSuccess(true);
+        setPosition(getPosition(comparison.current.toFEN()));
+        console.log('key changed');
+    }, [key]);
 
     function playMove(move: MoveInfo): void {
         // no more to play!
