@@ -1,6 +1,6 @@
 import { MouseEvent } from 'react';
-import styles from './chessboard.module.css';
 import { Piece } from './Piece';
+import styles from './chessboard.module.css';
 
 type SquareProps = {
     contains: string | null;
