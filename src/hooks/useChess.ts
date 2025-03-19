@@ -1,9 +1,9 @@
 import { Chess } from '@maoshizhong/chess';
-import { useLayoutEffect, useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 import { getPosition } from '@/util/util';
 import type { Line, MoveInfo } from '@/types/types';
 
-export function useChess({ pgn, player }: Line, key: number) {
+export function useChess({ pgn, player }: Line) {
     const isNewChess = useRef(true);
     const comparison = useRef(new Chess(pgn, { isPGN: true }));
     const finalPosition = useRef(comparison.current.toFEN());
@@ -20,20 +20,6 @@ export function useChess({ pgn, player }: Line, key: number) {
     const [position, setPosition] = useState(
         getPosition(comparison.current.toFEN())
     );
-
-    // When key changes (new line), reset everything to initial state.
-    // Need to do it manually because calling toNextLine from useShuffledLines
-    // isn't enough to trigger a fresh Chess instance.
-    // Layout effect used to prevent flash of new line's end position from being painted
-    useLayoutEffect(() => {
-        comparison.current = new Chess(pgn, { isPGN: true });
-        finalPosition.current = comparison.current.toFEN();
-        comparison.current.toNthPosition(player === 'w' ? 0 : 1);
-
-        setLineSuccess(false);
-        setMoveSuccess(true);
-        setPosition(getPosition(comparison.current.toFEN()));
-    }, [key, pgn, player]); // key is important thing in case duplicate lines are loaded back-to-back
 
     function playMove(move: MoveInfo): void {
         // no more to play!

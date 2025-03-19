@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import { cleanup, render, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { Trainer } from './Trainer';
+import { TrainerPage } from './TrainerPage';
 import type { Line } from '@/types/types';
 
 const lines: { [key: string]: Record<string, Line[]> } = {
@@ -16,10 +16,10 @@ const lines: { [key: string]: Record<string, Line[]> } = {
     },
 };
 
-describe('Trainer page', () => {
+describe('TrainerPage page', () => {
     describe('Initial elements', () => {
         it('Renders 8x8 chessboard with pieces', () => {
-            render(<Trainer lines={lines.singleMove.w} />);
+            render(<TrainerPage lines={lines.singleMove.w} />);
 
             expect(
                 screen.queryAllByRole('button', { name: /square$/i })
@@ -45,7 +45,7 @@ describe('Trainer page', () => {
         });
 
         it('Renders flipped chessboard if line is played as black', () => {
-            render(<Trainer lines={lines.singleMove.b} />);
+            render(<TrainerPage lines={lines.singleMove.b} />);
 
             const squares = screen.queryAllByRole('button', {
                 name: /square$/i,
@@ -58,7 +58,7 @@ describe('Trainer page', () => {
         });
 
         it('Renders button for next line when incomplete lines remain after current line', () => {
-            render(<Trainer lines={lines.multiLines.twoLines} />);
+            render(<TrainerPage lines={lines.multiLines.twoLines} />);
 
             expect(
                 screen.queryByRole('button', { name: /next line/i })
@@ -66,7 +66,7 @@ describe('Trainer page', () => {
         });
 
         it('Does not render button for next line when current line is the last incomplete line', () => {
-            render(<Trainer lines={lines.singleMove.w} />);
+            render(<TrainerPage lines={lines.singleMove.w} />);
 
             expect(
                 screen.queryByRole('button', { name: /next line/i })
@@ -74,21 +74,21 @@ describe('Trainer page', () => {
         });
 
         it('Shows progress out of current loaded lines', () => {
-            render(<Trainer lines={lines.multiLines.twoLines} />);
-            expect(screen.queryByText('1/2')).toBeInTheDocument();
+            render(<TrainerPage lines={lines.multiLines.twoLines} />);
+            expect(screen.queryByText(/1\/2/)).toBeInTheDocument();
 
             cleanup();
 
-            render(<Trainer lines={lines.multiLines.tenLines} />);
-            expect(screen.queryByText('1/2')).not.toBeInTheDocument();
-            expect(screen.queryByText('1/10')).toBeInTheDocument();
+            render(<TrainerPage lines={lines.multiLines.tenLines} />);
+            expect(screen.queryByText(/1\/2/)).not.toBeInTheDocument();
+            expect(screen.queryByText(/1\/10/)).toBeInTheDocument();
         });
     });
 
     describe('Position after moves', () => {
         it('Renders new position after correct move played', async () => {
             const user = userEvent.setup();
-            render(<Trainer lines={lines.singleMove.w} />);
+            render(<TrainerPage lines={lines.singleMove.w} />);
 
             const d2Square = screen.getByRole('button', { name: 'd2 square' });
             const d4Square = screen.getByRole('button', { name: 'd4 square' });
@@ -111,7 +111,7 @@ describe('Trainer page', () => {
 
         it('Does not change rendered position if incorrect move played', async () => {
             const user = userEvent.setup();
-            render(<Trainer lines={lines.singleMove.w} />);
+            render(<TrainerPage lines={lines.singleMove.w} />);
 
             const d2Square = screen.getByRole('button', { name: 'd2 square' });
             const d3Square = screen.getByRole('button', { name: 'd3 square' });
@@ -131,7 +131,7 @@ describe('Trainer page', () => {
     describe('Success feedback', () => {
         it('Renders incorrect move notification if incorrect move played', async () => {
             const user = userEvent.setup();
-            render(<Trainer lines={lines.singleMove.w} />);
+            render(<TrainerPage lines={lines.singleMove.w} />);
 
             const d2Square = screen.getByRole('button', { name: 'd2 square' });
             const d3Square = screen.getByRole('button', { name: 'd3 square' });
@@ -143,7 +143,7 @@ describe('Trainer page', () => {
 
         it('Renders congratulatory message when line is completed', async () => {
             const user = userEvent.setup();
-            render(<Trainer lines={lines.multiMove.w} />);
+            render(<TrainerPage lines={lines.multiMove.w} />);
 
             const congratulatoryMessage = /well done/i;
 

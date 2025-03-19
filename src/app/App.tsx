@@ -1,8 +1,8 @@
-import { Trainer } from '@/features/trainer/Trainer';
+import { TrainerPage } from '@/features/trainer/TrainerPage';
 
 export function App() {
     return (
-        <Trainer
+        <TrainerPage
             lines={[
                 {
                     pgn: '1. e4 e5 2. Nc3 Nf6 3. f4 exf4 4. e5 Qe7',
