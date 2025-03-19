@@ -129,7 +129,7 @@ describe('TrainerPage page', () => {
     });
 
     describe('Success feedback', () => {
-        it('Renders incorrect move notification if incorrect move played', async () => {
+        it('Renders incorrect move message if incorrect move played', async () => {
             const user = userEvent.setup();
             render(<TrainerPage lines={lines.singleMove.w} />);
 
@@ -139,6 +139,19 @@ describe('TrainerPage page', () => {
             await user.click(d2Square);
             await user.click(d3Square);
             expect(screen.queryByText(/incorrect/i)).toBeInTheDocument();
+        });
+
+        it('Removes incorrect move message when board is clicked', async () => {
+            const user = userEvent.setup();
+            render(<TrainerPage lines={lines.singleMove.w} />);
+
+            const d2Square = screen.getByRole('button', { name: 'd2 square' });
+            const d3Square = screen.getByRole('button', { name: 'd3 square' });
+
+            await user.click(d2Square);
+            await user.click(d3Square);
+            await user.click(d3Square);
+            expect(screen.queryByText(/incorrect/i)).not.toBeInTheDocument();
         });
 
         it('Renders congratulatory message when line is completed', async () => {
@@ -164,6 +177,19 @@ describe('TrainerPage page', () => {
             expect(
                 screen.queryByText(congratulatoryMessage)
             ).toBeInTheDocument();
+        });
+    });
+
+    describe('Progress', () => {
+        it('Increments progress counter when "next line" button clicked', async () => {
+            const user = userEvent.setup();
+            render(<TrainerPage lines={lines.multiLines.twoLines} />);
+
+            const nextButton = screen.getByRole('button', {
+                name: /next line/i,
+            });
+            await user.click(nextButton);
+            expect(screen.queryByText(/2\/2/)).toBeInTheDocument();
         });
     });
 });
