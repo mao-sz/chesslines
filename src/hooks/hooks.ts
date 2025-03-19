@@ -1,7 +1,7 @@
 import { Chess } from '@maoshizhong/chess';
 import { useLayoutEffect, useRef, useState } from 'react';
 import type { Line, MoveInfo } from '../types';
-import { getPosition, toShuffled } from './util';
+import { getPosition, toShuffled } from '../util';
 
 export function useShuffledLines(lines: Line[]) {
     const [shuffledLines, setShuffledLines] = useState(toShuffled(lines));
