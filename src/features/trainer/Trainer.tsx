@@ -1,7 +1,7 @@
 import { useState } from 'react';
-import { Chessboard } from '../components/Chessboard';
-import { useChess, useShuffledLines } from '../helpers/hooks';
-import type { Line } from '../types';
+import { Chessboard } from './components/Chessboard';
+import { useChess, useShuffledLines } from '@/hooks/hooks';
+import type { Line } from '@/types/types';
 import styles from './trainer.module.css';
 
 export function Trainer() {

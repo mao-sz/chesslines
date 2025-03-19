@@ -1,7 +1,7 @@
 import { MouseEvent, useState } from 'react';
-import { expandEmptySquares, reverse } from '../helpers/util';
 import { Square } from './Square';
-import type { Colour, MoveInfo, StateSetter } from '../types';
+import { expandEmptySquares, reverse } from '@/util/util';
+import type { Colour, MoveInfo, StateSetter } from '@/types/types';
 import styles from './chessboard.module.css';
 
 type ChessboardProps = {

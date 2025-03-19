@@ -1,7 +1,7 @@
 import { Chess } from '@maoshizhong/chess';
 import { useLayoutEffect, useRef, useState } from 'react';
-import type { Line, MoveInfo } from '../types';
-import { getPosition, toShuffled } from '../util';
+import type { Line, MoveInfo } from '@/types/types';
+import { getPosition, toShuffled } from '@/util/util';
 
 export function useShuffledLines(lines: Line[]) {
     const [shuffledLines, setShuffledLines] = useState(toShuffled(lines));
@@ -48,8 +48,7 @@ export function useChess({ pgn, player }: Line, key: number) {
         setLineSuccess(false);
         setMoveSuccess(true);
         setPosition(getPosition(comparison.current.toFEN()));
-        console.log('key changed');
-    }, [key]);
+    }, [key, pgn, player]); // key is important thing in case duplicate lines are loaded back-to-back
 
     function playMove(move: MoveInfo): void {
         // no more to play!
