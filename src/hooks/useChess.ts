@@ -11,7 +11,6 @@ export function useChess({ pgn, player }: Line, key: number) {
     // Set the comparison board to first userBoarded position - only want to run on component mount, not every call
     // useEffect not suitable here as this must occur before creating the user chessboard
     if (isNewChess.current) {
-        console.log('initial pos');
         comparison.current.toNthPosition(player === 'w' ? 0 : 1);
         isNewChess.current = false;
     }

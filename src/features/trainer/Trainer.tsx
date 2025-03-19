@@ -5,30 +5,25 @@ import { useShuffledLines } from '@/hooks/useShuffledLines';
 import type { Line } from '@/types/types';
 import styles from './trainer.module.css';
 
-export function Trainer() {
-    // TODO: Make a Trainer prop later
-    const lines: Line[] = [
-        { pgn: '1. e4 e5 2. Nc3 Nf6 3. f4 exf4 4. e5 Qe7', player: 'w' },
-        { pgn: '1. e4 e5 2. Nc3 Nf6', player: 'b' },
-        { pgn: '1. e4 e5 2. Nc3 Nf6', player: 'w' },
-        { pgn: '1. e4 e6', player: 'w' },
-        { pgn: '1. e4 a5 2. Nf3 Nf6', player: 'b' },
-        { pgn: '1. d4 d5 2. Nc3 Nf6', player: 'w' },
-    ];
+type TrainerProps = { lines: Line[] };
 
+export function Trainer({ lines }: TrainerProps) {
     const { currentLine, toNextLine, progress } = useShuffledLines(lines);
     const { position, playMove, moveSuccess, lineSuccess } = useChess(
         currentLine,
         progress
     );
     const [shouldShowFeedback, setShouldShowFeedback] = useState(false);
-
     const hasLinesLeft = progress < lines.length;
 
     // TODO: Style me!
     return (
         <>
-            {hasLinesLeft && <button onClick={toNextLine}>Next</button>}
+            {hasLinesLeft && (
+                <button onClick={toNextLine} aria-label="next line">
+                    Next
+                </button>
+            )}
             <Chessboard
                 position={position}
                 playerColour={currentLine.player}

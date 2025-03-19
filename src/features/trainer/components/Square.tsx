@@ -35,6 +35,7 @@ export function Square({
     return (
         <button
             className={classNames.join(' ')}
+            aria-label={`${file}${rank} square`}
             data-rank={rank}
             data-file={file}
             data-contains={contains}
