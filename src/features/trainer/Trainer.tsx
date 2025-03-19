@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Chessboard } from './components/Chessboard';
-import { useChess, useShuffledLines } from '@/hooks/hooks';
+import { useChess } from '@/hooks/useChess';
+import { useShuffledLines } from '@/hooks/useShuffledLines';
 import type { Line } from '@/types/types';
 import styles from './trainer.module.css';
 

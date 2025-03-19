@@ -1,21 +1,7 @@
 import { Chess } from '@maoshizhong/chess';
 import { useLayoutEffect, useRef, useState } from 'react';
+import { getPosition } from '@/util/util';
 import type { Line, MoveInfo } from '@/types/types';
-import { getPosition, toShuffled } from '@/util/util';
-
-export function useShuffledLines(lines: Line[]) {
-    const [shuffledLines, setShuffledLines] = useState(toShuffled(lines));
-    const [currentLine, setCurrentLine] = useState(shuffledLines[0]);
-    return {
-        currentLine: currentLine,
-        progress: lines.length - shuffledLines.length + 1,
-        toNextLine() {
-            const remainingLines = shuffledLines.slice(1);
-            setShuffledLines(remainingLines);
-            setCurrentLine(remainingLines[0]);
-        },
-    };
-}
 
 export function useChess({ pgn, player }: Line, key: number) {
     const isNewChess = useRef(true);
