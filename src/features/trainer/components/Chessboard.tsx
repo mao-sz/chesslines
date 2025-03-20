@@ -59,11 +59,12 @@ export function Chessboard({
 
     return (
         <div className={styles.board}>
-            {displayPosition.split('/').map((row, rank) => (
-                <div key={rank}>
-                    {expandEmptySquares(row).map((square, file) => (
+            {displayPosition
+                .split('/')
+                .map((row, rank) =>
+                    expandEmptySquares(row).map((square, file) => (
                         <Square
-                            key={file}
+                            key={`${file}${rank}`}
                             contains={square}
                             rank={playerColour === 'w' ? RANK[rank] : rank + 1}
                             file={
@@ -75,9 +76,8 @@ export function Chessboard({
                             registerSquare={handleSquareClick}
                             clearMove={clearMove}
                         />
-                    ))}
-                </div>
-            ))}
+                    ))
+                )}
         </div>
     );
 }

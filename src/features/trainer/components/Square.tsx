@@ -1,4 +1,4 @@
-import { MouseEvent } from 'react';
+import { DragEvent, MouseEvent } from 'react';
 import { Piece } from './Piece';
 import styles from './chessboard.module.css';
 
@@ -39,7 +39,7 @@ export function Square({
             data-rank={rank}
             data-file={file}
             data-contains={contains}
-            onClick={registerSquare}
+            onMouseDown={registerSquare}
             onContextMenu={clearMove}
         >
             <Piece piece={contains} />
