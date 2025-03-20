@@ -1,3 +1,5 @@
+import type { Colour } from '@/types/types';
+
 export function reverse(str: string): string {
     return str.split('').reverse().join('');
 }
@@ -21,4 +23,17 @@ export function expandEmptySquares(FENRow: string): string[] {
 
 export function getPosition(FEN: string): string {
     return FEN.split(' ')[0];
+}
+
+export function isSameColour(
+    player: Colour,
+    pieceLetter?: string | null
+): boolean {
+    if (!pieceLetter) {
+        return false;
+    }
+
+    return player === 'w'
+        ? pieceLetter.toUpperCase() === pieceLetter
+        : pieceLetter.toLowerCase() === pieceLetter;
 }

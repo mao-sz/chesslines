@@ -1,6 +1,11 @@
-import { type MouseEvent, useState } from 'react';
+import {
+    type MouseEvent,
+    type PointerEvent as ReactPointerEvent,
+    useEffect,
+    useState,
+} from 'react';
 import { Square } from './Square';
-import { expandEmptySquares, reverse } from '@/util/util';
+import { expandEmptySquares, isSameColour, reverse } from '@/util/util';
 import type { Colour, MoveInfo, StateSetter } from '@/types/types';
 import styles from './chessboard.module.css';
 
@@ -20,51 +25,83 @@ export function Chessboard({
     playMove,
     setShouldShowFeedback,
 }: ChessboardProps) {
-    const [fromSquare, setFromSquare] = useState<string | null>(null);
+    const [selectedSquare, setSelectedSquare] = useState<string | null>(null);
     const displayPosition = playerColour === 'w' ? position : reverse(position);
 
-    function handleSquareClick(e: MouseEvent): void {
+    // Clear selectedSquare if dragged and dropped outside of the board
+    useEffect(() => {
+        function clearSelectedSquare(e: PointerEvent) {
+            const target = e.target as HTMLElement;
+            if (!target.className.includes(styles.square)) {
+                setSelectedSquare(null);
+            }
+        }
+        window.addEventListener('pointerup', clearSelectedSquare);
+        return () =>
+            window.removeEventListener('pointerup', clearSelectedSquare);
+    }, []);
+
+    function handleSquareClick(e: ReactPointerEvent): void {
         const square = e.currentTarget as HTMLElement;
         const { rank, file, contains } = square.dataset;
 
         // clicking empty square but not moving piece
-        if (!fromSquare && !contains) {
+        if (!selectedSquare && !contains) {
             setShouldShowFeedback(false);
             return;
         }
 
-        const isOwnPiece =
-            playerColour === 'w'
-                ? contains && contains.toUpperCase() === contains
-                : contains && contains.toLowerCase() === contains;
+        const isOwnPiece = isSameColour(playerColour, contains);
+        const isSamePiece = `${file}${rank}` == selectedSquare;
 
-        if (fromSquare) {
-            playMove({ from: fromSquare, to: `${file}${rank}` });
-            setFromSquare(null);
+        if (selectedSquare && !isOwnPiece && !isSamePiece) {
+            playMove({ from: selectedSquare, to: `${file}${rank}` });
+            setSelectedSquare(null);
             setShouldShowFeedback(true);
-        } else if (isOwnPiece) {
-            setFromSquare(`${file}${rank}`);
-            setShouldShowFeedback(false);
-        } else {
-            // don't highlight if enemy piece selected to move
             return;
         }
+
+        setSelectedSquare(isOwnPiece && !isSamePiece ? `${file}${rank}` : null);
+        setShouldShowFeedback(false);
     }
 
     function clearMove(e: MouseEvent): void {
         e.preventDefault();
-        setFromSquare(null);
+        setSelectedSquare(null);
         setShouldShowFeedback(false);
     }
 
+    function handlePointerUp(e: ReactPointerEvent) {
+        const square = e.target as HTMLButtonElement;
+        const { rank, file, contains } = square.dataset;
+        const isOwnPiece = isSameColour(playerColour, contains);
+        const isSamePiece = `${file}${rank}` === selectedSquare;
+        const isLeftMouseButton = e.button === 0;
+        const isReleaseFromDrag = isLeftMouseButton && !isSamePiece;
+
+        // Clicking on a square is handled in `handleSquareClick`
+        // This should only be for actual dragging onto different square
+        if (!isReleaseFromDrag) {
+            return;
+        }
+
+        if (selectedSquare && !isOwnPiece) {
+            playMove({ from: selectedSquare, to: `${file}${rank}` });
+            setSelectedSquare(null);
+            setShouldShowFeedback(true);
+            return;
+        }
+    }
+
     return (
-        <div className={styles.board}>
+        <div className={styles.board} onPointerUp={handlePointerUp}>
             {displayPosition
                 .split('/')
                 .map((row, rank) =>
                     expandEmptySquares(row).map((square, file) => (
                         <Square
                             key={`${file}${rank}`}
+                            player={playerColour}
                             contains={square}
                             rank={playerColour === 'w' ? RANK[rank] : rank + 1}
                             file={
@@ -72,7 +109,7 @@ export function Chessboard({
                                     ? FILE[file]
                                     : reverse(FILE)[file]
                             }
-                            selectedSquare={fromSquare}
+                            selectedSquare={selectedSquare}
                             registerSquare={handleSquareClick}
                             clearMove={clearMove}
                         />

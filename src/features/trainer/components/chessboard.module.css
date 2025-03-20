@@ -40,6 +40,7 @@
     position: absolute;
     top: 0;
     left: 0;
+    pointer-events: none;
 
     max-height: var(--square-size);
     max-width: var(--square-size);
