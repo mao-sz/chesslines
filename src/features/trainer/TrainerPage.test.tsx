@@ -86,45 +86,116 @@ describe('TrainerPage page', () => {
     });
 
     describe('Position after moves', () => {
-        it('Renders new position after correct move played', async () => {
-            const user = userEvent.setup();
-            render(<TrainerPage lines={lines.singleMove.w} />);
+        describe('Click move', () => {
+            it('Renders new position after correct move played', async () => {
+                const user = userEvent.setup();
+                render(<TrainerPage lines={lines.singleMove.w} />);
 
-            const d2Square = screen.getByRole('button', { name: 'd2 square' });
-            const d4Square = screen.getByRole('button', { name: 'd4 square' });
+                const d2Square = screen.getByRole('button', {
+                    name: 'd2 square',
+                });
+                const d4Square = screen.getByRole('button', {
+                    name: 'd4 square',
+                });
 
-            expect(
-                within(d2Square).queryByAltText('white pawn')
-            ).not.toBeNull();
-            expect(within(d4Square).queryByAltText('white pawn')).toBeNull();
+                expect(
+                    within(d2Square).queryByAltText('white pawn')
+                ).not.toBeNull();
+                expect(
+                    within(d4Square).queryByAltText('white pawn')
+                ).toBeNull();
 
-            await user.click(d2Square);
-            await user.click(d4Square);
+                await user.click(d2Square);
+                await user.click(d4Square);
 
-            expect(
-                within(d2Square).queryByAltText('white pawn')
-            ).not.toBeInTheDocument();
-            expect(
-                within(d4Square).queryByAltText('white pawn')
-            ).toBeInTheDocument();
+                expect(
+                    within(d2Square).queryByAltText('white pawn')
+                ).not.toBeInTheDocument();
+                expect(
+                    within(d4Square).queryByAltText('white pawn')
+                ).toBeInTheDocument();
+            });
+
+            it('Does not change rendered position if incorrect move played', async () => {
+                const user = userEvent.setup();
+                render(<TrainerPage lines={lines.singleMove.w} />);
+
+                const d2Square = screen.getByRole('button', {
+                    name: 'd2 square',
+                });
+                const d3Square = screen.getByRole('button', {
+                    name: 'd3 square',
+                });
+
+                await user.click(d2Square);
+                await user.click(d3Square);
+
+                expect(
+                    within(d2Square).queryByAltText('white pawn')
+                ).toBeInTheDocument();
+                expect(
+                    within(d3Square).queryByAltText('white pawn')
+                ).not.toBeInTheDocument();
+            });
         });
 
-        it('Does not change rendered position if incorrect move played', async () => {
-            const user = userEvent.setup();
-            render(<TrainerPage lines={lines.singleMove.w} />);
+        describe('Drag move', () => {
+            it('Renders new position after correct move played', async () => {
+                const user = userEvent.setup();
+                render(<TrainerPage lines={lines.singleMove.w} />);
 
-            const d2Square = screen.getByRole('button', { name: 'd2 square' });
-            const d3Square = screen.getByRole('button', { name: 'd3 square' });
+                const d2Square = screen.getByRole('button', {
+                    name: 'd2 square',
+                });
+                const d4Square = screen.getByRole('button', {
+                    name: 'd4 square',
+                });
 
-            await user.click(d2Square);
-            await user.click(d3Square);
+                expect(
+                    within(d2Square).queryByAltText('white pawn')
+                ).not.toBeNull();
+                expect(
+                    within(d4Square).queryByAltText('white pawn')
+                ).toBeNull();
 
-            expect(
-                within(d2Square).queryByAltText('white pawn')
-            ).toBeInTheDocument();
-            expect(
-                within(d3Square).queryByAltText('white pawn')
-            ).not.toBeInTheDocument();
+                await user.pointer([
+                    { keys: '[MouseLeft>]', target: d2Square },
+                    { target: d4Square },
+                    { keys: '[/MouseLeft]' },
+                ]);
+
+                expect(
+                    within(d2Square).queryByAltText('white pawn')
+                ).not.toBeInTheDocument();
+                expect(
+                    within(d4Square).queryByAltText('white pawn')
+                ).toBeInTheDocument();
+            });
+
+            it('Does not change rendered position if incorrect move played', async () => {
+                const user = userEvent.setup();
+                render(<TrainerPage lines={lines.singleMove.w} />);
+
+                const d2Square = screen.getByRole('button', {
+                    name: 'd2 square',
+                });
+                const d6Square = screen.getByRole('button', {
+                    name: 'd6 square',
+                });
+
+                await user.pointer([
+                    { keys: '[MouseLeft>]', target: d2Square },
+                    { target: d6Square },
+                    { keys: '[/MouseLeft]' },
+                ]);
+
+                expect(
+                    within(d2Square).queryByAltText('white pawn')
+                ).toBeInTheDocument();
+                expect(
+                    within(d6Square).queryByAltText('white pawn')
+                ).not.toBeInTheDocument();
+            });
         });
     });
 
