@@ -1,5 +1,5 @@
 .board {
-    --size: 500px;
+    --size: min(85vw, 600px);
 
     margin: auto;
 
@@ -17,9 +17,11 @@
 }
 
 .square {
+    aspect-ratio: 1;
     flex: 1;
     cursor: pointer;
     border: none;
+    padding: 0;
 }
 
 .dark {
