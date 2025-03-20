@@ -1,10 +1,6 @@
 import { Piece } from './Piece';
+import { type MouseEvent as ReactMouseEvent, useState } from 'react';
 import { isSameColour } from '@/util/util';
-import {
-    type PointerEvent,
-    type MouseEvent as ReactMouseEvent,
-    useState,
-} from 'react';
 import type { Colour } from '@/types/types';
 import styles from './chessboard.module.css';
 
@@ -14,8 +10,6 @@ type SquareProps = {
     rank: number;
     file: string;
     selectedSquare: string | null;
-    registerSquare: (e: PointerEvent) => void;
-    clearMove: (e: ReactMouseEvent) => void;
 };
 
 export function Square({
@@ -24,8 +18,6 @@ export function Square({
     rank,
     file,
     selectedSquare,
-    registerSquare,
-    clearMove,
 }: SquareProps) {
     const isEvenRank = rank % 2 === 0;
     const isEvenFile = 'abcdefgh'.indexOf(file) % 2 === 0;
@@ -84,11 +76,7 @@ export function Square({
             data-rank={rank}
             data-file={file}
             data-contains={contains}
-            onPointerDown={(e) => {
-                registerSquare(e);
-                centreImageOnPointer(e);
-            }}
-            onContextMenu={clearMove}
+            onPointerDown={centreImageOnPointer}
         >
             <Piece
                 piece={contains}

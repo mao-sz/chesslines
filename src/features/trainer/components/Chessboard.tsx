@@ -42,7 +42,11 @@ export function Chessboard({
     }, []);
 
     function handleSquareClick(e: ReactPointerEvent): void {
-        const square = e.currentTarget as HTMLElement;
+        const square = e.target as HTMLElement;
+        if (square.tagName !== 'BUTTON') {
+            return;
+        }
+
         const { rank, file, contains } = square.dataset;
 
         // clicking empty square but not moving piece
@@ -94,13 +98,19 @@ export function Chessboard({
     }
 
     return (
-        <div className={styles.board} onPointerUp={handlePointerUp}>
+        <div
+            className={styles.board}
+            onPointerDown={handleSquareClick}
+            onPointerUp={handlePointerUp}
+            onContextMenu={clearMove}
+        >
             {displayPosition
                 .split('/')
                 .map((row, rank) =>
                     expandEmptySquares(row).map((square, file) => (
                         <Square
                             key={`${file}${rank}`}
+                            selectedSquare={selectedSquare}
                             player={playerColour}
                             contains={square}
                             rank={playerColour === 'w' ? RANK[rank] : rank + 1}
@@ -109,9 +119,6 @@ export function Chessboard({
                                     ? FILE[file]
                                     : reverse(FILE)[file]
                             }
-                            selectedSquare={selectedSquare}
-                            registerSquare={handleSquareClick}
-                            clearMove={clearMove}
                         />
                     ))
                 )}
