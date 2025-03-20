@@ -1,4 +1,4 @@
-import { DragEvent, MouseEvent } from 'react';
+import type { MouseEvent } from 'react';
 import { Piece } from './Piece';
 import styles from './chessboard.module.css';
 

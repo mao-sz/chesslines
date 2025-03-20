@@ -1,6 +1,7 @@
 .board {
-    --size: min(85vw, 600px);
-    --8-squares: repeat(8, calc(var(--size) / 8));
+    --board-size: min(85vw, 600px);
+    --square-size: calc(var(--board-size) / 8);
+    --8-squares: repeat(8, var(--square-size));
 
     margin: auto;
 
@@ -9,21 +10,15 @@
     grid-template-rows: var(--8-squares);
     border-radius: 4px;
     overflow: clip;
-    height: var(--size);
-    width: var(--size);
+    height: var(--board-size);
+    width: var(--board-size);
 }
 
 .square {
     position: relative;
-    /* aspect-ratio: 1; */
     cursor: pointer;
     border: none;
     padding: 0;
-
-    & > img {
-        height: 100%;
-        width: 100%;
-    }
 }
 
 .dark {
@@ -36,4 +31,21 @@
 
 .selected {
     background-color: #44882273;
+}
+
+.square > img {
+    height: 100%;
+    width: 100%;
+    z-index: 100;
+    position: absolute;
+    top: 0;
+    left: 0;
+
+    max-height: var(--square-size);
+    max-width: var(--square-size);
+
+    &.ghost {
+        z-index: 0;
+        opacity: 0.6;
+    }
 }

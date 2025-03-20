@@ -1,4 +1,4 @@
-import { MouseEvent, useState } from 'react';
+import { type MouseEvent, useState } from 'react';
 import { Square } from './Square';
 import { expandEmptySquares, reverse } from '@/util/util';
 import type { Colour, MoveInfo, StateSetter } from '@/types/types';
