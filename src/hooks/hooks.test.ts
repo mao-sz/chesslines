@@ -2,10 +2,9 @@ import { describe, it, expect, afterEach, vi } from 'vitest';
 import { renderHook } from '@testing-library/react';
 import { useRepertoire } from './useRepertoire';
 
-afterEach(vi.resetAllMocks);
+afterEach(vi.clearAllMocks);
 
 const spyRandomUUID = vi.spyOn(crypto, 'randomUUID');
-
 function getLatestUUID() {
     return spyRandomUUID.mock.results.at(-1)?.value;
 }
@@ -26,7 +25,7 @@ describe('useRepertoire', () => {
 
     it('Adds new folder as a child of another folder', () => {
         const { result, rerender } = renderHook(useRepertoire);
-        result.current.addFolder({ name: 'Black->This', parent: 'b' });
+        result.current.folders.create('Black->This', 'b');
         rerender();
 
         const uuid = getLatestUUID();
@@ -39,12 +38,11 @@ describe('useRepertoire', () => {
 
     it('Adds new line', () => {
         const { result, rerender } = renderHook(useRepertoire);
-        result.current.addLine({
-            startingFEN:
-                'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1',
-            PGN: '1. e4 e5 2. Nc3',
-            parent: 'w',
-        });
+        result.current.lines.create(
+            'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1',
+            '1. e4 e5 2. Nc3',
+            'w'
+        );
         rerender();
 
         const uuid = getLatestUUID();
@@ -59,12 +57,11 @@ describe('useRepertoire', () => {
 
     it("Sets new line's parent folder to a lines type with the UUID as a child", () => {
         const { result, rerender } = renderHook(useRepertoire);
-        result.current.addLine({
-            startingFEN:
-                'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1',
-            PGN: '1. e4 e5 2. Nc3',
-            parent: 'w',
-        });
+        result.current.lines.create(
+            'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1',
+            '1. e4 e5 2. Nc3',
+            'w'
+        );
         rerender();
 
         const uuid = getLatestUUID();
@@ -73,7 +70,7 @@ describe('useRepertoire', () => {
 
     it("Updates an existing folder's name", () => {
         const { result, rerender } = renderHook(useRepertoire);
-        result.current.updateFolderName({ id: 'b', newName: 'Updated Black' });
+        result.current.folders.updateName('b', 'Updated Black');
         rerender();
 
         expect(result.current.folders.b.name).toBe('Updated Black');
@@ -81,14 +78,11 @@ describe('useRepertoire', () => {
 
     it("Updates an existing folder's location", () => {
         const { result, rerender } = renderHook(useRepertoire);
-        result.current.addFolder({ name: 'Black->This', parent: 'b' });
+        result.current.folders.create('Black->This', 'b');
         rerender();
 
         const uuid = getLatestUUID();
-        result.current.updateFolderLocation({
-            idToMove: uuid,
-            newParentId: 'w',
-        });
+        result.current.folders.updateLocation(uuid, 'w');
         rerender();
 
         expect(result.current.folders).toEqual({
@@ -100,21 +94,19 @@ describe('useRepertoire', () => {
 
     it("Updates an existing line's contents", () => {
         const { result, rerender } = renderHook(useRepertoire);
-        result.current.addLine({
-            startingFEN:
-                'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1',
-            PGN: '1. e4 e5 2. Nc3',
-            parent: 'w',
-        });
+        result.current.lines.create(
+            'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1',
+            '1. e4 e5 2. Nc3',
+            'w'
+        );
         rerender();
 
         const uuid = getLatestUUID();
-        result.current.updateLineName({
-            id: uuid,
-            newStartingFEN:
-                'rnbqkbnr/pp1ppppp/8/2p5/4P3/8/PPPP1PPP/RNBQKBNR w KQkq - 0 2',
-            newPGN: '2. Nc3 Nc6',
-        });
+        result.current.lines.updateLine(
+            uuid,
+            'rnbqkbnr/pp1ppppp/8/2p5/4P3/8/PPPP1PPP/RNBQKBNR w KQkq - 0 2',
+            '2. Nc3 Nc6'
+        );
         rerender();
 
         expect(result.current.lines).toEqual({
@@ -128,16 +120,15 @@ describe('useRepertoire', () => {
 
     it("Updates an existing line's location", () => {
         const { result, rerender } = renderHook(useRepertoire);
-        result.current.addLine({
-            startingFEN:
-                'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1',
-            PGN: '1. e4 e5 2. Nc3',
-            parent: 'w',
-        });
+        result.current.lines.create(
+            'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1',
+            '1. e4 e5 2. Nc3',
+            'w'
+        );
         rerender();
 
         const uuid = getLatestUUID();
-        result.current.updateLineLocation({ idToMove: uuid, newParentId: 'b' });
+        result.current.lines.updateLocation(uuid, 'b');
         rerender();
 
         expect(result.current.folders).toEqual({
@@ -148,11 +139,11 @@ describe('useRepertoire', () => {
 
     it('Deletes an existing folder with no children', () => {
         const { result, rerender } = renderHook(useRepertoire);
-        result.current.addFolder({ name: 'Black->This', parent: 'b' });
+        result.current.folders.create('Black->This', 'b');
         rerender();
 
         const uuid = getLatestUUID();
-        result.current.deleteFolder(uuid);
+        result.current.folders.delete(uuid);
         rerender();
 
         expect(result.current.folders).toEqual({
@@ -163,17 +154,14 @@ describe('useRepertoire', () => {
 
     it('Prevents deleting a folder that contains children', () => {
         const { result, rerender } = renderHook(useRepertoire);
-        result.current.addFolder({ name: "Can't delete me!", parent: 'b' });
+        result.current.folders.create("Can't delete me!", 'b');
         rerender();
 
         const parentUUID = getLatestUUID();
-        result.current.addFolder({
-            name: 'Prevents parent deletion',
-            parent: parentUUID,
-        });
+        result.current.folders.create('Prevents parent deletion', parentUUID);
         rerender();
 
-        const isFolderDeleted = result.current.deleteFolder(parentUUID);
+        const isFolderDeleted = result.current.folders.delete(parentUUID);
         rerender();
 
         const childUUID = getLatestUUID();
@@ -188,9 +176,9 @@ describe('useRepertoire', () => {
     it('Prevents deleting the base w/b folders', () => {
         const { result, rerender } = renderHook(useRepertoire);
 
-        const isWhiteFolderDeleted = result.current.deleteFolder('w');
+        const isWhiteFolderDeleted = result.current.folders.delete('w');
         rerender();
-        const isBlackFolderDeleted = result.current.deleteFolder('b');
+        const isBlackFolderDeleted = result.current.folders.delete('b');
         rerender();
 
         expect(isWhiteFolderDeleted).toBe(false);
@@ -203,16 +191,15 @@ describe('useRepertoire', () => {
 
     it('Deletes an existing line', () => {
         const { result, rerender } = renderHook(useRepertoire);
-        result.current.addLine({
-            startingFEN:
-                'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1',
-            PGN: '1. e4 e5 2. Nc3',
-            parent: 'w',
-        });
+        result.current.lines.create(
+            'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1',
+            '1. e4 e5 2. Nc3',
+            'w'
+        );
         rerender();
 
         const uuid = getLatestUUID();
-        result.current.deleteLine(uuid);
+        result.current.lines.delete(uuid);
         rerender();
 
         expect(result.current.lines).toEqual({});
@@ -220,16 +207,15 @@ describe('useRepertoire', () => {
 
     it('Removes lines ID from parent folder children array when deleted', () => {
         const { result, rerender } = renderHook(useRepertoire);
-        result.current.addLine({
-            startingFEN:
-                'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1',
-            PGN: '1. e4 e5 2. Nc3',
-            parent: 'w',
-        });
+        result.current.lines.create(
+            'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1',
+            '1. e4 e5 2. Nc3',
+            'w'
+        );
         rerender();
 
         const uuid = getLatestUUID();
-        result.current.deleteLine(uuid);
+        result.current.lines.delete(uuid);
         rerender();
 
         expect(result.current.folders.w).toEqual({

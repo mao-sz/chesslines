@@ -3,8 +3,10 @@ import type {
     RepertoireFolders,
     RepertoireFolderID,
     RepertoireLines,
+    RepertoireFoldersWithMethods,
+    RepertoireLinesWithMethods,
 } from '@/types/repertoire';
-import { UUID } from '@/types/utility';
+import type { UUID } from '@/types/utility';
 
 export function useRepertoire() {
     const emptyRepertoire: RepertoireFolders = {
@@ -14,196 +16,161 @@ export function useRepertoire() {
     const [folders, setFolders] = useState<RepertoireFolders>(emptyRepertoire);
     const [lines, setLines] = useState<RepertoireLines>({});
 
-    function addFolder({
-        name,
-        parent,
-    }: {
-        name: string;
-        parent: RepertoireFolderID;
-    }) {
-        const newFolderUUID = crypto.randomUUID();
-        const newFolder = { name: name, contains: 'either', children: [] };
-        const newParent = {
-            ...folders[parent],
-            contains: 'folders',
-            children: [...folders[parent].children, newFolderUUID],
-        };
-
-        setFolders({
-            ...folders,
-            [parent]: newParent,
-            [newFolderUUID]: newFolder,
-        });
-    }
-
-    function addLine({
-        startingFEN,
-        PGN,
-        parent,
-    }: {
-        startingFEN: string;
-        PGN: string;
-        parent: RepertoireFolderID;
-    }) {
-        const newLineUUID = crypto.randomUUID();
-        const newParentFolder = {
-            ...folders[parent],
-            contains: 'lines',
-            children: [...folders[parent].children, newLineUUID],
-        };
-
-        setLines({ ...lines, [newLineUUID]: { startingFEN, PGN } });
-        setFolders({ ...folders, [parent]: newParentFolder });
-    }
-
-    function updateFolderName({
-        id,
-        newName,
-    }: {
-        id: RepertoireFolderID;
-        newName: string;
-    }) {
-        setFolders({ ...folders, [id]: { ...folders[id], name: newName } });
-    }
-
-    function updateFolderLocation({
-        idToMove,
-        newParentId,
-    }: {
-        idToMove: UUID;
-        newParentId: RepertoireFolderID;
-    }) {
-        const [oldParentId, oldParent] = findParentFolder(idToMove, folders);
-        const oldParentChildrenWithoutFolder = oldParent.children.filter(
-            (ids) => ids !== idToMove
-        );
-
-        setFolders({
-            ...folders,
-            [oldParentId]: {
-                ...oldParent,
-                contains: oldParentChildrenWithoutFolder.length
-                    ? 'folders'
-                    : 'either',
-                children: oldParentChildrenWithoutFolder,
-            },
-            [newParentId]: {
-                ...folders[newParentId],
+    const folderMethods = {
+        create(name: string, parent: RepertoireFolderID): void {
+            const newFolderUUID = crypto.randomUUID();
+            const newFolder = { name: name, contains: 'either', children: [] };
+            const newParent = {
+                ...folders[parent],
                 contains: 'folders',
-                children: [...folders[newParentId].children, idToMove],
-            },
-        });
-    }
+                children: [...folders[parent].children, newFolderUUID],
+            };
 
-    function updateLineName({
-        id,
-        newStartingFEN,
-        newPGN,
-    }: {
-        id: UUID;
-        newStartingFEN: string;
-        newPGN: string;
-    }) {
-        setLines({
-            ...lines,
-            [id]: { startingFEN: newStartingFEN, PGN: newPGN },
-        });
-    }
+            setFolders({
+                ...folders,
+                [parent]: newParent,
+                [newFolderUUID]: newFolder,
+            });
+        },
+        updateName(id: RepertoireFolderID, newName: string): void {
+            setFolders({ ...folders, [id]: { ...folders[id], name: newName } });
+        },
+        updateLocation(idToMove: UUID, newParentId: RepertoireFolderID): void {
+            const [oldParentId, oldParent] = findParentFolder(
+                idToMove,
+                folders
+            );
+            const oldParentChildrenWithoutFolder = oldParent.children.filter(
+                (ids) => ids !== idToMove
+            );
 
-    function updateLineLocation({
-        idToMove,
-        newParentId,
-    }: {
-        idToMove: UUID;
-        newParentId: RepertoireFolderID;
-    }) {
-        const [oldParentId, oldParent] = findParentFolder(idToMove, folders);
-        const oldParentChildrenWithoutLine = oldParent.children.filter(
-            (ids) => ids !== idToMove
-        );
+            setFolders({
+                ...folders,
+                [oldParentId]: {
+                    ...oldParent,
+                    contains: oldParentChildrenWithoutFolder.length
+                        ? 'folders'
+                        : 'either',
+                    children: oldParentChildrenWithoutFolder,
+                },
+                [newParentId]: {
+                    ...folders[newParentId],
+                    contains: 'folders',
+                    children: [...folders[newParentId].children, idToMove],
+                },
+            });
+        },
+        delete(idToDelete: RepertoireFolderID): boolean {
+            // Prevent deleting the base w/b folders
+            // Prevent deleting any other folder unless empty
+            if (
+                idToDelete === 'w' ||
+                idToDelete === 'b' ||
+                folders[idToDelete].children.length
+            ) {
+                return false;
+            }
 
-        setFolders({
-            ...folders,
-            [oldParentId]: {
-                ...oldParent,
-                contains: oldParentChildrenWithoutLine.length
-                    ? lines
-                    : 'either',
-                children: oldParentChildrenWithoutLine,
-            },
-            [newParentId]: {
-                ...folders[newParentId],
+            const { [idToDelete]: _, ...remainingFolders } = folders;
+            const [oldParentId, oldParent] = findParentFolder(
+                idToDelete,
+                remainingFolders
+            );
+            const oldParentChildrenWithoutFolder = oldParent.children.filter(
+                (ids) => ids !== idToDelete
+            );
+
+            setFolders({
+                ...remainingFolders,
+                [oldParentId]: {
+                    ...oldParent,
+                    contains: oldParentChildrenWithoutFolder.length
+                        ? 'folders'
+                        : 'either',
+                    children: oldParentChildrenWithoutFolder,
+                },
+            });
+            return true;
+        },
+    };
+    const lineMethods = {
+        create(
+            startingFEN: string,
+            PGN: string,
+            parent: RepertoireFolderID
+        ): void {
+            const newLineUUID = crypto.randomUUID();
+            const newParentFolder = {
+                ...folders[parent],
                 contains: 'lines',
-                children: [...folders[newParentId].children, idToMove],
-            },
-        });
-    }
+                children: [...folders[parent].children, newLineUUID],
+            };
 
-    function deleteFolder(idToDelete: RepertoireFolderID): boolean {
-        // Prevent deleting the base w/b folders
-        // Prevent deleting any other folder unless empty
-        if (
-            idToDelete === 'w' ||
-            idToDelete === 'b' ||
-            folders[idToDelete].children.length
-        ) {
-            return false;
-        }
+            setLines({ ...lines, [newLineUUID]: { startingFEN, PGN } });
+            setFolders({ ...folders, [parent]: newParentFolder });
+        },
+        updateLine(id: UUID, newStartingFEN: string, newPGN: string): void {
+            setLines({
+                ...lines,
+                [id]: { startingFEN: newStartingFEN, PGN: newPGN },
+            });
+        },
+        updateLocation(idToMove: UUID, newParentId: RepertoireFolderID): void {
+            const [oldParentId, oldParent] = findParentFolder(
+                idToMove,
+                folders
+            );
+            const oldParentChildrenWithoutLine = oldParent.children.filter(
+                (ids) => ids !== idToMove
+            );
 
-        const { [idToDelete]: _, ...remainingFolders } = folders;
-        const [oldParentId, oldParent] = findParentFolder(
-            idToDelete,
-            remainingFolders
-        );
-        const oldParentChildrenWithoutFolder = oldParent.children.filter(
-            (ids) => ids !== idToDelete
-        );
+            setFolders({
+                ...folders,
+                [oldParentId]: {
+                    ...oldParent,
+                    contains: oldParentChildrenWithoutLine.length
+                        ? lines
+                        : 'either',
+                    children: oldParentChildrenWithoutLine,
+                },
+                [newParentId]: {
+                    ...folders[newParentId],
+                    contains: 'lines',
+                    children: [...folders[newParentId].children, idToMove],
+                },
+            });
+        },
+        delete(idToDelete: UUID): void {
+            const { [idToDelete]: _, ...remainingLines } = lines;
+            const [oldParentId, oldParent] = findParentFolder(
+                idToDelete,
+                folders
+            );
+            const oldParentChildrenWithoutLine = oldParent.children.filter(
+                (ids) => ids !== idToDelete
+            );
 
-        setFolders({
-            ...remainingFolders,
-            [oldParentId]: {
-                ...oldParent,
-                contains: oldParentChildrenWithoutFolder.length
-                    ? 'folders'
-                    : 'either',
-                children: oldParentChildrenWithoutFolder,
-            },
-        });
-        return true;
-    }
+            setFolders({
+                ...folders,
+                [oldParentId]: {
+                    ...oldParent,
+                    contains: oldParentChildrenWithoutLine.length
+                        ? 'lines'
+                        : 'either',
+                    children: oldParentChildrenWithoutLine,
+                },
+            });
 
-    function deleteLine(idToDelete: UUID) {
-        const { [idToDelete]: _, ...remainingLines } = lines;
-        const [oldParentId, oldParent] = findParentFolder(idToDelete, folders);
-        const oldParentChildrenWithoutLine = oldParent.children.filter(
-            (ids) => ids !== idToDelete
-        );
+            setLines(remainingLines);
+        },
+    };
 
-        setFolders({
-            ...folders,
-            [oldParentId]: {
-                ...oldParent,
-                contains: oldParentChildrenWithoutLine.length
-                    ? 'lines'
-                    : 'either',
-                children: oldParentChildrenWithoutLine,
-            },
-        });
-
-        setLines(remainingLines);
-    }
+    Object.setPrototypeOf(folders, folderMethods);
+    Object.setPrototypeOf(lines, lineMethods);
 
     return {
-        folders,
-        lines,
-        addFolder,
-        addLine,
-        updateFolderName,
-        updateFolderLocation,
-        updateLineName,
-        updateLineLocation,
-        deleteFolder,
-        deleteLine,
+        folders: folders as RepertoireFoldersWithMethods,
+        lines: lines as RepertoireLinesWithMethods,
     };
 }
 

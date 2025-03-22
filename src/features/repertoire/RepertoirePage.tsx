@@ -4,7 +4,7 @@ import { Folder } from './components/Folder';
 import type { RepertoireFolderID } from '@/types/repertoire';
 
 export function RepertoirePage() {
-    const { folders, lines, addFolder, addLine } = useRepertoire();
+    const { folders, lines } = useRepertoire();
     const [currentFolder, setCurrentFolder] = useState<RepertoireFolderID>('w');
 
     return (
