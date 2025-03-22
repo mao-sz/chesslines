@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { toShuffled } from '@/util/util';
-import type { Line } from '@/types/types';
+import type { Line } from '@/types/chessboard';
 
 export function useShuffledLines(lines: Line[]) {
     const [shuffledLines, setShuffledLines] = useState(toShuffled(lines));

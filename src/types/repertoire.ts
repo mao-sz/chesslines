@@ -1,15 +1,4 @@
-import type { Dispatch, SetStateAction } from 'react';
-
-type NonEmptyArray<T> = [T, ...T[]];
-
-export type Colour = 'w' | 'b';
-export type FENPosition = string & {};
-export type MoveInfo = { from: string; to: string };
-export type StateSetter<T> = Dispatch<SetStateAction<T>>;
-export type Line = { pgn: string; player: Colour };
-export type PixelCoordinates = { x: number; y: number };
-
-type UUID = `${string}-${string}-${string}-${string}-${string}`;
+import type { NonEmptyArray, UUID } from './utility';
 
 type RepertoireLine = { startingFEN: string; pgn: string };
 export type RepertoireLines = Record<UUID, RepertoireLine>;

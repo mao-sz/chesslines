@@ -2,7 +2,7 @@ import { describe, it, expect } from 'vitest';
 import { cleanup, render, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { TrainerPage } from './TrainerPage';
-import type { Line } from '@/types/types';
+import type { Line } from '@/types/chessboard';
 
 const lines: { [key: string]: Record<string, Line[]> } = {
     singleMove: {

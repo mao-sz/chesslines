@@ -6,7 +6,8 @@ import {
 } from 'react';
 import { Square } from './Square';
 import { expandEmptySquares, isSameColour, reverse } from '@/util/util';
-import type { Colour, MoveInfo, StateSetter } from '@/types/types';
+import type { StateSetter } from '@/types/utility';
+import type { Colour, MoveInfo } from '@/types/chessboard';
 import styles from './chessboard.module.css';
 
 type ChessboardProps = {

@@ -1,4 +1,4 @@
-import type { Colour } from '@/types/types';
+import type { Colour } from '@/types/chessboard';
 
 export function reverse(str: string): string {
     return str.split('').reverse().join('');

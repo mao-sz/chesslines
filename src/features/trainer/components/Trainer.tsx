@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Chessboard } from './Chessboard';
 import { useChess } from '@/hooks/useChess';
-import type { Line } from '@/types/types';
+import type { Line } from '@/types/chessboard';
 import styles from './trainer.module.css';
 
 type TrainerProps = { line: Line };

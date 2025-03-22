@@ -1,7 +1,7 @@
 import { Chess } from '@maoshizhong/chess';
 import { useRef, useState } from 'react';
 import { getPosition } from '@/util/util';
-import type { Line, MoveInfo } from '@/types/types';
+import type { Line, MoveInfo } from '@/types/chessboard';
 
 export function useChess({ pgn, player }: Line) {
     const isNewChess = useRef(true);

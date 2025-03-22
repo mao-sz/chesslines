@@ -1,5 +1,5 @@
-import type { RepertoireFolders, RepertoireLines } from '@/types/types';
 import { useState } from 'react';
+import type { RepertoireFolders, RepertoireLines } from '@/types/repertoire';
 
 export function useRepertoire() {
     const emptyRepertoire: RepertoireFolders = {

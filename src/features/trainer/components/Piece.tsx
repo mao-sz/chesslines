@@ -1,4 +1,4 @@
-import type { PixelCoordinates } from '@/types/types';
+import type { PixelCoordinates } from '@/types/chessboard';
 import styles from './chessboard.module.css';
 
 const pieceNames: { [key: string]: string } = {
