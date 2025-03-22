@@ -1,6 +1,6 @@
 import type { NonEmptyArray, UUID } from './utility';
 
-type RepertoireLine = { startingFEN: string; pgn: string };
+type RepertoireLine = { startingFEN: string; PGN: string };
 export type RepertoireLines = Record<UUID, RepertoireLine>;
 
 type Folder = { name: string };

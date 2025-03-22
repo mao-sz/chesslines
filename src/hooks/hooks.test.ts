@@ -45,7 +45,7 @@ describe('useRepertoire', () => {
         result.current.addLine({
             startingFEN:
                 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1',
-            pgn: '1. e4 e5 2. Nc3',
+            PGN: '1. e4 e5 2. Nc3',
             parent: 'w',
         });
         rerender();
@@ -54,7 +54,7 @@ describe('useRepertoire', () => {
             [mockUUID]: {
                 startingFEN:
                     'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1',
-                pgn: '1. e4 e5 2. Nc3',
+                PGN: '1. e4 e5 2. Nc3',
             },
         });
     });
@@ -67,7 +67,7 @@ describe('useRepertoire', () => {
         result.current.addLine({
             startingFEN:
                 'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1',
-            pgn: '1. e4 e5 2. Nc3',
+            PGN: '1. e4 e5 2. Nc3',
             parent: 'w',
         });
         rerender();

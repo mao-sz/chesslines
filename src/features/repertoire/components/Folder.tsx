@@ -32,7 +32,7 @@ export function Folder({ id, folders, lines, setCurrentFolder }: FolderProps) {
                     <Line
                         key={id}
                         loadedStartingFEN={lines[id].startingFEN}
-                        loadedPGN={lines[id].pgn}
+                        loadedPGN={lines[id].PGN}
                     />
                 )
             )}
