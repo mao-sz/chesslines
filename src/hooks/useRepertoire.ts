@@ -1,5 +1,9 @@
 import { useState } from 'react';
-import type { RepertoireFolders, RepertoireLines } from '@/types/repertoire';
+import type {
+    RepertoireFolders,
+    RepertoireFolderID,
+    RepertoireLines,
+} from '@/types/repertoire';
 
 export function useRepertoire() {
     const emptyRepertoire: RepertoireFolders = {
@@ -14,7 +18,7 @@ export function useRepertoire() {
         parent,
     }: {
         name: string;
-        parent: keyof RepertoireFolders;
+        parent: RepertoireFolderID;
     }) {
         const newFolderUUID = crypto.randomUUID();
         const newFolder = { name: name, contains: 'either', children: [] };
@@ -38,7 +42,7 @@ export function useRepertoire() {
     }: {
         startingFEN: string;
         pgn: string;
-        parent: keyof RepertoireFolders;
+        parent: RepertoireFolderID;
     }) {
         const newLineUUID = crypto.randomUUID();
         const newParentFolder = {

@@ -15,3 +15,5 @@ export type RepertoireFolders = {
     b: RepertoireFolder & { name: 'Black' };
     [key: UUID]: RepertoireFolder;
 };
+
+export type RepertoireFolderID = keyof RepertoireFolders;
