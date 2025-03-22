@@ -29,7 +29,11 @@ export function Folder({ id, folders, lines, setCurrentFolder }: FolderProps) {
                         setCurrentFolder={setCurrentFolder}
                     />
                 ) : (
-                    <Line key={id} />
+                    <Line
+                        key={id}
+                        loadedStartingFEN={lines[id].startingFEN}
+                        loadedPGN={lines[id].pgn}
+                    />
                 )
             )}
         </div>
