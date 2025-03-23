@@ -47,6 +47,12 @@ export function RepertoirePage({ repertoire }: RepertoirePageProps) {
                     lines={lines}
                     setCurrentFolder={setCurrentFolder}
                 />
+                {folders[currentFolder].contains !== 'lines' && (
+                    <button>New folder</button>
+                )}
+                {folders[currentFolder].contains !== 'folders' && (
+                    <button>New line</button>
+                )}
             </div>
         </div>
     );
