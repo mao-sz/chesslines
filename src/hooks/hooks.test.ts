@@ -1,25 +1,14 @@
 import { describe, it, expect, afterEach, vi } from 'vitest';
-import { renderHook } from '@testing-library/react';
-import { useRepertoire } from './useRepertoire';
+import { helpers } from '@/testing/helpers';
 
-afterEach(vi.clearAllMocks);
+const { callUseRepertoire } = helpers.hooks;
 
 const spyRandomUUID = vi.spyOn(crypto, 'randomUUID');
 function getLatestUUID() {
     return spyRandomUUID.mock.results.at(-1)?.value;
 }
 
-function callUseRepertoire() {
-    return renderHook(() =>
-        useRepertoire({
-            folders: {
-                w: { name: 'White', contains: 'either', children: [] },
-                b: { name: 'Black', contains: 'either', children: [] },
-            },
-            lines: {},
-        })
-    );
-}
+afterEach(vi.clearAllMocks);
 
 describe('useRepertoire', () => {
     it('Initialises folders with starting empty white/black folders only', () => {

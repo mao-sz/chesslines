@@ -2,23 +2,11 @@ import { describe, it, expect } from 'vitest';
 import { cleanup, render, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { TrainerPage } from './TrainerPage';
-import type { Line } from '@/types/chessboard';
-
-const lines: { [key: string]: Record<string, Line[]> } = {
-    singleMove: {
-        w: [{ pgn: '1. d4', player: 'w' }],
-        b: [{ pgn: '1. e4 e5', player: 'b' }],
-    },
-    multiMove: { w: [{ pgn: '1. d4 d5 2. c4', player: 'w' }] },
-    multiLines: {
-        twoLines: Array(2).fill({ pgn: '1. d4', player: 'w' }),
-        tenLines: Array(10).fill({ pgn: '1. d4', player: 'w' }),
-    },
-};
+import { helpers } from '@/testing/helpers';
 
 describe('Initial elements', () => {
     it('Renders 8x8 chessboard with pieces', () => {
-        render(<TrainerPage lines={lines.singleMove.w} />);
+        render(<TrainerPage lines={helpers.lines.singleMove.w} />);
 
         expect(
             screen.getAllByRole('button', { name: /square$/i })
@@ -36,7 +24,7 @@ describe('Initial elements', () => {
     });
 
     it('Renders flipped chessboard if line is played as black', () => {
-        render(<TrainerPage lines={lines.singleMove.b} />);
+        render(<TrainerPage lines={helpers.lines.singleMove.b} />);
 
         const squares = screen.getAllByRole('button', { name: /square$/i });
         expect(squares.at(0)?.ariaLabel).toBe('h1 square');
@@ -47,7 +35,7 @@ describe('Initial elements', () => {
     });
 
     it('Renders button for next line when incomplete lines remain after current line', () => {
-        render(<TrainerPage lines={lines.multiLines.twoLines} />);
+        render(<TrainerPage lines={helpers.lines.multiLines.twoLines} />);
 
         expect(
             screen.getByRole('button', { name: /next line/i })
@@ -55,7 +43,7 @@ describe('Initial elements', () => {
     });
 
     it('Does not render button for next line when current line is the last incomplete line', () => {
-        render(<TrainerPage lines={lines.singleMove.w} />);
+        render(<TrainerPage lines={helpers.lines.singleMove.w} />);
 
         expect(
             screen.queryByRole('button', { name: /next line/i })
@@ -63,12 +51,12 @@ describe('Initial elements', () => {
     });
 
     it('Shows progress out of current loaded lines', () => {
-        render(<TrainerPage lines={lines.multiLines.twoLines} />);
+        render(<TrainerPage lines={helpers.lines.multiLines.twoLines} />);
         expect(screen.getByText(/1\/2/)).toBeInTheDocument();
 
         cleanup();
 
-        render(<TrainerPage lines={lines.multiLines.tenLines} />);
+        render(<TrainerPage lines={helpers.lines.multiLines.tenLines} />);
         expect(screen.queryByText(/1\/2/)).not.toBeInTheDocument();
         expect(screen.getByText(/1\/10/)).toBeInTheDocument();
     });
@@ -78,7 +66,7 @@ describe('Position after moves', () => {
     describe('Click move', () => {
         it('Renders new position after correct move played', async () => {
             const user = userEvent.setup();
-            render(<TrainerPage lines={lines.singleMove.w} />);
+            render(<TrainerPage lines={helpers.lines.singleMove.w} />);
 
             const d2Square = screen.getByRole('button', { name: 'd2 square' });
             const d4Square = screen.getByRole('button', { name: 'd4 square' });
@@ -103,7 +91,7 @@ describe('Position after moves', () => {
 
         it('Does not change rendered position if incorrect move played', async () => {
             const user = userEvent.setup();
-            render(<TrainerPage lines={lines.singleMove.w} />);
+            render(<TrainerPage lines={helpers.lines.singleMove.w} />);
 
             const d2Square = screen.getByRole('button', { name: 'd2 square' });
             const d3Square = screen.getByRole('button', { name: 'd3 square' });
@@ -123,7 +111,7 @@ describe('Position after moves', () => {
     describe('Drag move', () => {
         it('Renders new position after correct move played', async () => {
             const user = userEvent.setup();
-            render(<TrainerPage lines={lines.singleMove.w} />);
+            render(<TrainerPage lines={helpers.lines.singleMove.w} />);
 
             const d2Square = screen.getByRole('button', { name: 'd2 square' });
             const d4Square = screen.getByRole('button', { name: 'd4 square' });
@@ -151,7 +139,7 @@ describe('Position after moves', () => {
 
         it('Does not change rendered position if incorrect move played', async () => {
             const user = userEvent.setup();
-            render(<TrainerPage lines={lines.singleMove.w} />);
+            render(<TrainerPage lines={helpers.lines.singleMove.w} />);
 
             const d2Square = screen.getByRole('button', { name: 'd2 square' });
             const d6Square = screen.getByRole('button', { name: 'd6 square' });
@@ -175,7 +163,7 @@ describe('Position after moves', () => {
 describe('Success feedback', () => {
     it('Renders incorrect move message if incorrect move played', async () => {
         const user = userEvent.setup();
-        render(<TrainerPage lines={lines.singleMove.w} />);
+        render(<TrainerPage lines={helpers.lines.singleMove.w} />);
 
         const d2Square = screen.getByRole('button', { name: 'd2 square' });
         const d3Square = screen.getByRole('button', { name: 'd3 square' });
@@ -187,7 +175,7 @@ describe('Success feedback', () => {
 
     it('Removes incorrect move message when board is clicked', async () => {
         const user = userEvent.setup();
-        render(<TrainerPage lines={lines.singleMove.w} />);
+        render(<TrainerPage lines={helpers.lines.singleMove.w} />);
 
         const d2Square = screen.getByRole('button', { name: 'd2 square' });
         const d3Square = screen.getByRole('button', { name: 'd3 square' });
@@ -200,7 +188,7 @@ describe('Success feedback', () => {
 
     it('Renders congratulatory message when line is completed', async () => {
         const user = userEvent.setup();
-        render(<TrainerPage lines={lines.multiMove.w} />);
+        render(<TrainerPage lines={helpers.lines.multiMove.w} />);
 
         const congratulatoryMessage = /well done/i;
 
@@ -225,7 +213,7 @@ describe('Success feedback', () => {
 describe('Progress', () => {
     it('Increments progress counter when "next line" button clicked', async () => {
         const user = userEvent.setup();
-        render(<TrainerPage lines={lines.multiLines.twoLines} />);
+        render(<TrainerPage lines={helpers.lines.multiLines.twoLines} />);
 
         const nextButton = screen.getByRole('button', { name: /next line/i });
         await user.click(nextButton);
