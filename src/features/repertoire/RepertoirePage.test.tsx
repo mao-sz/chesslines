@@ -7,7 +7,7 @@ describe('Initial elements', () => {
     it('Renders a button for each of white and black repertoires', () => {
         render(<RepertoirePage />);
 
-        expect(screen.queryAllByRole('tab')).toHaveLength(2);
+        expect(screen.getAllByRole('tab')).toHaveLength(2);
     });
 
     it('Renders by default with the white repertoire tab panel showing only', () => {
@@ -23,7 +23,7 @@ describe('Initial elements', () => {
         expect(blackTabButton.ariaSelected).toBe('false');
 
         expect(
-            screen.queryByRole('tabpanel', { name: /white repertoire/i })
+            screen.getByRole('tabpanel', { name: /white repertoire/i })
         ).toBeInTheDocument();
         expect(
             screen.queryByRole('tabpanel', { name: /black repertoire/i })
@@ -52,7 +52,7 @@ describe('Switching repertoire tabs', () => {
             screen.queryByRole('tabpanel', { name: /white repertoire/i })
         ).not.toBeInTheDocument();
         expect(
-            screen.queryByRole('tabpanel', { name: /black repertoire/i })
+            screen.getByRole('tabpanel', { name: /black repertoire/i })
         ).toBeInTheDocument();
     });
 });

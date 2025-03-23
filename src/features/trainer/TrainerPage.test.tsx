@@ -21,36 +21,28 @@ describe('Initial elements', () => {
         render(<TrainerPage lines={lines.singleMove.w} />);
 
         expect(
-            screen.queryAllByRole('button', { name: /square$/i })
+            screen.getAllByRole('button', { name: /square$/i })
         ).toHaveLength(64);
-        expect(screen.queryAllByRole('img', { name: /pawn$/i })).toHaveLength(
-            16
-        );
-        expect(screen.queryAllByRole('img', { name: /rook$/i })).toHaveLength(
+        expect(screen.getAllByRole('img', { name: /pawn$/i })).toHaveLength(16);
+        expect(screen.getAllByRole('img', { name: /rook$/i })).toHaveLength(4);
+        expect(screen.getAllByRole('img', { name: /knight$/i })).toHaveLength(
             4
         );
-        expect(screen.queryAllByRole('img', { name: /knight$/i })).toHaveLength(
+        expect(screen.getAllByRole('img', { name: /bishop$/i })).toHaveLength(
             4
         );
-        expect(screen.queryAllByRole('img', { name: /bishop$/i })).toHaveLength(
-            4
-        );
-        expect(screen.queryAllByRole('img', { name: /queen$/i })).toHaveLength(
-            2
-        );
-        expect(screen.queryAllByRole('img', { name: /king$/i })).toHaveLength(
-            2
-        );
+        expect(screen.getAllByRole('img', { name: /queen$/i })).toHaveLength(2);
+        expect(screen.getAllByRole('img', { name: /king$/i })).toHaveLength(2);
     });
 
     it('Renders flipped chessboard if line is played as black', () => {
         render(<TrainerPage lines={lines.singleMove.b} />);
 
-        const squares = screen.queryAllByRole('button', { name: /square$/i });
+        const squares = screen.getAllByRole('button', { name: /square$/i });
         expect(squares.at(0)?.ariaLabel).toBe('h1 square');
         expect(squares.at(-1)?.ariaLabel).toBe('a8 square');
         expect(
-            within(squares.at(-1)!).queryByAltText('black rook')
+            within(squares.at(-1)!).getByAltText('black rook')
         ).toBeInTheDocument();
     });
 
@@ -58,7 +50,7 @@ describe('Initial elements', () => {
         render(<TrainerPage lines={lines.multiLines.twoLines} />);
 
         expect(
-            screen.queryByRole('button', { name: /next line/i })
+            screen.getByRole('button', { name: /next line/i })
         ).toBeInTheDocument();
     });
 
@@ -72,13 +64,13 @@ describe('Initial elements', () => {
 
     it('Shows progress out of current loaded lines', () => {
         render(<TrainerPage lines={lines.multiLines.twoLines} />);
-        expect(screen.queryByText(/1\/2/)).toBeInTheDocument();
+        expect(screen.getByText(/1\/2/)).toBeInTheDocument();
 
         cleanup();
 
         render(<TrainerPage lines={lines.multiLines.tenLines} />);
         expect(screen.queryByText(/1\/2/)).not.toBeInTheDocument();
-        expect(screen.queryByText(/1\/10/)).toBeInTheDocument();
+        expect(screen.getByText(/1\/10/)).toBeInTheDocument();
     });
 });
 
@@ -92,9 +84,11 @@ describe('Position after moves', () => {
             const d4Square = screen.getByRole('button', { name: 'd4 square' });
 
             expect(
-                within(d2Square).queryByAltText('white pawn')
-            ).not.toBeNull();
-            expect(within(d4Square).queryByAltText('white pawn')).toBeNull();
+                within(d2Square).getByAltText('white pawn')
+            ).toBeInTheDocument();
+            expect(
+                within(d4Square).queryByAltText('white pawn')
+            ).not.toBeInTheDocument();
 
             await user.click(d2Square);
             await user.click(d4Square);
@@ -103,7 +97,7 @@ describe('Position after moves', () => {
                 within(d2Square).queryByAltText('white pawn')
             ).not.toBeInTheDocument();
             expect(
-                within(d4Square).queryByAltText('white pawn')
+                within(d4Square).getByAltText('white pawn')
             ).toBeInTheDocument();
         });
 
@@ -118,7 +112,7 @@ describe('Position after moves', () => {
             await user.click(d3Square);
 
             expect(
-                within(d2Square).queryByAltText('white pawn')
+                within(d2Square).getByAltText('white pawn')
             ).toBeInTheDocument();
             expect(
                 within(d3Square).queryByAltText('white pawn')
@@ -135,9 +129,11 @@ describe('Position after moves', () => {
             const d4Square = screen.getByRole('button', { name: 'd4 square' });
 
             expect(
-                within(d2Square).queryByAltText('white pawn')
-            ).not.toBeNull();
-            expect(within(d4Square).queryByAltText('white pawn')).toBeNull();
+                within(d2Square).getByAltText('white pawn')
+            ).toBeInTheDocument();
+            expect(
+                within(d4Square).queryByAltText('white pawn')
+            ).not.toBeInTheDocument();
 
             await user.pointer([
                 { keys: '[MouseLeft>]', target: d2Square },
@@ -149,7 +145,7 @@ describe('Position after moves', () => {
                 within(d2Square).queryByAltText('white pawn')
             ).not.toBeInTheDocument();
             expect(
-                within(d4Square).queryByAltText('white pawn')
+                within(d4Square).getByAltText('white pawn')
             ).toBeInTheDocument();
         });
 
@@ -167,7 +163,7 @@ describe('Position after moves', () => {
             ]);
 
             expect(
-                within(d2Square).queryByAltText('white pawn')
+                within(d2Square).getByAltText('white pawn')
             ).toBeInTheDocument();
             expect(
                 within(d6Square).queryByAltText('white pawn')
@@ -186,7 +182,7 @@ describe('Success feedback', () => {
 
         await user.click(d2Square);
         await user.click(d3Square);
-        expect(screen.queryByText(/incorrect/i)).toBeInTheDocument();
+        expect(screen.getByText(/incorrect/i)).toBeInTheDocument();
     });
 
     it('Removes incorrect move message when board is clicked', async () => {
@@ -222,7 +218,7 @@ describe('Success feedback', () => {
 
         await user.click(c2Square);
         await user.click(c4Square);
-        expect(screen.queryByText(congratulatoryMessage)).toBeInTheDocument();
+        expect(screen.getByText(congratulatoryMessage)).toBeInTheDocument();
     });
 });
 
@@ -233,6 +229,6 @@ describe('Progress', () => {
 
         const nextButton = screen.getByRole('button', { name: /next line/i });
         await user.click(nextButton);
-        expect(screen.queryByText(/2\/2/)).toBeInTheDocument();
+        expect(screen.getByText(/2\/2/)).toBeInTheDocument();
     });
 });
