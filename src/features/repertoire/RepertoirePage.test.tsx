@@ -163,4 +163,30 @@ describe('New folder/line buttons', () => {
         ).toBeInTheDocument();
         expect(newFolderNameInput).not.toBeInTheDocument();
     });
+
+    it('Adds new empty line (with standard starting FEN) when new line button clicked', async () => {
+        const user = userEvent.setup();
+        render(<RepertoirePage repertoire={helpers.repertoire.empty} />);
+
+        const lineCount = screen.queryAllByRole('textbox', {
+            name: /starting fen/i,
+        }).length;
+
+        const newLineButton = screen.getByRole('button', { name: /new line/i });
+        await user.click(newLineButton);
+
+        expect(
+            screen.getAllByRole('textbox', { name: /starting fen/i })
+        ).toHaveLength(lineCount + 1);
+    });
+
+    it('Keeps new line button rendered after clicking it', async () => {
+        const user = userEvent.setup();
+        render(<RepertoirePage repertoire={helpers.repertoire.empty} />);
+
+        const newLineButton = screen.getByRole('button', { name: /new line/i });
+        await user.click(newLineButton);
+
+        expect(newLineButton).toBeInTheDocument();
+    });
 });

@@ -16,6 +16,9 @@ type PanelProps = {
     setCurrentFolder: StateSetter<RepertoireFolderID>;
 };
 
+const STANDARD_STARTING_FEN =
+    'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1';
+
 export function Panel({
     folders,
     lines,
@@ -31,6 +34,10 @@ export function Panel({
         const input = form.elements[0] as HTMLInputElement;
         folders.create(input.value, currentFolder);
         setIsNewFolderFormShowing(false);
+    }
+
+    function createLine() {
+        lines.create(STANDARD_STARTING_FEN, '', currentFolder);
     }
 
     return (
@@ -56,7 +63,7 @@ export function Panel({
                         </button>
                     )}
                     {folders[currentFolder].contains !== 'folders' && (
-                        <button>New line</button>
+                        <button onClick={createLine}>New line</button>
                     )}
                 </>
             )}
