@@ -1,20 +1,16 @@
 import { useState } from 'react';
 import type {
-    RepertoireFolders,
+    Repertoire,
+    RepertoireWithMethods,
     RepertoireFolderID,
-    RepertoireLines,
-    RepertoireFoldersWithMethods,
-    RepertoireLinesWithMethods,
 } from '@/types/repertoire';
 import type { UUID } from '@/types/utility';
 
-export function useRepertoire() {
-    const emptyRepertoire: RepertoireFolders = {
-        w: { name: 'White', contains: 'either', children: [] },
-        b: { name: 'Black', contains: 'either', children: [] },
-    };
-    const [folders, setFolders] = useState<RepertoireFolders>(emptyRepertoire);
-    const [lines, setLines] = useState<RepertoireLines>({});
+export function useRepertoire(repertoire: Repertoire) {
+    const [folders, setFolders] = useState<Repertoire['folders']>(
+        repertoire.folders
+    );
+    const [lines, setLines] = useState<Repertoire['lines']>(repertoire.lines);
 
     const folderMethods = {
         create(name: string, parent: RepertoireFolderID): void {
@@ -168,16 +164,13 @@ export function useRepertoire() {
     Object.setPrototypeOf(folders, folderMethods);
     Object.setPrototypeOf(lines, lineMethods);
 
-    return {
-        folders: folders as RepertoireFoldersWithMethods,
-        lines: lines as RepertoireLinesWithMethods,
-    };
+    return { folders, lines } as RepertoireWithMethods;
 }
 
 function findParentFolder(
     childId: UUID,
-    folders: RepertoireFolders
-): [string, RepertoireFolders[RepertoireFolderID]] {
+    folders: Repertoire['folders']
+): [string, Repertoire['folders'][RepertoireFolderID]] {
     return Object.entries(folders).find(
         ([_, folder]) =>
             folder.contains !== 'either' && folder.children.includes(childId)

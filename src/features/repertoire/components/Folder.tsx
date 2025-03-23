@@ -1,15 +1,11 @@
 import { Line } from './Line';
 import type { StateSetter } from '@/types/utility';
-import type {
-    RepertoireFolderID,
-    RepertoireFolders,
-    RepertoireLines,
-} from '@/types/repertoire';
+import type { RepertoireFolderID, Repertoire } from '@/types/repertoire';
 
 type FolderProps = {
     id: RepertoireFolderID;
-    folders: RepertoireFolders;
-    lines: RepertoireLines;
+    folders: Repertoire['folders'];
+    lines: Repertoire['lines'];
     setCurrentFolder: StateSetter<RepertoireFolderID>;
 };
 

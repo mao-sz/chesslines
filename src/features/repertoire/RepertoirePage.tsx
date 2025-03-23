@@ -1,11 +1,13 @@
 import { useState } from 'react';
 import { useRepertoire } from '@/hooks/useRepertoire';
 import { Folder } from './components/Folder';
-import type { RepertoireFolderID } from '@/types/repertoire';
+import type { Repertoire, RepertoireFolderID } from '@/types/repertoire';
 import type { Colour } from '@/types/chessboard';
 
-export function RepertoirePage() {
-    const { folders, lines } = useRepertoire();
+type RepertoirePageProps = { repertoire: Repertoire };
+
+export function RepertoirePage({ repertoire }: RepertoirePageProps) {
+    const { folders, lines } = useRepertoire(repertoire);
     const [currentTab, setCurrentTab] = useState<Colour>('w');
     const [currentFolder, setCurrentFolder] =
         useState<RepertoireFolderID>(currentTab);

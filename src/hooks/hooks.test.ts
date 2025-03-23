@@ -9,9 +9,21 @@ function getLatestUUID() {
     return spyRandomUUID.mock.results.at(-1)?.value;
 }
 
+function callUseRepertoire() {
+    return renderHook(() =>
+        useRepertoire({
+            folders: {
+                w: { name: 'White', contains: 'either', children: [] },
+                b: { name: 'Black', contains: 'either', children: [] },
+            },
+            lines: {},
+        })
+    );
+}
+
 describe('useRepertoire', () => {
     it('Initialises folders with starting empty white/black folders only', () => {
-        const { result } = renderHook(useRepertoire);
+        const { result } = callUseRepertoire();
         expect(result.current.folders).toEqual({
             w: { name: 'White', contains: 'either', children: [] },
             b: { name: 'Black', contains: 'either', children: [] },
@@ -19,12 +31,12 @@ describe('useRepertoire', () => {
     });
 
     it('Initialises lines as empty object', () => {
-        const { result } = renderHook(useRepertoire);
+        const { result } = callUseRepertoire();
         expect(result.current.lines).toEqual({});
     });
 
     it('Adds new folder as a child of another folder', () => {
-        const { result, rerender } = renderHook(useRepertoire);
+        const { result, rerender } = callUseRepertoire();
         result.current.folders.create('Black->This', 'b');
         rerender();
 
@@ -37,7 +49,7 @@ describe('useRepertoire', () => {
     });
 
     it('Adds new line', () => {
-        const { result, rerender } = renderHook(useRepertoire);
+        const { result, rerender } = callUseRepertoire();
         result.current.lines.create(
             'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1',
             '1. e4 e5 2. Nc3',
@@ -56,7 +68,7 @@ describe('useRepertoire', () => {
     });
 
     it("Sets new line's parent folder to a lines type with the UUID as a child", () => {
-        const { result, rerender } = renderHook(useRepertoire);
+        const { result, rerender } = callUseRepertoire();
         result.current.lines.create(
             'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1',
             '1. e4 e5 2. Nc3',
@@ -69,7 +81,7 @@ describe('useRepertoire', () => {
     });
 
     it("Updates an existing folder's name", () => {
-        const { result, rerender } = renderHook(useRepertoire);
+        const { result, rerender } = callUseRepertoire();
         result.current.folders.updateName('b', 'Updated Black');
         rerender();
 
@@ -77,7 +89,7 @@ describe('useRepertoire', () => {
     });
 
     it("Updates an existing folder's location", () => {
-        const { result, rerender } = renderHook(useRepertoire);
+        const { result, rerender } = callUseRepertoire();
         result.current.folders.create('Black->This', 'b');
         rerender();
 
@@ -93,7 +105,7 @@ describe('useRepertoire', () => {
     });
 
     it("Updates an existing line's contents", () => {
-        const { result, rerender } = renderHook(useRepertoire);
+        const { result, rerender } = callUseRepertoire();
         result.current.lines.create(
             'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1',
             '1. e4 e5 2. Nc3',
@@ -119,7 +131,7 @@ describe('useRepertoire', () => {
     });
 
     it("Updates an existing line's location", () => {
-        const { result, rerender } = renderHook(useRepertoire);
+        const { result, rerender } = callUseRepertoire();
         result.current.lines.create(
             'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1',
             '1. e4 e5 2. Nc3',
@@ -138,7 +150,7 @@ describe('useRepertoire', () => {
     });
 
     it('Deletes an existing folder with no children', () => {
-        const { result, rerender } = renderHook(useRepertoire);
+        const { result, rerender } = callUseRepertoire();
         result.current.folders.create('Black->This', 'b');
         rerender();
 
@@ -153,7 +165,7 @@ describe('useRepertoire', () => {
     });
 
     it('Prevents deleting a folder that contains children', () => {
-        const { result, rerender } = renderHook(useRepertoire);
+        const { result, rerender } = callUseRepertoire();
         result.current.folders.create("Can't delete me!", 'b');
         rerender();
 
@@ -174,7 +186,7 @@ describe('useRepertoire', () => {
     });
 
     it('Prevents deleting the base w/b folders', () => {
-        const { result, rerender } = renderHook(useRepertoire);
+        const { result, rerender } = callUseRepertoire();
 
         const isWhiteFolderDeleted = result.current.folders.delete('w');
         rerender();
@@ -190,7 +202,7 @@ describe('useRepertoire', () => {
     });
 
     it('Deletes an existing line', () => {
-        const { result, rerender } = renderHook(useRepertoire);
+        const { result, rerender } = callUseRepertoire();
         result.current.lines.create(
             'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1',
             '1. e4 e5 2. Nc3',
@@ -206,7 +218,7 @@ describe('useRepertoire', () => {
     });
 
     it('Removes lines ID from parent folder children array when deleted', () => {
-        const { result, rerender } = renderHook(useRepertoire);
+        const { result, rerender } = callUseRepertoire();
         result.current.lines.create(
             'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1',
             '1. e4 e5 2. Nc3',
