@@ -95,4 +95,72 @@ describe('New folder/line buttons', () => {
             screen.getByRole('button', { name: /new line/i })
         ).toBeInTheDocument();
     });
+
+    it("Does not render any form for 'new folder' or 'new line' if respective button not clicked", () => {
+        render(<RepertoirePage repertoire={helpers.repertoire.empty} />);
+
+        expect(
+            screen.queryByRole('form', { name: /^new/i })
+        ).not.toBeInTheDocument();
+    });
+
+    it("Replaces 'new *' button(s) with new folder name form when new folder button clicked", async () => {
+        const user = userEvent.setup();
+        render(<RepertoirePage repertoire={helpers.repertoire.empty} />);
+
+        const newFolderButton = screen.getByRole('button', {
+            name: /new folder/i,
+        });
+        await user.click(newFolderButton);
+
+        expect(newFolderButton).not.toBeInTheDocument();
+        expect(
+            screen.getByRole('form', { name: /new folder/i })
+        ).toBeInTheDocument();
+        expect(
+            screen.getByRole('textbox', { name: /name/i })
+        ).toBeInTheDocument();
+    });
+
+    it('Adds new folder when new folder name submitted', async () => {
+        const user = userEvent.setup();
+        render(<RepertoirePage repertoire={helpers.repertoire.empty} />);
+
+        const newFolderButton = screen.getByRole('button', {
+            name: /new folder/i,
+        });
+        await user.click(newFolderButton);
+
+        const newFolderNameInput = screen.getByRole('textbox', {
+            name: /name/i,
+        });
+        await user.type(newFolderNameInput, 'new folder name');
+        await user.keyboard('[Enter]');
+
+        expect(
+            screen.getByRole('heading', { name: /new folder name/i })
+        ).toBeInTheDocument();
+    });
+
+    it('Replaces new folder name form with new folder button after submission', async () => {
+        const user = userEvent.setup();
+        render(<RepertoirePage repertoire={helpers.repertoire.empty} />);
+
+        const newFolderButton = screen.getByRole('button', {
+            name: /new folder/i,
+        });
+        await user.click(newFolderButton);
+
+        const newFolderNameInput = screen.getByRole('textbox', {
+            name: /name/i,
+        });
+        await user.type(newFolderNameInput, 'new folder name');
+        await user.keyboard('[Enter]');
+
+        // not the same ref as newFolderButton
+        expect(
+            screen.getByRole('button', { name: /new folder/i })
+        ).toBeInTheDocument();
+        expect(newFolderNameInput).not.toBeInTheDocument();
+    });
 });
