@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { render, screen } from '@testing-library/react';
+import { render, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { RepertoirePage } from './RepertoirePage';
 import { helpers } from '@/testing/helpers';
@@ -59,7 +59,7 @@ describe('Switching repertoire tabs', () => {
 });
 
 describe('New folder/line buttons', () => {
-    it("Renders both 'new' buttons when active folder is empty", () => {
+    it("Renders both 'new' buttons when folder is empty", () => {
         render(<RepertoirePage repertoire={helpers.repertoire.empty} />);
 
         expect(
@@ -70,29 +70,37 @@ describe('New folder/line buttons', () => {
         ).toBeInTheDocument();
     });
 
-    it("Renders only 'new folder' button when active folder contains folders", () => {
+    it("Renders only 'new folder' button when folder contains folders", () => {
         render(
             <RepertoirePage repertoire={helpers.repertoire.withFolderInWhite} />
         );
 
+        const whiteFolder = screen.getByRole('generic', {
+            name: /white open folder/i,
+        }).firstElementChild as HTMLElement;
+
         expect(
-            screen.getByRole('button', { name: /new folder/i })
+            within(whiteFolder).getByRole('button', { name: /new folder/i })
         ).toBeInTheDocument();
         expect(
-            screen.queryByRole('button', { name: /new line/i })
+            within(whiteFolder).queryByRole('button', { name: /new line/i })
         ).not.toBeInTheDocument();
     });
 
-    it("Renders only 'new line' button when active folder contains lines", () => {
+    it("Renders only 'new line' button when folder contains lines", () => {
         render(
             <RepertoirePage repertoire={helpers.repertoire.withLineInWhite} />
         );
 
+        const whiteFolder = screen.getByRole('generic', {
+            name: /white open folder/i,
+        }).firstElementChild as HTMLElement;
+
         expect(
-            screen.queryByRole('button', { name: /new folder/i })
+            within(whiteFolder).queryByRole('button', { name: /new folder/i })
         ).not.toBeInTheDocument();
         expect(
-            screen.getByRole('button', { name: /new line/i })
+            within(whiteFolder).getByRole('button', { name: /new line/i })
         ).toBeInTheDocument();
     });
 
@@ -146,6 +154,10 @@ describe('New folder/line buttons', () => {
         const user = userEvent.setup();
         render(<RepertoirePage repertoire={helpers.repertoire.empty} />);
 
+        const whiteFolder = screen.getByRole('generic', {
+            name: /white open folder/i,
+        }).firstElementChild as HTMLElement;
+
         const newFolderButton = screen.getByRole('button', {
             name: /new folder/i,
         });
@@ -159,7 +171,7 @@ describe('New folder/line buttons', () => {
 
         // not the same ref as newFolderButton
         expect(
-            screen.getByRole('button', { name: /new folder/i })
+            within(whiteFolder).getByRole('button', { name: /new folder/i })
         ).toBeInTheDocument();
         expect(newFolderNameInput).not.toBeInTheDocument();
     });
@@ -201,6 +213,24 @@ describe('New folder/line buttons', () => {
         expect(screen.queryAllByLabelText(/starting fen/i)).toHaveLength(
             lineCount + 1
         );
+    });
+
+    it('Auto-opens closed folder when new line is added', async () => {
+        const user = userEvent.setup();
+        render(
+            <RepertoirePage repertoire={helpers.repertoire.withFolderInWhite} />
+        );
+
+        const closedFolder = screen.getByRole('generic', {
+            name: /closed folder$/i,
+        });
+
+        const newLineButton = within(closedFolder).getByRole('button', {
+            name: /new line/i,
+        });
+        await user.click(newLineButton);
+
+        expect(closedFolder).toHaveAccessibleName(/open folder$/i);
     });
 
     it('Keeps new line button rendered after clicking it', async () => {
