@@ -1,3 +1,4 @@
+import { CROSS } from '@/util/constants';
 import type { FormEvent } from 'react';
 import type { UUID } from '@/types/utility';
 import type { RepertoireWithMethods } from '@/types/repertoire';
@@ -42,8 +43,8 @@ export function Line({ id, lines, startingFEN, PGN }: LineProps) {
                     onInput={updateLineDetails('PGN')}
                 />
             </label>
-            <button type="button" onClick={deleteLine}>
-                Delete
+            <button type="button" aria-label="delete line" onClick={deleteLine}>
+                {CROSS}
             </button>
         </>
     );

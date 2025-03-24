@@ -1,6 +1,7 @@
 import { type FormEvent, MouseEvent, useState } from 'react';
 import { Line } from './Line';
 import { FolderNameForm } from './FolderNameForm';
+import { CROSS, PENCIL, TICK } from '@/util/constants';
 import type {
     RepertoireFolderID,
     RepertoireWithMethods,
@@ -58,6 +59,10 @@ export function Folder({ id, lines, folders }: FolderProps) {
         setIsRenaming(false);
     }
 
+    function deleteFolder() {
+        folders.delete(id);
+    }
+
     return (
         <div
             className={styles.folder}
@@ -68,8 +73,8 @@ export function Folder({ id, lines, folders }: FolderProps) {
                     <FolderNameForm
                         ariaLabel="rename folder"
                         handleSubmit={updateFolderName}
-                        submitText={['✓', 'Set new folder name']}
-                        cancelText={['×', 'Cancel folder rename']}
+                        submitText={[TICK, 'Set new folder name']}
+                        cancelText={[CROSS, 'Cancel folder rename']}
                         discardForm={() => setIsRenaming(false)}
                     />
                 ) : (
@@ -80,7 +85,7 @@ export function Folder({ id, lines, folders }: FolderProps) {
                                 aria-label="rename folder"
                                 onClick={() => setIsRenaming(true)}
                             >
-                                🖉
+                                {PENCIL}
                             </button>
                         )}
                     </>
@@ -99,6 +104,12 @@ export function Folder({ id, lines, folders }: FolderProps) {
                             </button>
                         )}
                     </div>
+                )}
+
+                {!isBaseFolder && !folder.children.length && (
+                    <button aria-label="delete folder" onClick={deleteFolder}>
+                        {CROSS}
+                    </button>
                 )}
             </div>
 
