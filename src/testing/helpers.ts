@@ -49,6 +49,29 @@ const repertoire = {
             },
         };
     },
+    get withNestedFolders(): Repertoire {
+        return {
+            folders: {
+                w: {
+                    name: 'White',
+                    contains: 'folders',
+                    children: ['68cafccd-d7b8-4f92-9153-9df59eee4f0d'],
+                },
+                b: { name: 'Black', contains: 'either', children: [] },
+                '68cafccd-d7b8-4f92-9153-9df59eee4f0d': {
+                    name: 'Child',
+                    contains: 'folders',
+                    children: ['57cafccd-d7b8-4f92-9153-9df59eee4f0d'],
+                },
+                '57cafccd-d7b8-4f92-9153-9df59eee4f0d': {
+                    name: 'Child of child',
+                    contains: 'either',
+                    children: [],
+                },
+            },
+            lines: {},
+        };
+    },
 };
 
 const lines = {

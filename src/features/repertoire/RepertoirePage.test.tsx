@@ -30,6 +30,22 @@ describe('Initial elements', () => {
             screen.queryByRole('tabpanel', { name: /black repertoire/i })
         ).not.toBeInTheDocument();
     });
+
+    it("Prevents closing a tab's base folder", async () => {
+        const user = userEvent.setup();
+        render(
+            <RepertoirePage repertoire={helpers.repertoire.withFolderInWhite} />
+        );
+        const baseFolder = screen.getByRole('generic', {
+            name: /white open folder/i,
+        });
+        await user.click(baseFolder);
+
+        expect(baseFolder).toHaveAccessibleName(/white open folder/i);
+        expect(
+            within(baseFolder).getByRole('generic', { name: /closed folder$/i })
+        ).toBeInTheDocument();
+    });
 });
 
 describe('Switching repertoire tabs', () => {
@@ -130,6 +146,27 @@ describe('New folder/line buttons', () => {
         ).toBeInTheDocument();
     });
 
+    it('Prevents a folder from being closed if new folder name form present', async () => {
+        const user = userEvent.setup();
+        render(
+            <RepertoirePage repertoire={helpers.repertoire.withNestedFolders} />
+        );
+
+        const closableFolder = screen.getByRole('generic', {
+            name: /child closed folder$/i,
+        });
+        // open the first child folder
+        await user.click(closableFolder.firstElementChild as HTMLElement);
+
+        const newFolderButton = within(closableFolder).getAllByRole('button', {
+            name: /new folder/i,
+        })[0];
+        await user.click(newFolderButton);
+        await user.click(closableFolder);
+
+        expect(closableFolder).toHaveAccessibleName(/child open folder$/i);
+    });
+
     it('Adds new folder when new folder name submitted', async () => {
         const user = userEvent.setup();
         render(<RepertoirePage repertoire={helpers.repertoire.empty} />);
@@ -199,6 +236,28 @@ describe('New folder/line buttons', () => {
         expect(
             screen.queryAllByRole('generic', { name: /folder$/i })
         ).toHaveLength(displayedFolderCount);
+    });
+
+    it('Auto-opens closed folder when new folder is added', async () => {
+        const user = userEvent.setup();
+        render(
+            <RepertoirePage repertoire={helpers.repertoire.withFolderInWhite} />
+        );
+
+        const closedFolder = screen.getByRole('generic', {
+            name: /closed folder$/i,
+        });
+        const newFolderButton = within(closedFolder).getByRole('button', {
+            name: /new folder/i,
+        });
+        await user.click(newFolderButton);
+        const newFolderNameInput = within(closedFolder).getByRole('textbox', {
+            name: /name/i,
+        });
+        await user.type(newFolderNameInput, 'another new folder name');
+        await user.keyboard('[Enter]');
+
+        expect(closedFolder).toHaveAccessibleName(/open folder$/i);
     });
 
     it('Adds new empty line (with standard starting FEN) when new line button clicked', async () => {

@@ -5,6 +5,7 @@ import type {
     RepertoireFolderID,
     RepertoireWithMethods,
 } from '@/types/repertoire';
+import styles from './repertoire.module.css';
 
 type FolderProps = {
     id: RepertoireFolderID;
@@ -16,13 +17,18 @@ const STANDARD_STARTING_FEN =
     'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1';
 
 export function Folder({ id, lines, folders }: FolderProps) {
+    const folder = folders[id];
     const isBaseFolder = id === 'w' || id === 'b';
 
     const [isOpen, setIsOpen] = useState(isBaseFolder);
     const [isNewFolderFormShowing, setIsNewFolderFormShowing] = useState(false);
 
     function toggleFolderOpen(e: MouseEvent) {
-        if (isBaseFolder || (e.target as HTMLElement).tagName === 'BUTTON') {
+        if (
+            isBaseFolder ||
+            isNewFolderFormShowing ||
+            (e.target as HTMLElement).tagName === 'BUTTON'
+        ) {
             return;
         }
         setIsOpen(!isOpen);
@@ -42,12 +48,14 @@ export function Folder({ id, lines, folders }: FolderProps) {
         setIsOpen(true);
     }
 
-    const folder = folders[id];
-
     return (
-        <div aria-label={`${folder.name} folder`}>
-            <div onClick={toggleFolderOpen}>
+        <div
+            className={styles.folder}
+            aria-label={`${folder.name} ${isOpen ? 'open' : 'closed'} folder`}
+        >
+            <div className={styles.heading} onClick={toggleFolderOpen}>
                 <h2>{folder.name}</h2>
+
                 {!isNewFolderFormShowing && (
                     <div>
                         {folders[id].contains !== 'folders' && (
@@ -73,7 +81,7 @@ export function Folder({ id, lines, folders }: FolderProps) {
 
             {/* https://developer.mozilla.org/en-US/docs/Web/CSS/list-style#accessibility
                 list-style: none removes list accessibility role in Safari */}
-            <ul role="list">
+            <ul role="list" className={styles.contents}>
                 {isOpen &&
                     folder.children.map((childId) => (
                         <li key={childId}>
