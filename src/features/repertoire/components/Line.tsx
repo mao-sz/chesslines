@@ -1,13 +1,25 @@
-import { useState } from 'react';
+import { type FormEvent, useState } from 'react';
+import type { UUID } from '@/types/utility';
+import type { RepertoireWithMethods } from '@/types/repertoire';
 
-type LineProps = { loadedStartingFEN: string; loadedPGN: string };
+type LineProps = {
+    id: UUID;
+    lines: RepertoireWithMethods['lines'];
+    loadedStartingFEN: string;
+    loadedPGN: string;
+};
 
-export function Line({ loadedStartingFEN, loadedPGN }: LineProps) {
+export function Line({ id, lines, loadedStartingFEN, loadedPGN }: LineProps) {
     const [startingFEN, setStartingFEN] = useState(loadedStartingFEN);
     const [PGN, setPGN] = useState(loadedPGN);
 
+    function saveLine(e: FormEvent) {
+        e.preventDefault();
+        lines.updateLine(id, startingFEN, PGN);
+    }
+
     return (
-        <form>
+        <form onSubmit={saveLine}>
             <label>
                 Starting FEN:
                 <input
@@ -25,6 +37,7 @@ export function Line({ loadedStartingFEN, loadedPGN }: LineProps) {
                     onInput={(e) => setPGN(e.currentTarget.value)}
                 />
             </label>
+            <button aria-label="save line">Save</button>
         </form>
     );
 }

@@ -1,23 +1,9 @@
 import type { Colour } from '@/types/chessboard';
-import type { RepertoireFolderID } from '@/types/repertoire';
 import type { StateSetter } from '@/types/utility';
 
-type TabsProps = {
-    currentTab: Colour;
-    setCurrentTab: StateSetter<Colour>;
-    setCurrentFolder: StateSetter<RepertoireFolderID>;
-};
+type TabsProps = { currentTab: Colour; setCurrentTab: StateSetter<Colour> };
 
-export function Tabs({
-    currentTab,
-    setCurrentTab,
-    setCurrentFolder,
-}: TabsProps) {
-    function changeTab(colour: Colour) {
-        setCurrentTab(colour);
-        setCurrentFolder(colour);
-    }
-
+export function Tabs({ currentTab, setCurrentTab }: TabsProps) {
     return (
         <div role="tablist">
             <button
@@ -25,7 +11,7 @@ export function Tabs({
                 role="tab"
                 aria-label="white repertoire"
                 aria-selected={currentTab === 'w'}
-                onClick={() => changeTab('w')}
+                onClick={() => setCurrentTab('w')}
             >
                 White
             </button>
@@ -34,7 +20,7 @@ export function Tabs({
                 role="tab"
                 aria-label="black repertoire"
                 aria-selected={currentTab === 'b'}
-                onClick={() => changeTab('b')}
+                onClick={() => setCurrentTab('b')}
             >
                 Black
             </button>

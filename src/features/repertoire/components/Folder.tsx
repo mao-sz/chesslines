@@ -1,5 +1,6 @@
+import { type FormEvent, MouseEvent, useState } from 'react';
 import { Line } from './Line';
-import type { StateSetter } from '@/types/utility';
+import { NewFolderForm } from './NewFolderForm';
 import type {
     RepertoireFolderID,
     RepertoireWithMethods,
@@ -7,51 +8,88 @@ import type {
 
 type FolderProps = {
     id: RepertoireFolderID;
-    folders: RepertoireWithMethods['folders'];
     lines: RepertoireWithMethods['lines'];
-    isCurrentFolder: boolean;
-    setCurrentFolder: StateSetter<RepertoireFolderID>;
+    folders: RepertoireWithMethods['folders'];
 };
 
-export function Folder({
-    id,
-    folders,
-    lines,
-    isCurrentFolder,
-    setCurrentFolder,
-}: FolderProps) {
+const STANDARD_STARTING_FEN =
+    'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1';
+
+export function Folder({ id, lines, folders }: FolderProps) {
+    const isBaseFolder = id === 'w' || id === 'b';
+
+    const [isOpen, setIsOpen] = useState(isBaseFolder);
+    const [isNewFolderFormShowing, setIsNewFolderFormShowing] = useState(false);
+
+    function toggleFolderOpen(e: MouseEvent) {
+        if (isBaseFolder || (e.target as HTMLElement).tagName === 'BUTTON') {
+            return;
+        }
+        setIsOpen(!isOpen);
+    }
+
+    function createFolder(e: FormEvent) {
+        e.preventDefault();
+        const form = e.currentTarget as HTMLFormElement;
+        const input = form.elements[0] as HTMLInputElement;
+        folders.create(input.value, id);
+        setIsNewFolderFormShowing(false);
+    }
+
+    function createLine() {
+        lines.create(STANDARD_STARTING_FEN, '', id);
+    }
+
     const folder = folders[id];
 
     return (
         <div aria-label={`${folder.name} folder`}>
-            <h2>{folder.name}</h2>
+            <div onClick={toggleFolderOpen}>
+                <h2>{folder.name}</h2>
+                {isOpen && !isNewFolderFormShowing && (
+                    <div>
+                        {folders[id].contains !== 'lines' && (
+                            <button
+                                onClick={() => setIsNewFolderFormShowing(true)}
+                            >
+                                New folder
+                            </button>
+                        )}
+                        {folders[id].contains !== 'folders' && (
+                            <button onClick={createLine}>New line</button>
+                        )}
+                    </div>
+                )}
+            </div>
+
+            {isNewFolderFormShowing && (
+                <NewFolderForm createFolder={createFolder} />
+            )}
 
             {/* https://developer.mozilla.org/en-US/docs/Web/CSS/list-style#accessibility
                 list-style: none removes list accessibility role in Safari */}
             <ul role="list">
-                {isCurrentFolder &&
-                    folder.children.map((id) =>
-                        folder.contains === 'folders' ? (
-                            <li key={id}>
+                {isOpen &&
+                    folder.children.map((childId) => (
+                        <li key={childId}>
+                            {folder.contains === 'folders' ? (
                                 <Folder
-                                    id={id}
+                                    id={childId}
+                                    lines={lines}
                                     folders={folders}
-                                    lines={lines}
-                                    isCurrentFolder={false}
-                                    setCurrentFolder={setCurrentFolder}
                                 />
-                            </li>
-                        ) : (
-                            <li key={id}>
+                            ) : (
                                 <Line
-                                    id={id}
+                                    id={childId}
                                     lines={lines}
-                                    loadedStartingFEN={lines[id].startingFEN}
-                                    loadedPGN={lines[id].PGN}
+                                    loadedStartingFEN={
+                                        lines[childId].startingFEN
+                                    }
+                                    loadedPGN={lines[childId].PGN}
                                 />
-                            </li>
-                        )
-                    )}
+                            )}
+                        </li>
+                    ))}
             </ul>
         </div>
     );

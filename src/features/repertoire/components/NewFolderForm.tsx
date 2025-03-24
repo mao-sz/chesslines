@@ -1,4 +1,8 @@
-export function NewFolderForm({ createFolder }) {
+import type { FormEvent } from 'react';
+
+type NewFolderFormProps = { createFolder: (e: FormEvent) => void };
+
+export function NewFolderForm({ createFolder }: NewFolderFormProps) {
     return (
         <form aria-label="new folder" onSubmit={createFolder}>
             <label>
