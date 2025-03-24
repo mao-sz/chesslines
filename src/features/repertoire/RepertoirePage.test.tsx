@@ -302,3 +302,114 @@ describe('New folder/line buttons', () => {
         expect(newLineButton).toBeInTheDocument();
     });
 });
+
+describe('Renaming folder', () => {
+    it('Does not show rename button for tab base folder', () => {
+        render(<RepertoirePage repertoire={helpers.repertoire.empty} />);
+
+        expect(
+            screen.queryByRole('button', { name: /rename folder/i })
+        ).not.toBeInTheDocument();
+    });
+
+    it('Does not render rename form by default', () => {
+        render(
+            <RepertoirePage repertoire={helpers.repertoire.withNestedFolders} />
+        );
+
+        expect(
+            screen.queryByRole('form', { name: /rename folder/i })
+        ).not.toBeInTheDocument();
+    });
+
+    it('Shows rename form when edit button clicked', async () => {
+        const user = userEvent.setup();
+        render(
+            <RepertoirePage repertoire={helpers.repertoire.withFolderInWhite} />
+        );
+
+        const renameButton = screen.getByRole('button', {
+            name: /rename folder/i,
+        });
+        await user.click(renameButton);
+
+        expect(
+            screen.getByRole('form', { name: /rename folder/i })
+        ).toBeInTheDocument();
+    });
+
+    it('Renames folder when rename form submitted', async () => {
+        const oldFolderName = Object.values(
+            helpers.repertoire.withFolderInWhite.folders
+        ).find(({ name }) => name !== 'White' && name !== 'Black');
+
+        const user = userEvent.setup();
+        render(
+            <RepertoirePage repertoire={helpers.repertoire.withFolderInWhite} />
+        );
+
+        const renameButton = screen.getByRole('button', {
+            name: /rename folder/i,
+        });
+        await user.click(renameButton);
+
+        const renameInput = screen.getByRole('textbox', { name: /name/i });
+        await user.type(renameInput, 'renamed folder');
+        await user.keyboard('[Enter]');
+
+        expect(
+            screen.getByRole('generic', { name: /^renamed folder/i })
+        ).toBeInTheDocument();
+        expect(
+            screen.queryByRole('generic', { name: `${oldFolderName}` })
+        ).not.toBeInTheDocument();
+    });
+
+    it('Prevents closing folder while rename form present', async () => {
+        const user = userEvent.setup();
+        render(
+            <RepertoirePage repertoire={helpers.repertoire.withFolderInWhite} />
+        );
+
+        const closableFolder = screen.getByRole('generic', {
+            name: /child closed folder$/i,
+        });
+        // open the first child folder
+        await user.click(closableFolder.firstElementChild as HTMLElement);
+
+        const renameButton = within(closableFolder).getAllByRole('button', {
+            name: /new folder/i,
+        })[0];
+        await user.click(renameButton);
+        await user.click(closableFolder);
+
+        expect(closableFolder).toHaveAccessibleName(/child open folder$/i);
+    });
+
+    it('Does not render new folder/line buttons when rename form present', async () => {
+        const user = userEvent.setup();
+        render(
+            <RepertoirePage repertoire={helpers.repertoire.withFolderInWhite} />
+        );
+
+        const renamableFolder = screen.getByRole('generic', {
+            name: /closed folder$/i,
+        });
+
+        const renameButton = within(renamableFolder).getByRole('button', {
+            name: /rename folder/i,
+        });
+        await user.click(renameButton);
+
+        expect(
+            within(renamableFolder).queryByRole('button', {
+                name: /^new folder$/i,
+            })
+        ).not.toBeInTheDocument();
+        expect(
+            within(renamableFolder).queryByRole('button', {
+                name: /^new line$/i,
+            })
+        ).not.toBeInTheDocument();
+    });
+});

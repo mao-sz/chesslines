@@ -1,6 +1,6 @@
 import { type FormEvent, MouseEvent, useState } from 'react';
 import { Line } from './Line';
-import { NewFolderForm } from './NewFolderForm';
+import { FolderNameForm } from './FolderNameForm';
 import type {
     RepertoireFolderID,
     RepertoireWithMethods,
@@ -21,12 +21,14 @@ export function Folder({ id, lines, folders }: FolderProps) {
     const isBaseFolder = id === 'w' || id === 'b';
 
     const [isOpen, setIsOpen] = useState(isBaseFolder);
-    const [isNewFolderFormShowing, setIsNewFolderFormShowing] = useState(false);
+    const [isRenaming, setIsRenaming] = useState(false);
+    const [isCreatingNewFolder, setIsCreatingNewFolder] = useState(false);
 
     function toggleFolderOpen(e: MouseEvent) {
         if (
             isBaseFolder ||
-            isNewFolderFormShowing ||
+            isCreatingNewFolder ||
+            isRenaming ||
             (e.target as HTMLElement).tagName === 'BUTTON'
         ) {
             return;
@@ -39,7 +41,7 @@ export function Folder({ id, lines, folders }: FolderProps) {
         const form = e.currentTarget as HTMLFormElement;
         const input = form.elements[0] as HTMLInputElement;
         folders.create(input.value, id);
-        setIsNewFolderFormShowing(false);
+        setIsCreatingNewFolder(false);
         setIsOpen(true);
     }
 
@@ -48,22 +50,50 @@ export function Folder({ id, lines, folders }: FolderProps) {
         setIsOpen(true);
     }
 
+    function updateFolderName(e: FormEvent) {
+        e.preventDefault();
+        const form = e.currentTarget as HTMLFormElement;
+        const input = form.elements[0] as HTMLInputElement;
+        folders.updateName(id, input.value);
+        setIsRenaming(false);
+    }
+
     return (
         <div
             className={styles.folder}
             aria-label={`${folder.name} ${isOpen ? 'open' : 'closed'} folder`}
         >
             <div className={styles.heading} onClick={toggleFolderOpen}>
-                <h2>{folder.name}</h2>
+                {isRenaming ? (
+                    <FolderNameForm
+                        ariaLabel="rename folder"
+                        handleSubmit={updateFolderName}
+                        submitText={['✓', 'Set new folder name']}
+                        cancelText={['×', 'Cancel folder rename']}
+                        discardForm={() => setIsRenaming(false)}
+                    />
+                ) : (
+                    <>
+                        <h2>{folder.name}</h2>
+                        {!isBaseFolder && (
+                            <button
+                                aria-label="rename folder"
+                                onClick={() => setIsRenaming(true)}
+                            >
+                                🖉
+                            </button>
+                        )}
+                    </>
+                )}
 
-                {!isNewFolderFormShowing && (
+                {!isCreatingNewFolder && !isRenaming && (
                     <div>
                         {folders[id].contains !== 'folders' && (
                             <button onClick={createLine}>New line</button>
                         )}
                         {folders[id].contains !== 'lines' && (
                             <button
-                                onClick={() => setIsNewFolderFormShowing(true)}
+                                onClick={() => setIsCreatingNewFolder(true)}
                             >
                                 New folder
                             </button>
@@ -72,10 +102,13 @@ export function Folder({ id, lines, folders }: FolderProps) {
                 )}
             </div>
 
-            {isNewFolderFormShowing && (
-                <NewFolderForm
-                    createFolder={createFolder}
-                    discardForm={() => setIsNewFolderFormShowing(false)}
+            {isCreatingNewFolder && (
+                <FolderNameForm
+                    ariaLabel="new folder"
+                    handleSubmit={createFolder}
+                    submitText={['Create folder', '']}
+                    cancelText={['Cancel', '']}
+                    discardForm={() => setIsCreatingNewFolder(false)}
                 />
             )}
 
@@ -95,10 +128,8 @@ export function Folder({ id, lines, folders }: FolderProps) {
                                 <Line
                                     id={childId}
                                     lines={lines}
-                                    loadedStartingFEN={
-                                        lines[childId].startingFEN
-                                    }
-                                    loadedPGN={lines[childId].PGN}
+                                    startingFEN={lines[childId].startingFEN}
+                                    PGN={lines[childId].PGN}
                                 />
                             )}
                         </li>

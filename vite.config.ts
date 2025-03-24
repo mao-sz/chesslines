@@ -6,5 +6,9 @@ import tsconfigPaths from 'vite-tsconfig-paths';
 // https://vite.dev/config/
 export default defineConfig({
     plugins: [tsconfigPaths(), react()],
-    test: { environment: 'jsdom', setupFiles: './src/testing/setup.ts' },
+    test: {
+        environment: 'jsdom',
+        setupFiles: './src/testing/setup.ts',
+        reporters: 'dot',
+    },
 });
