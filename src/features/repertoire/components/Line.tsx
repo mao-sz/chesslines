@@ -1,32 +1,37 @@
-import { type FormEvent, useState } from 'react';
+import type { FormEvent } from 'react';
 import type { UUID } from '@/types/utility';
 import type { RepertoireWithMethods } from '@/types/repertoire';
 
 type LineProps = {
     id: UUID;
     lines: RepertoireWithMethods['lines'];
-    loadedStartingFEN: string;
-    loadedPGN: string;
+    startingFEN: string;
+    PGN: string;
 };
 
-export function Line({ id, lines, loadedStartingFEN, loadedPGN }: LineProps) {
-    const [startingFEN, setStartingFEN] = useState(loadedStartingFEN);
-    const [PGN, setPGN] = useState(loadedPGN);
+export function Line({ id, lines, startingFEN, PGN }: LineProps) {
+    function updateLineDetails(field: 'FEN' | 'PGN') {
+        return (e: FormEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+            const newFEN =
+                field === 'FEN' ? e.currentTarget.value : startingFEN;
+            const newPGN = field === 'PGN' ? e.currentTarget.value : PGN;
+            lines.updateLine(id, newFEN, newPGN);
+        };
+    }
 
-    function saveLine(e: FormEvent) {
-        e.preventDefault();
-        lines.updateLine(id, startingFEN, PGN);
+    function deleteLine() {
+        lines.delete(id);
     }
 
     return (
-        <form onSubmit={saveLine}>
+        <>
             <label>
                 Starting FEN:
                 <input
                     type="text"
                     name="startingFEN"
                     value={startingFEN}
-                    onInput={(e) => setStartingFEN(e.currentTarget.value)}
+                    onInput={updateLineDetails('FEN')}
                 />
             </label>
             <label>
@@ -34,10 +39,12 @@ export function Line({ id, lines, loadedStartingFEN, loadedPGN }: LineProps) {
                 <textarea
                     name="PGN"
                     value={PGN}
-                    onInput={(e) => setPGN(e.currentTarget.value)}
+                    onInput={updateLineDetails('PGN')}
                 />
             </label>
-            <button aria-label="save line">Save</button>
-        </form>
+            <button type="button" onClick={deleteLine}>
+                Delete
+            </button>
+        </>
     );
 }
