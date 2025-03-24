@@ -34,10 +34,12 @@ export function Folder({ id, lines, folders }: FolderProps) {
         const input = form.elements[0] as HTMLInputElement;
         folders.create(input.value, id);
         setIsNewFolderFormShowing(false);
+        setIsOpen(true);
     }
 
     function createLine() {
         lines.create(STANDARD_STARTING_FEN, '', id);
+        setIsOpen(true);
     }
 
     const folder = folders[id];
@@ -46,17 +48,17 @@ export function Folder({ id, lines, folders }: FolderProps) {
         <div aria-label={`${folder.name} folder`}>
             <div onClick={toggleFolderOpen}>
                 <h2>{folder.name}</h2>
-                {isOpen && !isNewFolderFormShowing && (
+                {!isNewFolderFormShowing && (
                     <div>
+                        {folders[id].contains !== 'folders' && (
+                            <button onClick={createLine}>New line</button>
+                        )}
                         {folders[id].contains !== 'lines' && (
                             <button
                                 onClick={() => setIsNewFolderFormShowing(true)}
                             >
                                 New folder
                             </button>
-                        )}
-                        {folders[id].contains !== 'folders' && (
-                            <button onClick={createLine}>New line</button>
                         )}
                     </div>
                 )}
