@@ -164,20 +164,43 @@ describe('New folder/line buttons', () => {
         expect(newFolderNameInput).not.toBeInTheDocument();
     });
 
+    it('Discards new folder name form without submitting and renders new folder button when cancel button clicked', async () => {
+        const user = userEvent.setup();
+        render(<RepertoirePage repertoire={helpers.repertoire.empty} />);
+
+        const displayedFolderCount = screen.queryAllByRole('generic', {
+            name: /folder$/i,
+        }).length;
+
+        const newFolderButton = screen.getByRole('button', {
+            name: /new folder/i,
+        });
+        await user.click(newFolderButton);
+
+        const cancelButton = screen.getByRole('button', { name: /cancel/i });
+        await user.click(cancelButton);
+
+        // not the same ref as newFolderButton
+        expect(
+            screen.getByRole('button', { name: /new folder/i })
+        ).toBeInTheDocument();
+        expect(
+            screen.queryAllByRole('generic', { name: /folder$/i })
+        ).toHaveLength(displayedFolderCount);
+    });
+
     it('Adds new empty line (with standard starting FEN) when new line button clicked', async () => {
         const user = userEvent.setup();
         render(<RepertoirePage repertoire={helpers.repertoire.empty} />);
 
-        const lineCount = screen.queryAllByRole('textbox', {
-            name: /starting fen/i,
-        }).length;
+        const lineCount = screen.queryAllByLabelText(/starting fen/i).length;
 
         const newLineButton = screen.getByRole('button', { name: /new line/i });
         await user.click(newLineButton);
 
-        expect(
-            screen.getAllByRole('textbox', { name: /starting fen/i })
-        ).toHaveLength(lineCount + 1);
+        expect(screen.queryAllByLabelText(/starting fen/i)).toHaveLength(
+            lineCount + 1
+        );
     });
 
     it('Keeps new line button rendered after clicking it', async () => {

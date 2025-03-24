@@ -63,7 +63,10 @@ export function Folder({ id, lines, folders }: FolderProps) {
             </div>
 
             {isNewFolderFormShowing && (
-                <NewFolderForm createFolder={createFolder} />
+                <NewFolderForm
+                    createFolder={createFolder}
+                    discardForm={() => setIsNewFolderFormShowing(false)}
+                />
             )}
 
             {/* https://developer.mozilla.org/en-US/docs/Web/CSS/list-style#accessibility
