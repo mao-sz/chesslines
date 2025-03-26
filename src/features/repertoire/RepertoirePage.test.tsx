@@ -30,22 +30,6 @@ describe('Initial elements', () => {
             screen.queryByRole('tabpanel', { name: /black repertoire/i })
         ).not.toBeInTheDocument();
     });
-
-    it("Prevents closing a tab's base folder", async () => {
-        const user = userEvent.setup();
-        render(
-            <RepertoirePage repertoire={helpers.repertoire.withFolderInWhite} />
-        );
-        const baseFolder = screen.getByRole('generic', {
-            name: /white open folder/i,
-        });
-        await user.click(baseFolder);
-
-        expect(baseFolder).toHaveAccessibleName(/white open folder/i);
-        expect(
-            within(baseFolder).getByRole('generic', { name: /closed folder$/i })
-        ).toBeInTheDocument();
-    });
 });
 
 describe('Switching repertoire tabs', () => {
@@ -74,19 +58,16 @@ describe('Switching repertoire tabs', () => {
     });
 });
 
-describe('New folder/line buttons', () => {
-    it("Renders both 'new' buttons when folder is empty", () => {
+describe('New folder button', () => {
+    it("Renders 'new folder' button when folder is empty", () => {
         render(<RepertoirePage repertoire={helpers.repertoire.empty} />);
 
         expect(
             screen.getByRole('button', { name: /new folder/i })
         ).toBeInTheDocument();
-        expect(
-            screen.getByRole('button', { name: /new line/i })
-        ).toBeInTheDocument();
     });
 
-    it("Renders only 'new folder' button when folder contains folders", () => {
+    it("Renders 'new folder' button when folder contains folders", () => {
         render(
             <RepertoirePage repertoire={helpers.repertoire.withFolderInWhite} />
         );
@@ -103,24 +84,21 @@ describe('New folder/line buttons', () => {
         ).not.toBeInTheDocument();
     });
 
-    it("Renders only 'new line' button when folder contains lines", () => {
+    it("Does not render 'new folder' button for a folder containing lines", () => {
         render(
             <RepertoirePage repertoire={helpers.repertoire.withLineInWhite} />
         );
 
         const whiteFolder = screen.getByRole('generic', {
-            name: /white open folder/i,
+            name: /white.+folder/i,
         }).firstElementChild as HTMLElement;
 
         expect(
             within(whiteFolder).queryByRole('button', { name: /new folder/i })
         ).not.toBeInTheDocument();
-        expect(
-            within(whiteFolder).getByRole('button', { name: /new line/i })
-        ).toBeInTheDocument();
     });
 
-    it("Does not render any form for 'new folder' or 'new line' if respective button not clicked", () => {
+    it("Does not render any form for 'new folder' if button not clicked", () => {
         render(<RepertoirePage repertoire={helpers.repertoire.empty} />);
 
         expect(
@@ -128,7 +106,7 @@ describe('New folder/line buttons', () => {
         ).not.toBeInTheDocument();
     });
 
-    it("Replaces 'new *' button(s) with new folder name form when new folder button clicked", async () => {
+    it('Removes new folder button when new folder button clicked and form appears', async () => {
         const user = userEvent.setup();
         render(<RepertoirePage repertoire={helpers.repertoire.empty} />);
 
@@ -192,7 +170,7 @@ describe('New folder/line buttons', () => {
         render(<RepertoirePage repertoire={helpers.repertoire.empty} />);
 
         const whiteFolder = screen.getByRole('generic', {
-            name: /white open folder/i,
+            name: /white.*folder/i,
         }).firstElementChild as HTMLElement;
 
         const newFolderButton = screen.getByRole('button', {
@@ -259,59 +237,9 @@ describe('New folder/line buttons', () => {
 
         expect(closedFolder).toHaveAccessibleName(/open folder$/i);
     });
-
-    it('Adds new empty line (with standard starting FEN) when new line button clicked', async () => {
-        const user = userEvent.setup();
-        render(<RepertoirePage repertoire={helpers.repertoire.empty} />);
-
-        const lineCount = screen.queryAllByLabelText(/starting fen/i).length;
-
-        const newLineButton = screen.getByRole('button', { name: /new line/i });
-        await user.click(newLineButton);
-
-        expect(screen.queryAllByLabelText(/starting fen/i)).toHaveLength(
-            lineCount + 1
-        );
-    });
-
-    it('Auto-opens closed folder when new line is added', async () => {
-        const user = userEvent.setup();
-        render(
-            <RepertoirePage repertoire={helpers.repertoire.withFolderInWhite} />
-        );
-
-        const closedFolder = screen.getByRole('generic', {
-            name: /closed folder$/i,
-        });
-
-        const newLineButton = within(closedFolder).getByRole('button', {
-            name: /new line/i,
-        });
-        await user.click(newLineButton);
-
-        expect(closedFolder).toHaveAccessibleName(/open folder$/i);
-    });
-
-    it('Keeps new line button rendered after clicking it', async () => {
-        const user = userEvent.setup();
-        render(<RepertoirePage repertoire={helpers.repertoire.empty} />);
-
-        const newLineButton = screen.getByRole('button', { name: /new line/i });
-        await user.click(newLineButton);
-
-        expect(newLineButton).toBeInTheDocument();
-    });
 });
 
 describe('Renaming folder', () => {
-    it('Does not show rename button for tab base folder', () => {
-        render(<RepertoirePage repertoire={helpers.repertoire.empty} />);
-
-        expect(
-            screen.queryByRole('button', { name: /rename folder/i })
-        ).not.toBeInTheDocument();
-    });
-
     it('Does not render rename form by default', () => {
         render(
             <RepertoirePage repertoire={helpers.repertoire.withNestedFolders} />
@@ -324,9 +252,7 @@ describe('Renaming folder', () => {
 
     it('Shows rename form when edit button clicked', async () => {
         const user = userEvent.setup();
-        render(
-            <RepertoirePage repertoire={helpers.repertoire.withFolderInWhite} />
-        );
+        render(<RepertoirePage repertoire={helpers.repertoire.empty} />);
 
         const renameButton = screen.getByRole('button', {
             name: /rename folder/i,
@@ -339,15 +265,10 @@ describe('Renaming folder', () => {
     });
 
     it('Renames folder when rename form submitted', async () => {
-        const oldFolderName = Object.values(
-            helpers.repertoire.withFolderInWhite.folders
-        ).find(({ name }) => name !== 'White' && name !== 'Black');
-
         const user = userEvent.setup();
-        render(
-            <RepertoirePage repertoire={helpers.repertoire.withFolderInWhite} />
-        );
+        render(<RepertoirePage repertoire={helpers.repertoire.empty} />);
 
+        const oldFolderName = helpers.repertoire.empty.folders.w;
         const renameButton = screen.getByRole('button', {
             name: /rename folder/i,
         });
@@ -372,21 +293,19 @@ describe('Renaming folder', () => {
         );
 
         const closableFolder = screen.getByRole('generic', {
-            name: /child closed folder$/i,
+            name: /white open folder$/i,
         });
-        // open the first child folder
-        await user.click(closableFolder.firstElementChild as HTMLElement);
 
         const renameButton = within(closableFolder).getAllByRole('button', {
-            name: /new folder/i,
+            name: /rename folder/i,
         })[0];
         await user.click(renameButton);
         await user.click(closableFolder);
 
-        expect(closableFolder).toHaveAccessibleName(/child open folder$/i);
+        expect(closableFolder).toHaveAccessibleName(/white open folder$/i);
     });
 
-    it('Does not render new folder/line buttons when rename form present', async () => {
+    it('Does not render new folder button when rename form present', async () => {
         const user = userEvent.setup();
         render(
             <RepertoirePage repertoire={helpers.repertoire.withFolderInWhite} />
@@ -406,9 +325,26 @@ describe('Renaming folder', () => {
                 name: /^new folder$/i,
             })
         ).not.toBeInTheDocument();
+    });
+
+    it('Does not render delete folder button when rename form present', async () => {
+        const user = userEvent.setup();
+        render(
+            <RepertoirePage repertoire={helpers.repertoire.withFolderInWhite} />
+        );
+
+        const renamableFolder = screen.getByRole('generic', {
+            name: /closed folder$/i,
+        });
+
+        const renameButton = within(renamableFolder).getByRole('button', {
+            name: /rename folder/i,
+        });
+        await user.click(renameButton);
+
         expect(
             within(renamableFolder).queryByRole('button', {
-                name: /^new line$/i,
+                name: /^delete folder$/i,
             })
         ).not.toBeInTheDocument();
     });
