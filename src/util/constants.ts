@@ -1,3 +1,1 @@
-export const TICK = '✓';
-export const CROSS = '×';
-export const PENCIL = '🖉';
+export const CHARS = { TICK: '✓', CROSS: '×', PENCIL: '🖉' } as const;
