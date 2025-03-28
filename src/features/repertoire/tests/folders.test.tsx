@@ -129,8 +129,7 @@ describe('New folder button', () => {
         const newFolderNameInput = screen.getByRole('textbox', {
             name: /name/i,
         });
-        await user.type(newFolderNameInput, 'new folder name');
-        await user.keyboard('[Enter]');
+        await user.type(newFolderNameInput, 'new folder name[Enter]');
 
         expect(
             screen.getByRole('heading', { name: /new folder name/i })
@@ -153,8 +152,7 @@ describe('New folder button', () => {
         const newFolderNameInput = screen.getByRole('textbox', {
             name: /name/i,
         });
-        await user.type(newFolderNameInput, 'new folder name');
-        await user.keyboard('[Enter]');
+        await user.type(newFolderNameInput, 'new folder name[Enter]');
 
         // not the same ref as newFolderButton
         expect(
@@ -204,8 +202,7 @@ describe('New folder button', () => {
         const newFolderNameInput = within(closedFolder).getByRole('textbox', {
             name: /name/i,
         });
-        await user.type(newFolderNameInput, 'another new folder name');
-        await user.keyboard('[Enter]');
+        await user.type(newFolderNameInput, 'another new folder name[Enter]');
 
         expect(closedFolder).toHaveAccessibleName(/open folder$/i);
     });
@@ -247,8 +244,7 @@ describe('Renaming folder', () => {
         await user.click(renameButton);
 
         const renameInput = screen.getByRole('textbox', { name: /name/i });
-        await user.type(renameInput, 'renamed folder');
-        await user.keyboard('[Enter]');
+        await user.type(renameInput, 'renamed folder[Enter]');
 
         expect(
             screen.getByRole('generic', { name: /^renamed folder/i })

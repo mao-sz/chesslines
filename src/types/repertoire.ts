@@ -40,6 +40,6 @@ export type RepertoireWithMethods = {
             idToMove: UUID,
             newParentId: RepertoireFolderID
         ) => void;
-        delete: (id: RepertoireFolderID) => boolean;
+        delete: (id: UUID) => void;
     };
 };
