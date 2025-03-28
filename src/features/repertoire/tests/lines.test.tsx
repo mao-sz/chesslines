@@ -125,7 +125,7 @@ describe('Line editor', () => {
         const lineItem = lineList.firstElementChild as HTMLLIElement;
         await user.click(lineItem);
 
-        const lineEditor = await screen.findByRole('dialog');
+        const lineEditor = screen.getByRole('dialog');
         const line = helpers.repertoire.withLineInWhite.lines[UUIDS.lines[0]];
 
         expect(lineEditor).toBeInTheDocument();
@@ -144,7 +144,7 @@ describe('Line editor', () => {
         const newLineButton = screen.getByRole('button', { name: /new line/i });
         await user.click(newLineButton);
 
-        const lineEditor = await screen.findByRole('dialog');
+        const lineEditor = screen.getByRole('dialog');
         const startingFENInput = within(lineEditor).getByRole('textbox', {
             name: /starting FEN/i,
         }) as HTMLInputElement;
@@ -168,7 +168,7 @@ describe('Line editor', () => {
         const lineItem = lineList.firstElementChild as HTMLLIElement;
         await user.click(lineItem);
 
-        const lineEditor = await screen.findByRole('dialog');
+        const lineEditor = screen.getByRole('dialog');
         const FENInput = within(lineEditor).getByRole('textbox', {
             name: /starting fen/i,
         });
@@ -211,7 +211,7 @@ describe('Line editor', () => {
         const newLineButton = screen.getByRole('button', { name: /new line/i });
         await user.click(newLineButton);
 
-        const lineEditor = await screen.findByRole('dialog');
+        const lineEditor = screen.getByRole('dialog');
         const FENInput = within(lineEditor).getByRole('textbox', {
             name: /starting fen/i,
         });
@@ -241,5 +241,25 @@ describe('Line editor', () => {
             screen.getByText(new RegExp(`^PGN: ${newPGN}$`, 'i'))
         ).toBeInTheDocument();
         expect(screen.getAllByRole('listitem')).toHaveLength(2);
+    });
+
+    it('Can open a new editor dialog after closing the previous one', async () => {
+        const user = userEvent.setup();
+        await openLineFolderInPanel(user);
+
+        const lineList = screen.getByRole('list', { name: /lines/i });
+        const lineItem = lineList.firstElementChild as HTMLLIElement;
+        await user.click(lineItem);
+
+        const lineEditor = screen.getByRole('dialog');
+        const closeEditorButton = within(lineEditor).getByRole('button', {
+            name: /close line editor/i,
+        });
+        await user.click(closeEditorButton);
+
+        expect(lineEditor).not.toBeInTheDocument();
+
+        await user.click(lineItem);
+        expect(screen.getByRole('dialog')).toBeInTheDocument();
     });
 });

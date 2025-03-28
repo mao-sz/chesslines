@@ -4,6 +4,7 @@ import type {
     RepertoireFolderID,
     RepertoireWithMethods,
 } from '@/types/repertoire';
+import { CHARS } from '@/util/constants';
 
 type LineEditorProps = {
     id: UUID | 'new';
@@ -22,11 +23,7 @@ export function LineEditor({
     const line = id === 'new' ? null : lines[id];
 
     useEffect(() => {
-        // Ensure object ref does not change by the time the cleanup runs
-        const dialog = dialogRef.current;
-        dialog?.showModal();
-
-        return () => dialog?.close();
+        dialogRef.current?.showModal();
     }, []);
 
     function saveLine(e: FormEvent) {
@@ -45,8 +42,8 @@ export function LineEditor({
     }
 
     return (
-        <dialog ref={dialogRef}>
-            <form onSubmit={saveLine}>
+        <dialog ref={dialogRef} onClose={closeEditor}>
+            <form method="dialog" onSubmit={saveLine}>
                 <label>
                     Starting FEN{' '}
                     <input
@@ -57,8 +54,15 @@ export function LineEditor({
                 <label>
                     PGN <textarea name="PGN" defaultValue={line?.PGN} />
                 </label>
-                <button>Save</button>
+                <button type="submit">Save</button>
             </form>
+            <button
+                type="button"
+                aria-label="close line editor"
+                onClick={() => dialogRef.current?.close()}
+            >
+                {CHARS.CROSS}
+            </button>
         </dialog>
     );
 }
