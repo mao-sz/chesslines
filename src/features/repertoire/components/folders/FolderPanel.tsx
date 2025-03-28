@@ -30,6 +30,8 @@ export function FolderPanel({
                 aria-labelledby={currentTab === 'w' ? 'white-tab' : 'black-tab'}
             >
                 <Folder
+                    // key prevents retaining isOpen state when switching tabs
+                    key={currentTab}
                     id={currentTab}
                     folders={folders}
                     currentLinesFolder={currentLinesFolder}

@@ -43,7 +43,7 @@ export function Folder({
             (e.target as HTMLElement).tagName !== 'BUTTON'
         ) {
             setIsOpen(!isOpen);
-        } else if (folder.contains === 'lines') {
+        } else if (folder.contains !== 'folders') {
             setCurrentLinesFolder(id);
         }
     }
