@@ -74,7 +74,10 @@ export function Folder({
             className={styles.folder}
             aria-label={`${folder.name} ${isOpen || id === currentLinesFolder ? 'open' : 'closed'} folder`}
         >
-            <div className={styles.heading} onClick={handleClickOnFolder}>
+            <div
+                className={`${styles.heading} ${isBaseFolder ? styles.base : ''}`}
+                onClick={handleClickOnFolder}
+            >
                 {isRenaming ? (
                     <FolderNameForm
                         ariaLabel="rename folder"

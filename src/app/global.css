@@ -3,10 +3,13 @@
 
     &[data-theme='dark'] {
         --bg-dark: #0f0f16;
-        --bg-mid: #1818278d;
-        --bg-light: #595a758a;
+        --bg-mid-dark: #242433;
+        --bg-mid-light: #2d2d3f;
+        --bg-light: #3c3d50;
+        --text-normal: #cccccc;
+        --text-faint: #888888;
 
-        color: #cccccc;
+        color: var(--text-normal);
     }
 }
 
@@ -36,14 +39,14 @@ ul {
 
 .listItem {
     border-radius: 4px;
-    background-color: var(--bg-mid);
+    background-color: var(--bg-mid-dark);
     padding: 12px;
     margin-block: 6px;
     position: relative;
     transition: 120ms;
 
     &:hover {
-        background-color: var(--bg-light);
+        background-color: var(--bg-mid-light);
         cursor: pointer;
     }
 }

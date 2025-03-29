@@ -1,10 +1,25 @@
 .panel {
+    --border-radius: 8px;
+
     flex: 2;
-    background-color: var(--bg-light);
+    display: flex;
+    flex-direction: column;
 }
 
 .folders {
     padding: 6px;
+    background-color: var(--bg-light);
+    flex: 1;
+    border-bottom-left-radius: var(--border-radius);
+    border-bottom-right-radius: var(--border-radius);
+}
+
+.tabs:has(#whiteTab[aria-selected='true']) + .folders {
+    border-top-right-radius: var(--border-radius);
+}
+
+.tabs:has(#blackTab[aria-selected='true']) + .folders {
+    border-top-left-radius: var(--border-radius);
 }
 
 .heading {
@@ -16,6 +31,10 @@
     & > button:first-of-type {
         margin-inline-end: auto;
     }
+
+    &.base {
+        margin-top: 0;
+    }
 }
 
 .contents {
@@ -23,4 +42,56 @@
     list-style: none;
     display: flex;
     flex-direction: column-reverse;
+}
+
+.tabs {
+    display: flex;
+    background-color: var(--bg-dark);
+}
+
+.tab {
+    flex: 1;
+    background-color: var(--bg-light);
+    border-top-left-radius: var(--border-radius);
+    border-top-right-radius: var(--border-radius);
+    font-size: 1.5rem;
+    padding: 8px;
+    position: relative;
+
+    &[aria-selected='false'] {
+        background-color: var(--bg-dark);
+
+        &:hover {
+            text-decoration: underline;
+            text-underline-offset: 6px;
+            /* text-decoration-color: var(--text-normal); */
+        }
+    }
+
+    &[aria-selected='true'] {
+        cursor: auto;
+        z-index: 1;
+
+        &::before {
+            --size: calc(2 * var(--border-radius));
+
+            content: '';
+            position: absolute;
+            height: var(--size);
+            width: var(--size);
+            bottom: 0;
+        }
+    }
+}
+
+#whiteTab[aria-selected='true']::before {
+    border-bottom-left-radius: var(--border-radius);
+    box-shadow: calc(-1 * var(--border-radius)) 0 0 0 var(--bg-light);
+    right: calc(-1 * var(--size));
+}
+
+#blackTab[aria-selected='true']::before {
+    border-bottom-right-radius: var(--border-radius);
+    box-shadow: var(--border-radius) 0 0 0 var(--bg-light);
+    left: calc(-1 * var(--size));
 }

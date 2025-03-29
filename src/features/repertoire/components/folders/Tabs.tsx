@@ -1,13 +1,15 @@
 import type { Colour } from '@/types/chessboard';
 import type { StateSetter } from '@/types/utility';
+import styles from './folders.module.css';
 
 type TabsProps = { currentTab: Colour; setCurrentTab: StateSetter<Colour> };
 
 export function Tabs({ currentTab, setCurrentTab }: TabsProps) {
     return (
-        <div role="tablist">
+        <div className={styles.tabs} role="tablist">
             <button
-                id="white-tab"
+                id={styles.whiteTab}
+                className={styles.tab}
                 role="tab"
                 aria-label="white repertoire"
                 aria-selected={currentTab === 'w'}
@@ -16,7 +18,8 @@ export function Tabs({ currentTab, setCurrentTab }: TabsProps) {
                 White
             </button>
             <button
-                id="black-tab"
+                id={styles.blackTab}
+                className={styles.tab}
                 role="tab"
                 aria-label="black repertoire"
                 aria-selected={currentTab === 'b'}
