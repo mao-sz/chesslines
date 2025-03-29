@@ -1,0 +1,17 @@
+.main {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 36px;
+    width: 90vw;
+    max-width: 1600px;
+    padding: 36px;
+
+    @media (min-width: 560px) {
+        flex-direction: row;
+    }
+
+    & > * {
+        border-radius: 12px;
+    }
+}

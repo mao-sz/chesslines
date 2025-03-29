@@ -2,9 +2,10 @@ import { useState } from 'react';
 import { useRepertoire } from '@/hooks/useRepertoire';
 import { FolderPanel } from './components/folders/FolderPanel';
 import { LinePanel } from './components/lines/LinePanel';
+import { LineEditor } from './components/lines/LineEditor';
 import type { UUID } from '@/types/utility';
 import type { Repertoire, RepertoireFolderID } from '@/types/repertoire';
-import { LineEditor } from './components/lines/LineEditor';
+import styles from './page.module.css';
 
 type RepertoirePageProps = { repertoire: Repertoire };
 
@@ -17,7 +18,7 @@ export function RepertoirePage({ repertoire }: RepertoirePageProps) {
     );
 
     return (
-        <main>
+        <main className={styles.main}>
             <FolderPanel
                 folders={folders}
                 currentLinesFolder={currentLinesFolder}

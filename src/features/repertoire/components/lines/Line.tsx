@@ -1,7 +1,8 @@
 import { CHARS, STANDARD_STARTING_FEN } from '@/util/constants';
+import type { MouseEvent } from 'react';
 import type { UUID } from '@/types/utility';
 import type { RepertoireWithMethods } from '@/types/repertoire';
-import { MouseEvent } from 'react';
+import styles from './lines.module.css';
 
 type LineProps = {
     id: UUID;
@@ -27,7 +28,7 @@ export function Line({ id, lines, openLine }: LineProps) {
     }
 
     return (
-        <li onClick={editLine}>
+        <li className={styles.line} onClick={editLine}>
             <p>Starting FEN: {displayFEN}</p>
             <p>PGN: {PGN}</p>
 

@@ -4,6 +4,7 @@ import type {
     RepertoireFolderID,
     RepertoireWithMethods,
 } from '@/types/repertoire';
+import styles from './lines.module.css';
 
 type LinePanelProps = {
     currentLinesFolderId: RepertoireFolderID | null;
@@ -28,9 +29,13 @@ export function LinePanel({
     );
 
     return currentFolder?.contains === 'lines' ? (
-        <section aria-labelledby="lines-folder-name">
-            <h2 id="lines-folder-name">{currentFolder.name}</h2>
-            <ul aria-label="lines">
+        <section className={styles.panel} aria-labelledby="lines-folder-name">
+            <div className={styles.heading}>
+                <h2 id="lines-folder-name">{currentFolder.name}</h2>
+                {newLineButton}
+            </div>
+
+            <ul className={styles.lines} aria-label="lines">
                 {currentFolder.children.map((id) => (
                     <Line
                         key={id}
@@ -40,17 +45,20 @@ export function LinePanel({
                     />
                 ))}
             </ul>
-            {newLineButton}
         </section>
     ) : (
-        <section aria-label="empty line panel">
+        <section
+            className={`${styles.panel} ${styles.empty}`}
+            aria-label="empty line panel"
+        >
             {currentFolder && (
-                <h2 id="lines-folder-name">{currentFolder.name}</h2>
+                <div className={styles.heading}>
+                    <h2 id="lines-folder-name">{currentFolder.name}</h2>
+                    {currentFolder?.contains === 'either' && newLineButton}
+                </div>
             )}
 
             <p>No lines to show</p>
-
-            {currentFolder?.contains === 'either' && newLineButton}
         </section>
     );
 }

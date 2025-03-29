@@ -7,6 +7,7 @@ import type {
     RepertoireFolderID,
     RepertoireWithMethods,
 } from '@/types/repertoire';
+import styles from './folders.module.css';
 
 type FolderPanelProps = {
     folders: RepertoireWithMethods['folders'];
@@ -22,10 +23,11 @@ export function FolderPanel({
     const [currentTab, setCurrentTab] = useState<Colour>('w');
 
     return (
-        <div>
+        <div className={styles.panel}>
             <Tabs currentTab={currentTab} setCurrentTab={setCurrentTab} />
 
             <div
+                className={styles.folders}
                 role="tabpanel"
                 aria-labelledby={currentTab === 'w' ? 'white-tab' : 'black-tab'}
             >

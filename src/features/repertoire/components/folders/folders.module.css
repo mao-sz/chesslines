@@ -1,0 +1,26 @@
+.panel {
+    flex: 2;
+    background-color: var(--bg-light);
+}
+
+.folders {
+    padding: 6px;
+}
+
+.heading {
+    composes: listItem from global;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+
+    & > button:first-of-type {
+        margin-inline-end: auto;
+    }
+}
+
+.contents {
+    padding-inline-start: 12px;
+    list-style: none;
+    display: flex;
+    flex-direction: column-reverse;
+}
