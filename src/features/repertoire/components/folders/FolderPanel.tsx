@@ -29,10 +29,12 @@ export function FolderPanel({
             <div
                 className={styles.folders}
                 role="tabpanel"
-                aria-labelledby={currentTab === 'w' ? 'white-tab' : 'black-tab'}
+                aria-labelledby={
+                    currentTab === 'w' ? styles.whiteTab : styles.blackTab
+                }
             >
                 <Folder
-                    // key prevents retaining isOpen state when switching tabs
+                    // key prevents sharing stale isOpen state when switching tabs
                     key={currentTab}
                     id={currentTab}
                     folders={folders}

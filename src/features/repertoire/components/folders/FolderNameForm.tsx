@@ -1,7 +1,9 @@
+import { TextInput } from '@/components/TextInput';
 import type { FormEvent } from 'react';
 
 type FolderNameFormProps = {
     ariaLabel: string;
+    defaultValue?: string;
     handleSubmit: (e: FormEvent) => void;
     submitText: [string, string];
     cancelText: [string, string];
@@ -10,6 +12,7 @@ type FolderNameFormProps = {
 
 export function FolderNameForm({
     ariaLabel,
+    defaultValue = '',
     handleSubmit,
     submitText: [submitButtonText, submitButtonAriaLabel],
     cancelText: [cancelButtonText, cancelButtonAriaLabel],
@@ -17,9 +20,12 @@ export function FolderNameForm({
 }: FolderNameFormProps) {
     return (
         <form aria-label={ariaLabel} onSubmit={handleSubmit}>
-            <label>
-                Name (required): <input type="text" name="name" />
-            </label>
+            <TextInput
+                name="name"
+                defaultValue={defaultValue}
+                isRequired={true}
+                labelText="Name"
+            />
             <button
                 type="submit"
                 aria-label={submitButtonAriaLabel || submitButtonText}

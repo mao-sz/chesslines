@@ -244,7 +244,10 @@ describe('Renaming folder', () => {
         await user.click(renameButton);
 
         const renameInput = screen.getByRole('textbox', { name: /name/i });
-        await user.type(renameInput, 'renamed folder[Enter]');
+        await user.type(
+            renameInput,
+            '{Control>}A{/Control}[Backspace]renamed folder[Enter]'
+        );
 
         expect(
             screen.getByRole('generic', { name: /^renamed folder/i })

@@ -44,6 +44,7 @@ export function Folder({
         ) {
             setIsOpen(!isOpen);
         } else if (folder.contains !== 'folders') {
+            // opens lines folder in lines panel
             setCurrentLinesFolder(id);
         }
     }
@@ -81,6 +82,7 @@ export function Folder({
                 {isRenaming ? (
                     <FolderNameForm
                         ariaLabel="rename folder"
+                        defaultValue={folder.name}
                         handleSubmit={updateFolderName}
                         submitText={[CHARS.TICK, 'Set new folder name']}
                         cancelText={[CHARS.CROSS, 'Cancel folder rename']}
