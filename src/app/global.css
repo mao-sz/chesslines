@@ -1,42 +1,3 @@
-:root {
-    box-sizing: border-box;
-
-    &[data-theme='dark'] {
-        --bg-dark: #0f0f16;
-        --bg-mid-dark: #242433;
-        --bg-mid-light: #2d2d3f;
-        --bg-light: #3c3d50;
-        --text-normal: #cccccc;
-        --text-faint: #888888;
-
-        color: var(--text-normal);
-    }
-}
-
-body {
-    margin: 0;
-}
-
-#root {
-    background-color: var(--bg-dark);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    min-height: 100svh;
-}
-
-main {
-    flex: 1;
-}
-
-:is(h1, h2, h3, h4, h5, h6) {
-    margin: 0;
-}
-
-ul {
-    margin-block: 6px;
-}
-
 .listItem {
     border-radius: 4px;
     background-color: var(--bg-mid-dark);
@@ -48,12 +9,36 @@ ul {
     &:hover {
         background-color: var(--bg-mid-light);
         cursor: pointer;
+
+        & label {
+            background-color: var(--bg-mid-light);
+        }
     }
 }
 
-button {
-    background-color: transparent;
-    color: inherit;
-    border: none;
-    cursor: pointer;
+.textInput {
+    position: relative;
+
+    & > input {
+        background-color: transparent;
+        border: 1px solid var(--bg-light);
+        padding: 10px;
+        width: 100%;
+    }
+
+    & > label {
+        background-color: var(--bg-mid-dark);
+        left: 5px;
+        padding-inline: 3px;
+        pointer-events: none;
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        transition: 120ms;
+    }
+
+    & > input:focus ~ label,
+    & > input:not(:placeholder-shown) ~ label {
+        top: 0;
+    }
 }

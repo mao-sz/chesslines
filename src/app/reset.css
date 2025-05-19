@@ -1,0 +1,52 @@
+:root {
+    font-family: system-ui;
+
+    &[data-theme='dark'] {
+        --bg-dark: #0f0f16;
+        --bg-mid-dark: #242433;
+        --bg-mid-light: #2d2d3f;
+        --bg-light: #3c3d50;
+        --text-normal: #cccccc;
+        --text-faint: #888888;
+
+        color: var(--text-normal);
+    }
+}
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+}
+
+#root {
+    background-color: var(--bg-dark);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-height: 100svh;
+}
+
+main {
+    flex: 1;
+}
+
+:is(h1, h2, h3, h4, h5, h6) {
+    margin: 0;
+}
+
+:is(button, input) {
+    color: inherit;
+}
+
+ul {
+    margin-block: 6px;
+}
+
+button {
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+}
