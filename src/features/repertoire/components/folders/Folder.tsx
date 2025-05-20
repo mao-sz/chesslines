@@ -7,6 +7,7 @@ import type {
     RepertoireWithMethods,
 } from '@/types/repertoire';
 import styles from './folders.module.css';
+import { FolderName } from './FolderName';
 
 type FolderProps = {
     id: RepertoireFolderID;
@@ -79,26 +80,14 @@ export function Folder({
                 className={`${styles.heading} ${isBaseFolder ? styles.base : ''}`}
                 onClick={handleClickOnFolder}
             >
-                {isRenaming ? (
-                    <FolderNameForm
-                        ariaLabel="rename folder"
-                        defaultValue={folder.name}
-                        handleSubmit={updateFolderName}
-                        submitText={[CHARS.TICK, 'Set new folder name']}
-                        cancelText={[CHARS.CROSS, 'Cancel folder rename']}
-                        discardForm={() => setIsRenaming(false)}
-                    />
-                ) : (
-                    <>
-                        <h2>{folder.name}</h2>
-                        <button
-                            aria-label="rename folder"
-                            onClick={() => setIsRenaming(true)}
-                        >
-                            {CHARS.PENCIL}
-                        </button>
-                    </>
-                )}
+                <FolderName
+                    name={folder.name}
+                    isCollapseArrowShowing={canBeToggledOpen}
+                    isFolderOpen={isOpen}
+                    isRenaming={isRenaming}
+                    setIsRenaming={setIsRenaming}
+                    updateFolderName={updateFolderName}
+                />
 
                 {showingNewFolderButton && (
                     <button onClick={() => setIsCreatingNewFolder(true)}>
