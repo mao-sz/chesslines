@@ -95,3 +95,12 @@
     box-shadow: var(--border-radius) 0 0 0 var(--bg-light);
     left: calc(-1 * var(--size));
 }
+
+.form {
+    display: flex;
+    align-items: center;
+
+    & > :first-child {
+        margin-inline-end: 1rem;
+    }
+}

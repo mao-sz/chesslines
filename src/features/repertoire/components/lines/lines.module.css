@@ -30,4 +30,13 @@
 
 .line {
     composes: listItem from global;
+    display: flex;
+
+    & > :first-child {
+        flex: 1;
+    }
+
+    & > button {
+        align-self: flex-start;
+    }
 }

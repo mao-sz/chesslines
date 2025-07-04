@@ -15,7 +15,12 @@ export function IconButton({
     onClick,
 }: IconButtonProps) {
     return (
-        <button type={type} aria-label={ariaLabel} onClick={onClick}>
+        <button
+            className="iconButton"
+            type={type}
+            aria-label={ariaLabel}
+            onClick={onClick}
+        >
             <i className={icon}></i>
         </button>
     );

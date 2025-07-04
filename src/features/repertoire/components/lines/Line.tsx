@@ -30,10 +30,13 @@ export function Line({ id, lines, openLine }: LineProps) {
 
     return (
         <li className={styles.line} onClick={editLine}>
-            <p>Starting FEN: {displayFEN}</p>
-            <p>PGN: {PGN}</p>
+            <div>
+                <p>Starting FEN: {displayFEN}</p>
+                <p>PGN: {PGN}</p>
+            </div>
 
             <IconButton
+                type="button"
                 icon={ICONS.BIN}
                 ariaLabel="delete line"
                 onClick={deleteLine}

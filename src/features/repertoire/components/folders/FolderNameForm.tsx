@@ -1,7 +1,8 @@
 import { TextInput } from '@/components/TextInput';
+import { IconButton } from '@/components/IconButton';
 import type { FormEvent } from 'react';
 import type { FontAwesomeIcon } from '@/types/utility';
-import { IconButton } from '@/components/IconButton';
+import styles from './folders.module.css';
 
 type FolderNameFormProps = {
     ariaLabel: string;
@@ -21,7 +22,11 @@ export function FolderNameForm({
     discardForm,
 }: FolderNameFormProps) {
     return (
-        <form aria-label={ariaLabel} onSubmit={handleSubmit}>
+        <form
+            className={styles.form}
+            aria-label={ariaLabel}
+            onSubmit={handleSubmit}
+        >
             <TextInput
                 name="name"
                 defaultValue={defaultValue}
