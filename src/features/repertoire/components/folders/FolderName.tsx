@@ -1,7 +1,8 @@
 import { FolderNameForm } from './FolderNameForm';
-import { CHARS } from '@/util/constants';
+import { ICONS } from '@/util/constants';
 import type { FormEvent } from 'react';
 import type { StateSetter } from '@/types/utility';
+import { IconButton } from '@/components/IconButton';
 
 type FolderNameProps = {
     name: string;
@@ -25,26 +26,22 @@ export function FolderName({
             ariaLabel="rename folder"
             defaultValue={name}
             handleSubmit={updateFolderName}
-            submitText={[CHARS.TICK, 'Set new folder name']}
-            cancelText={[CHARS.CROSS, 'Cancel folder rename']}
+            submit={{ icon: ICONS.TICK, text: 'Set new folder name' }}
+            cancel={{ icon: ICONS.CROSS, text: 'Cancel folder rename' }}
             discardForm={() => setIsRenaming(false)}
         />
     ) : (
         <>
             {isCollapseArrowShowing && (
-                <CollapseArrow isFolderOpen={isFolderOpen} />
+                <i className={isFolderOpen ? ICONS.OPENED : ICONS.CLOSED}></i>
             )}
             <h2>{name}</h2>
-            <button
-                aria-label="rename folder"
+            <IconButton
+                type="button"
+                icon={ICONS.PENCIL}
+                ariaLabel="rename folder"
                 onClick={() => setIsRenaming(true)}
-            >
-                {CHARS.PENCIL}
-            </button>
+            />
         </>
     );
-}
-
-function CollapseArrow({ isFolderOpen }: { isFolderOpen: boolean }) {
-    return isFolderOpen ? CHARS.OPEN : CHARS.CLOSED;
 }

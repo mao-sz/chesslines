@@ -1,8 +1,9 @@
-import { CHARS, STANDARD_STARTING_FEN } from '@/util/constants';
+import { ICONS, STANDARD_STARTING_FEN } from '@/util/constants';
 import type { MouseEvent } from 'react';
 import type { UUID } from '@/types/utility';
 import type { RepertoireWithMethods } from '@/types/repertoire';
 import styles from './lines.module.css';
+import { IconButton } from '@/components/IconButton';
 
 type LineProps = {
     id: UUID;
@@ -32,9 +33,11 @@ export function Line({ id, lines, openLine }: LineProps) {
             <p>Starting FEN: {displayFEN}</p>
             <p>PGN: {PGN}</p>
 
-            <button type="button" aria-label="delete line" onClick={deleteLine}>
-                {CHARS.CROSS}
-            </button>
+            <IconButton
+                icon={ICONS.BIN}
+                ariaLabel="delete line"
+                onClick={deleteLine}
+            />
         </li>
     );
 }

@@ -5,6 +5,8 @@ import type {
     RepertoireWithMethods,
 } from '@/types/repertoire';
 import styles from './lines.module.css';
+import { IconButton } from '@/components/IconButton';
+import { ICONS } from '@/util/constants';
 
 type LinePanelProps = {
     currentLinesFolderId: RepertoireFolderID | null;
@@ -23,9 +25,12 @@ export function LinePanel({
         : null;
 
     const newLineButton = (
-        <button aria-label="new line" onClick={() => setCurrentOpenLine('new')}>
-            +
-        </button>
+        <IconButton
+            type="button"
+            icon={ICONS.PLUS}
+            ariaLabel="new line"
+            onClick={() => setCurrentOpenLine('new')}
+        />
     );
 
     return currentFolder?.contains === 'lines' ? (

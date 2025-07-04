@@ -1,6 +1,6 @@
 import { type FormEvent, MouseEvent, useState } from 'react';
 import { FolderNameForm } from './FolderNameForm';
-import { CHARS } from '@/util/constants';
+import { ICONS } from '@/util/constants';
 import type { StateSetter } from '@/types/utility';
 import type {
     RepertoireFolderID,
@@ -8,6 +8,7 @@ import type {
 } from '@/types/repertoire';
 import styles from './folders.module.css';
 import { FolderName } from './FolderName';
+import { IconButton } from '@/components/IconButton';
 
 type FolderProps = {
     id: RepertoireFolderID;
@@ -90,15 +91,21 @@ export function Folder({
                 />
 
                 {showingNewFolderButton && (
-                    <button onClick={() => setIsCreatingNewFolder(true)}>
-                        New folder
-                    </button>
+                    <IconButton
+                        type="button"
+                        icon={ICONS.NEW_FOLDER}
+                        ariaLabel="new folder"
+                        onClick={() => setIsCreatingNewFolder(true)}
+                    />
                 )}
 
                 {showingDeleteButton && (
-                    <button aria-label="delete folder" onClick={deleteFolder}>
-                        {CHARS.CROSS}
-                    </button>
+                    <IconButton
+                        type="button"
+                        icon={ICONS.BIN}
+                        ariaLabel="delete folder"
+                        onClick={deleteFolder}
+                    />
                 )}
             </div>
 
@@ -106,8 +113,8 @@ export function Folder({
                 <FolderNameForm
                     ariaLabel="new folder"
                     handleSubmit={createFolder}
-                    submitText={['Create folder', '']}
-                    cancelText={['Cancel', '']}
+                    submit={{ icon: ICONS.TICK, text: 'Create folder' }}
+                    cancel={{ icon: ICONS.CROSS, text: 'Cancel' }}
                     discardForm={() => setIsCreatingNewFolder(false)}
                 />
             )}

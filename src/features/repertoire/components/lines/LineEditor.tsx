@@ -1,10 +1,10 @@
 import { type FormEvent, useEffect, useRef } from 'react';
+import { ICONS } from '@/util/constants';
 import type { UUID } from '@/types/utility';
 import type {
     RepertoireFolderID,
     RepertoireWithMethods,
 } from '@/types/repertoire';
-import { CHARS } from '@/util/constants';
 
 type LineEditorProps = {
     id: UUID | 'new';
@@ -61,7 +61,7 @@ export function LineEditor({
                 aria-label="close line editor"
                 onClick={() => dialogRef.current?.close()}
             >
-                {CHARS.CROSS}
+                {ICONS.CROSS}
             </button>
         </dialog>
     );

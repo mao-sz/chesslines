@@ -1,12 +1,14 @@
 import { TextInput } from '@/components/TextInput';
 import type { FormEvent } from 'react';
+import type { FontAwesomeIcon } from '@/types/utility';
+import { IconButton } from '@/components/IconButton';
 
 type FolderNameFormProps = {
     ariaLabel: string;
     defaultValue?: string;
     handleSubmit: (e: FormEvent) => void;
-    submitText: [string, string];
-    cancelText: [string, string];
+    submit: { icon: FontAwesomeIcon; text: string };
+    cancel: { icon: FontAwesomeIcon; text: string };
     discardForm: () => void;
 };
 
@@ -14,8 +16,8 @@ export function FolderNameForm({
     ariaLabel,
     defaultValue = '',
     handleSubmit,
-    submitText: [submitButtonText, submitButtonAriaLabel],
-    cancelText: [cancelButtonText, cancelButtonAriaLabel],
+    submit,
+    cancel,
     discardForm,
 }: FolderNameFormProps) {
     return (
@@ -26,19 +28,17 @@ export function FolderNameForm({
                 isRequired={true}
                 labelText="Name"
             />
-            <button
+            <IconButton
                 type="submit"
-                aria-label={submitButtonAriaLabel || submitButtonText}
-            >
-                {submitButtonText}
-            </button>
-            <button
+                icon={submit.icon}
+                ariaLabel={submit.text}
+            />
+            <IconButton
                 type="button"
-                aria-label={cancelButtonAriaLabel || cancelButtonText}
+                icon={cancel.icon}
+                ariaLabel={cancel.text}
                 onClick={discardForm}
-            >
-                {cancelButtonText}
-            </button>
+            />
         </form>
     );
 }
