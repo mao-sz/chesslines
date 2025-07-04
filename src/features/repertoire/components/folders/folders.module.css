@@ -22,6 +22,10 @@
     border-top-left-radius: var(--border-radius);
 }
 
+.folder {
+    --list-item-indent: 12px;
+}
+
 .heading {
     composes: listItem from global;
     display: flex;
@@ -38,7 +42,7 @@
 }
 
 .contents {
-    padding-inline-start: 12px;
+    padding-inline-start: var(--list-item-indent);
     list-style: none;
     display: flex;
     flex-direction: column-reverse;
@@ -64,7 +68,7 @@
         &:hover {
             text-decoration: underline;
             text-underline-offset: 6px;
-            /* text-decoration-color: var(--text-normal); */
+            text-decoration-color: var(--text-normal);
         }
     }
 
@@ -103,4 +107,8 @@
     & > :first-child {
         margin-inline-end: 1rem;
     }
+}
+
+.newFolder {
+    margin-inline-start: var(--list-item-indent);
 }

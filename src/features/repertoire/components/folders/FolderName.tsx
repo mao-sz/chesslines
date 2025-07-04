@@ -6,8 +6,6 @@ import { IconButton } from '@/components/IconButton';
 
 type FolderNameProps = {
     name: string;
-    isCollapseArrowShowing: boolean;
-    isFolderOpen: boolean;
     isRenaming: boolean;
     setIsRenaming: StateSetter<boolean>;
     updateFolderName: (e: FormEvent) => void;
@@ -15,8 +13,6 @@ type FolderNameProps = {
 
 export function FolderName({
     name,
-    isCollapseArrowShowing,
-    isFolderOpen,
     isRenaming,
     setIsRenaming,
     updateFolderName,
@@ -32,9 +28,6 @@ export function FolderName({
         />
     ) : (
         <>
-            {isCollapseArrowShowing && (
-                <i className={isFolderOpen ? ICONS.OPENED : ICONS.CLOSED}></i>
-            )}
             <h2>{name}</h2>
             <IconButton
                 type="button"

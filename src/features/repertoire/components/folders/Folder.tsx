@@ -36,19 +36,27 @@ export function Folder({
         folder.contains !== 'lines' && !isCreatingNewFolder && !isRenaming;
     const showingDeleteButton =
         !isRenaming && !isBaseFolder && !folder.children.length;
-    const canBeToggledOpen =
-        folder.contains === 'folders' && !isCreatingNewFolder && !isRenaming;
 
     function handleClickOnFolder(e: MouseEvent) {
-        if (
-            canBeToggledOpen &&
-            (e.target as HTMLElement).tagName !== 'BUTTON'
-        ) {
+        const eventTarget = e.target as HTMLElement;
+        const canBeToggledOpen =
+            folder.contains === 'folders' &&
+            !isCreatingNewFolder &&
+            !isRenaming;
+        const clickingOpenableFolderItself =
+            canBeToggledOpen && !eventTarget.closest('.iconButton');
+
+        if (clickingOpenableFolderItself) {
             setIsOpen(!isOpen);
         } else if (folder.contains !== 'folders') {
             // opens lines folder in lines panel
             setCurrentLinesFolder(id);
         }
+    }
+
+    function showNewFolderForm() {
+        setIsCreatingNewFolder(true);
+        // setIsOpen(isOpen);
     }
 
     function createFolder(e: FormEvent) {
@@ -81,10 +89,12 @@ export function Folder({
                 className={`${styles.heading} ${isBaseFolder ? styles.base : ''}`}
                 onClick={handleClickOnFolder}
             >
+                {folder.contains === 'folders' && (
+                    <i className={isOpen ? ICONS.OPENED : ICONS.CLOSED}></i>
+                )}
+
                 <FolderName
                     name={folder.name}
-                    isCollapseArrowShowing={canBeToggledOpen}
-                    isFolderOpen={isOpen}
                     isRenaming={isRenaming}
                     setIsRenaming={setIsRenaming}
                     updateFolderName={updateFolderName}
@@ -95,7 +105,7 @@ export function Folder({
                         type="button"
                         icon={ICONS.NEW_FOLDER}
                         ariaLabel="new folder"
-                        onClick={() => setIsCreatingNewFolder(true)}
+                        onClick={showNewFolderForm}
                     />
                 )}
 
@@ -110,13 +120,15 @@ export function Folder({
             </div>
 
             {isCreatingNewFolder && (
-                <FolderNameForm
-                    ariaLabel="new folder"
-                    handleSubmit={createFolder}
-                    submit={{ icon: ICONS.TICK, text: 'Create folder' }}
-                    cancel={{ icon: ICONS.CROSS, text: 'Cancel' }}
-                    discardForm={() => setIsCreatingNewFolder(false)}
-                />
+                <div className={`${styles.heading} ${styles.newFolder}`}>
+                    <FolderNameForm
+                        ariaLabel="new folder"
+                        handleSubmit={createFolder}
+                        submit={{ icon: ICONS.TICK, text: 'Create folder' }}
+                        cancel={{ icon: ICONS.CROSS, text: 'Cancel' }}
+                        discardForm={() => setIsCreatingNewFolder(false)}
+                    />
+                </div>
             )}
 
             {/* https://developer.mozilla.org/en-US/docs/Web/CSS/list-style#accessibility
