@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Chessboard } from './Chessboard';
+import { Chessboard } from '@/components/Chessboard';
 import { useChess } from '@/hooks/useChess';
 import type { Line } from '@/types/chessboard';
 import styles from './trainer.module.css';

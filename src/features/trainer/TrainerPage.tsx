@@ -1,5 +1,5 @@
-import { useShuffledLines } from '@/hooks/useShuffledLines';
 import { Trainer } from './components/Trainer';
+import { useShuffledLines } from '@/hooks/useShuffledLines';
 import type { Line } from '@/types/chessboard';
 
 type TrainerPageProps = { lines: Line[] };

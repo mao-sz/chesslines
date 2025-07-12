@@ -1,5 +1,5 @@
-import { Piece } from './Piece';
 import { type MouseEvent as ReactMouseEvent, useState } from 'react';
+import { Piece } from './Piece';
 import { isSameColour } from '@/util/util';
 import type { Colour } from '@/types/chessboard';
 import styles from './chessboard.module.css';
