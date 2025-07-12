@@ -1,13 +1,13 @@
 import { useState } from 'react';
 import { Chessboard } from '@/components/Chessboard';
-import { useChess } from '@/hooks/useChess';
+import { useTrainerChessboard } from '@/hooks/useTrainerChessboard';
 import type { Line } from '@/types/chessboard';
 import styles from './trainer.module.css';
 
 type TrainerProps = { line: Line };
 
 export function Trainer({ line }: TrainerProps) {
-    const { position, playMove, moveSuccess, lineSuccess } = useChess(line);
+    const { position, playMove, moveSuccess, lineSuccess } = useTrainerChessboard(line);
     const [shouldShowFeedback, setShouldShowFeedback] = useState(false);
 
     // TODO: Style me!

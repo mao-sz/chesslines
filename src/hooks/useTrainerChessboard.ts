@@ -3,7 +3,7 @@ import { useRef, useState } from 'react';
 import { getPosition } from '@/util/util';
 import type { Line, MoveInfo } from '@/types/chessboard';
 
-export function useChess({ pgn, player }: Line) {
+export function useTrainerChessboard({ pgn, player }: Line) {
     const isNewChess = useRef(true);
     const comparison = useRef(new Chess(pgn, { isPGN: true }));
     const finalPosition = useRef(comparison.current.toFEN());
