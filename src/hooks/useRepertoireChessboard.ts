@@ -5,6 +5,9 @@ import { STANDARD_STARTING_FEN } from '@/util/constants';
 import type { MoveInfo } from '@/types/chessboard';
 
 export function useRepertoireChessboard(pgn?: string, startPosition?: string) {
+    if (pgn && startPosition !== STANDARD_STARTING_FEN) {
+        pgn = `$[FEN "${startPosition}"]\n\n${pgn}`;
+    }
     const chessboard = useRef(
         new Chess(pgn, { isPGN: typeof pgn === 'string' })
     );
@@ -17,7 +20,7 @@ export function useRepertoireChessboard(pgn?: string, startPosition?: string) {
         extractActiveColour(chessboard.current.toFEN())
     );
     const [startingFEN, setStartingFEN] = useState(
-        startPosition ?? STANDARD_STARTING_FEN
+        startPosition || STANDARD_STARTING_FEN
     );
 
     function playMove(move: MoveInfo): void {
@@ -73,7 +76,7 @@ export function useRepertoireChessboard(pgn?: string, startPosition?: string) {
         startingFEN: startingFEN,
         currentPGN: chessboard.current.toPGN(),
         moves: {
-            get: chessboard.current.toPGN({ movesOnly: true }),
+            list: chessboard.current.toPGN({ movesOnly: true }),
             play: playMove,
         },
     };
