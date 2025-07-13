@@ -13,6 +13,8 @@ type FolderPanelProps = {
     folders: RepertoireWithMethods['folders'];
     currentLinesFolder: RepertoireFolderID | null;
     setCurrentLinesFolder: StateSetter<RepertoireFolderID | null>;
+    currentTab: Colour;
+    setCurrentTab: StateSetter<Colour>;
 };
 
 export function FolderPanel({

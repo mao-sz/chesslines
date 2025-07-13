@@ -37,3 +37,19 @@ export function isSameColour(
         ? pieceLetter.toUpperCase() === pieceLetter
         : pieceLetter.toLowerCase() === pieceLetter;
 }
+
+export function getMoves(pgnMoves: string): string[] {
+    // https://regexr.com/8c9j5 to test this regex
+    const movesString = pgnMoves.match(/\d+\.+ .+/)?.[0] ?? '';
+    return movesString
+        .split(' ')
+        .filter((move) => !/\.|1-0|0-1|1\/2-1\/2/.test(move))
+        .map((move) =>
+            move.endsWith('#') || move.endsWith('+') ? move.slice(0, -1) : move
+        );
+}
+
+export function extractActiveColour(FEN: string): Colour {
+    const isWhite = FEN.includes('w');
+    return isWhite ? 'w' : 'b';
+}

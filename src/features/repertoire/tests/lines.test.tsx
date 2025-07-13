@@ -3,6 +3,7 @@ import { render, screen, within } from '@testing-library/react';
 import userEvent, { type UserEvent } from '@testing-library/user-event';
 import { RepertoirePage } from '../RepertoirePage';
 import { helpers, UUIDS } from '@/testing/helpers';
+import { STANDARD_STARTING_FEN } from '@/util/constants';
 
 describe('Lines panel', () => {
     it('Opens lines folder in line panel when clicked on', async () => {
@@ -137,7 +138,7 @@ describe('Line editor', () => {
         ).toBeInTheDocument();
     });
 
-    it('Opens line editor with empty FEN/PGN sections when new line button clicked', async () => {
+    it('Opens line editor with default FEN/PGN sections when new line button clicked', async () => {
         const user = userEvent.setup();
         await openLineFolderInPanel(user);
 
@@ -152,7 +153,7 @@ describe('Line editor', () => {
             name: /PGN/i,
         }) as HTMLTextAreaElement;
 
-        expect(startingFENInput).toHaveValue('');
+        expect(startingFENInput).toHaveValue(STANDARD_STARTING_FEN);
         expect(PGNTextarea).toHaveValue('');
     });
 

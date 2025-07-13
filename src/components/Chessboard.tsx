@@ -15,7 +15,7 @@ type ChessboardProps = {
     playerColour: Colour;
     orientation: Colour;
     playMove: (move: MoveInfo) => void;
-    setShouldShowFeedback: StateSetter<boolean>;
+    setShouldShowFeedback?: StateSetter<boolean>;
 };
 
 const RANK = [8, 7, 6, 5, 4, 3, 2, 1, 0];
@@ -55,7 +55,7 @@ export function Chessboard({
 
         // clicking empty square but not moving piece
         if (!selectedSquare && !contains) {
-            setShouldShowFeedback(false);
+            setShouldShowFeedback?.(false);
             return;
         }
 
@@ -65,18 +65,18 @@ export function Chessboard({
         if (selectedSquare && !isOwnPiece && !isSamePiece) {
             playMove({ from: selectedSquare, to: `${file}${rank}` });
             setSelectedSquare(null);
-            setShouldShowFeedback(true);
+            setShouldShowFeedback?.(true);
             return;
         }
 
         setSelectedSquare(isOwnPiece && !isSamePiece ? `${file}${rank}` : null);
-        setShouldShowFeedback(false);
+        setShouldShowFeedback?.(false);
     }
 
     function clearMove(e: MouseEvent): void {
         e.preventDefault();
         setSelectedSquare(null);
-        setShouldShowFeedback(false);
+        setShouldShowFeedback?.(false);
     }
 
     function handlePointerUp(e: ReactPointerEvent) {
@@ -96,7 +96,7 @@ export function Chessboard({
         if (selectedSquare && !isOwnPiece) {
             playMove({ from: selectedSquare, to: `${file}${rank}` });
             setSelectedSquare(null);
-            setShouldShowFeedback(true);
+            setShouldShowFeedback?.(true);
             return;
         }
     }

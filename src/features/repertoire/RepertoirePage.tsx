@@ -5,12 +5,14 @@ import { LinePanel } from './components/lines/LinePanel';
 import { LineEditor } from './components/lines/LineEditor';
 import type { UUID } from '@/types/utility';
 import type { Repertoire, RepertoireFolderID } from '@/types/repertoire';
+import type { Colour } from '@/types/chessboard';
 import styles from './page.module.css';
 
 type RepertoirePageProps = { repertoire: Repertoire };
 
 export function RepertoirePage({ repertoire }: RepertoirePageProps) {
     const { folders, lines } = useRepertoire(repertoire);
+    const [currentTab, setCurrentTab] = useState<Colour>('w');
     const [currentLinesFolder, setCurrentLinesFolder] =
         useState<RepertoireFolderID | null>(null);
     const [currentOpenLine, setCurrentOpenLine] = useState<UUID | 'new' | null>(
@@ -23,6 +25,8 @@ export function RepertoirePage({ repertoire }: RepertoirePageProps) {
                 folders={folders}
                 currentLinesFolder={currentLinesFolder}
                 setCurrentLinesFolder={setCurrentLinesFolder}
+                currentTab={currentTab}
+                setCurrentTab={setCurrentTab}
             />
             <LinePanel
                 currentLinesFolderId={currentLinesFolder}
@@ -36,6 +40,7 @@ export function RepertoirePage({ repertoire }: RepertoirePageProps) {
                     lines={lines}
                     parentFolder={currentLinesFolder}
                     closeEditor={() => setCurrentOpenLine(null)}
+                    currentTab={currentTab}
                 />
             )}
         </main>
