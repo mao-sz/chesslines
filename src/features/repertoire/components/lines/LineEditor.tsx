@@ -9,6 +9,7 @@ import type {
 } from '@/types/repertoire';
 import type { Colour, MoveInfo } from '@/types/chessboard';
 import { IconButton } from '@/components/IconButton';
+import { MoveList } from './MoveList';
 
 type LineEditorProps = {
     id: UUID | 'new';
@@ -72,6 +73,10 @@ export function LineEditor({
                 </label>
                 <button type="submit">Save</button>
             </form>
+            <MoveList
+                moveString={moves.list}
+                highlightedMoveIndex={position.currentIndex}
+            />
             <IconButton
                 type="button"
                 icon={ICONS.CROSS}
