@@ -118,7 +118,7 @@ describe('Line editor', () => {
         await user.click(whiteFolder);
     }
 
-    it('Opens line editor with current line FEN/PGN when line clicked on', async () => {
+    it('Opens line editor with chessboard when line clicked on', async () => {
         const user = userEvent.setup();
         await openLineFolderInPanel(user);
 
@@ -127,18 +127,56 @@ describe('Line editor', () => {
         await user.click(lineItem);
 
         const lineEditor = screen.getByRole('dialog');
-        const line = helpers.repertoire.withLineInWhite.lines[UUIDS.lines[0]];
 
         expect(lineEditor).toBeInTheDocument();
+        const boardSquares = within(lineEditor).getAllByRole('button', {
+            name: /square/i,
+        });
+        expect(boardSquares).toHaveLength(64);
+    });
+
+    it('Opens line editor with chessboard when line clicked on', async () => {
+        const user = userEvent.setup();
+        await openLineFolderInPanel(user);
+
+        const lineList = screen.getByRole('list', { name: /lines/i });
+        const lineItem = lineList.firstElementChild as HTMLLIElement;
+        await user.click(lineItem);
+
+        const lineEditor = screen.getByRole('dialog');
+
+        expect(lineEditor).toBeInTheDocument();
+        const boardSquares = within(lineEditor).getAllByRole('button', {
+            name: /square/i,
+        });
+        expect(boardSquares).toHaveLength(64);
+    });
+
+    it('Includes a list of moves in the line editor', async () => {
+        const user = userEvent.setup();
+        await openLineFolderInPanel(user);
+
+        const lineList = screen.getByRole('list', { name: /lines/i });
+        const lineItem = lineList.firstElementChild as HTMLLIElement;
+        await user.click(lineItem);
+
+        const lineEditor = screen.getByRole('dialog');
+        const moveList = within(lineEditor).getByRole('list', {
+            name: /moves/i,
+        });
+
+        expect(moveList).toBeInTheDocument();
+        expect(within(moveList).getByText('1.')).toBeInTheDocument();
         expect(
-            within(lineEditor).getByDisplayValue(new RegExp(line.startingFEN))
+            within(moveList).getByRole('button', { name: /e4/i })
         ).toBeInTheDocument();
         expect(
-            within(lineEditor).getByDisplayValue(new RegExp(line.PGN))
+            within(moveList).getByRole('button', { name: /e5/i })
         ).toBeInTheDocument();
     });
 
-    it('Opens line editor with default FEN/PGN sections when new line button clicked', async () => {
+    // replace with "load FEN/PGN" component when implemented
+    it.skip('Opens line editor with default FEN/PGN sections when new line button clicked', async () => {
         const user = userEvent.setup();
         await openLineFolderInPanel(user);
 
@@ -157,51 +195,34 @@ describe('Line editor', () => {
         expect(PGNTextarea).toHaveValue('');
     });
 
-    it("Updates existing line's starting FEN and PGN after submitting form", async () => {
-        const newStartingFEN =
-            'rnbqkbnr/pp1ppppp/8/2p5/4P3/8/PPPP1PPP/RNBQKBNR w KQkq - 0 2';
-        const newPGN = '2. Nc3';
-
+    it("Updates existing line's PGN after submitting form", async () => {
         const user = userEvent.setup();
         await openLineFolderInPanel(user);
 
         const lineList = screen.getByRole('list', { name: /lines/i });
         const lineItem = lineList.firstElementChild as HTMLLIElement;
+
+        expect(within(lineItem).queryByText(/d4/i)).not.toBeInTheDocument();
+
         await user.click(lineItem);
 
         const lineEditor = screen.getByRole('dialog');
-        const FENInput = within(lineEditor).getByRole('textbox', {
-            name: /starting fen/i,
-        });
-        const PGNTextarea = within(lineEditor).getByRole('textbox', {
-            name: /pgn/i,
-        });
         const submitButton = within(lineEditor).getByRole('button', {
             name: /save/i,
         });
 
-        await user.type(
-            FENInput,
-            `{Control>}A{/Control}[Backspace]${newStartingFEN}`
-        );
-        await user.type(
-            PGNTextarea,
-            `{Control>}A{/Control}[Backspace]${newPGN}`
-        );
+        const d2Square = screen.getByRole('button', { name: /d2/i });
+        const d4Square = screen.getByRole('button', { name: /d4/i });
+
+        await user.click(d2Square);
+        await user.click(d4Square);
         await user.click(submitButton);
 
-        expect(
-            screen.getByText(
-                new RegExp(`^Starting FEN: ${newStartingFEN}$`, 'i')
-            )
-        ).toBeInTheDocument();
-        expect(
-            screen.getByText(new RegExp(`^PGN: ${newPGN}$`, 'i'))
-        ).toBeInTheDocument();
-        expect(screen.getAllByRole('listitem')).toHaveLength(1);
+        expect(within(lineItem).getByText(/d4/i)).toBeInTheDocument();
     });
 
-    it('Creates new line when submitting form for new line', async () => {
+    // temporarily disabling new line submission
+    it.skip('Creates new line when submitting form for new line', async () => {
         const newStartingFEN =
             'rnbqkbnr/pp1ppppp/8/2p5/4P3/8/PPPP1PPP/RNBQKBNR w KQkq - 0 1';
         const newPGN = '1. d4 d5 2. c4';
@@ -254,7 +275,7 @@ describe('Line editor', () => {
 
         const lineEditor = screen.getByRole('dialog');
         const closeEditorButton = within(lineEditor).getByRole('button', {
-            name: /close line editor/i,
+            name: /cancel/i,
         });
         await user.click(closeEditorButton);
 

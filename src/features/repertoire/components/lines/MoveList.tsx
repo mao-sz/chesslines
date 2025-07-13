@@ -5,24 +5,33 @@ type MoveListProps = { moveString: string; highlightedMoveIndex: number };
 export function MoveList({ moveString, highlightedMoveIndex }: MoveListProps) {
     // https://regexr.com/8g0go to test this regex
     const moves = moveString.split(/\s(?=\d)/);
-    let moveIndex = 0;
+    // maps to game history state (where 0 is the starting position)
+    // hence moves are effectively 1-indexed
+    let moveIndex = 1;
 
     return (
-        <ol>
+        <ol aria-label="moves">
             {moves.map((fullMove) => {
                 const [moveNumber, firstMove, secondMove] = fullMove.split(' ');
+                const blackMoveOnly = moveNumber.endsWith('...');
+
                 const white = {
-                    move: secondMove ? firstMove : null,
+                    move: blackMoveOnly ? null : firstMove,
                     index: moveIndex,
                     isHighlighted: moveIndex === highlightedMoveIndex,
                 };
-                moveIndex++;
+                if (white.move) {
+                    moveIndex++;
+                }
+
                 const black = {
-                    move: secondMove ?? firstMove,
+                    move: blackMoveOnly ? firstMove : secondMove,
                     index: moveIndex,
                     isHighlighted: moveIndex === highlightedMoveIndex,
                 };
-                moveIndex++;
+                if (black.move) {
+                    moveIndex++;
+                }
 
                 return (
                     <li key={moveNumber} className={styles.fullMove}>

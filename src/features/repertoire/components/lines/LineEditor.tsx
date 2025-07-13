@@ -36,21 +36,13 @@ export function LineEditor({
         dialogRef.current?.showModal();
     }, []);
 
-    function playMove(move: MoveInfo) {
-        moves.play(move);
-    }
-
     function saveLine(e: FormEvent) {
         e.preventDefault();
-        const form = e.currentTarget as HTMLFormElement;
-
-        const startingFEN = (form.elements[0] as HTMLInputElement).value;
-        const PGN = (form.elements[1] as HTMLTextAreaElement).value;
 
         if (id === 'new') {
-            lines.create(startingFEN, PGN, parentFolder);
+            lines.create(startingFEN, currentPGN, parentFolder);
         } else {
-            lines.updateLine(id, startingFEN, PGN);
+            lines.updateLine(id, startingFEN, currentPGN);
         }
         closeEditor();
     }
@@ -61,28 +53,14 @@ export function LineEditor({
                 position={position.current}
                 playerColour={activeColour}
                 orientation={currentTab}
-                playMove={playMove}
+                playMove={(move: MoveInfo) => moves.play(move)}
             />
-            <form method="dialog" onSubmit={saveLine}>
-                <label>
-                    Starting FEN{' '}
-                    <input name="startingFEN" defaultValue={startingFEN} />
-                </label>
-                <label>
-                    PGN <textarea name="PGN" defaultValue={currentPGN} />
-                </label>
-                <button type="submit">Save</button>
-            </form>
             <MoveList
                 moveString={moves.list}
                 highlightedMoveIndex={position.currentIndex}
             />
-            <IconButton
-                type="button"
-                icon={ICONS.CROSS}
-                ariaLabel="close line editor"
-                onClick={() => dialogRef.current?.close()}
-            />
+            <button onClick={() => dialogRef.current?.close()}>Cancel</button>
+            <button onClick={saveLine}>Save</button>
         </dialog>
     );
 }
