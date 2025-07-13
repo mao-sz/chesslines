@@ -44,7 +44,8 @@ export function Chessboard({
 
     function handleSquareClick(e: ReactPointerEvent): void {
         const square = e.target as HTMLElement;
-        if (square.tagName !== 'BUTTON') {
+        const RIGHT_CLICK = 2;
+        if (square.tagName !== 'BUTTON' || e.button === RIGHT_CLICK) {
             return;
         }
 
