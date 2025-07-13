@@ -13,6 +13,7 @@ import styles from './chessboard.module.css';
 type ChessboardProps = {
     position: string;
     playerColour: Colour;
+    orientation: Colour;
     playMove: (move: MoveInfo) => void;
     setShouldShowFeedback: StateSetter<boolean>;
 };
@@ -23,11 +24,12 @@ const FILE = 'abcdefgh';
 export function Chessboard({
     position,
     playerColour,
+    orientation,
     playMove,
     setShouldShowFeedback,
 }: ChessboardProps) {
     const [selectedSquare, setSelectedSquare] = useState<string | null>(null);
-    const displayPosition = playerColour === 'w' ? position : reverse(position);
+    const displayPosition = orientation === 'w' ? position : reverse(position);
 
     // Clear selectedSquare if dragged and dropped outside of the board
     useEffect(() => {
@@ -115,9 +117,9 @@ export function Chessboard({
                             selectedSquare={selectedSquare}
                             player={playerColour}
                             contains={square}
-                            rank={playerColour === 'w' ? RANK[rank] : rank + 1}
+                            rank={orientation === 'w' ? RANK[rank] : rank + 1}
                             file={
-                                playerColour === 'w'
+                                orientation === 'w'
                                     ? FILE[file]
                                     : reverse(FILE)[file]
                             }

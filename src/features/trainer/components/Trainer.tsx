@@ -16,6 +16,7 @@ export function Trainer({ line }: TrainerProps) {
             <Chessboard
                 position={position}
                 playerColour={line.player}
+                orientation={line.player}
                 playMove={playMove}
                 setShouldShowFeedback={setShouldShowFeedback}
             />
