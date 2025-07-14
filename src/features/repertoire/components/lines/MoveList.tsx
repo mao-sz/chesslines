@@ -1,8 +1,17 @@
-import styles from './lines.module.css';
+import { useEffect, useLayoutEffect, useRef } from 'react';
+import styles from './editor.module.css';
 
 type MoveListProps = { moveString: string; highlightedMoveIndex: number };
 
 export function MoveList({ moveString, highlightedMoveIndex }: MoveListProps) {
+    const moveListRef = useRef<HTMLOListElement>(null);
+
+    useEffect(() => {
+        if (moveListRef.current) {
+            moveListRef.current.scrollTop = moveListRef.current.scrollHeight;
+        }
+    }, [moveString]);
+
     // https://regexr.com/8g0go to test this regex
     const moves = moveString.split(/\s(?=\d)/);
     // maps to game history state (where 0 is the starting position)
@@ -10,7 +19,7 @@ export function MoveList({ moveString, highlightedMoveIndex }: MoveListProps) {
     let moveIndex = 1;
 
     return (
-        <ol aria-label="moves">
+        <ol className={styles.moveList} aria-label="moves" ref={moveListRef}>
             {moves.map((fullMove) => {
                 const [moveNumber, firstMove, secondMove] = fullMove.split(' ');
                 const blackMoveOnly = moveNumber.endsWith('...');
@@ -21,7 +30,7 @@ export function MoveList({ moveString, highlightedMoveIndex }: MoveListProps) {
                     isHighlighted: moveIndex === highlightedMoveIndex,
                 };
                 if (white.move) {
-                moveIndex++;
+                    moveIndex++;
                 }
 
                 const black = {

@@ -11,6 +11,7 @@ import type { Colour, MoveInfo } from '@/types/chessboard';
 import styles from './chessboard.module.css';
 
 type ChessboardProps = {
+    boardSizeClass: string;
     position: string;
     playerColour: Colour;
     orientation: Colour;
@@ -22,6 +23,7 @@ const RANK = [8, 7, 6, 5, 4, 3, 2, 1, 0];
 const FILE = 'abcdefgh';
 
 export function Chessboard({
+    boardSizeClass,
     position,
     playerColour,
     orientation,
@@ -103,7 +105,7 @@ export function Chessboard({
 
     return (
         <div
-            className={styles.board}
+            className={`${styles.board} ${boardSizeClass}`}
             onPointerDown={handleSquareClick}
             onPointerUp={handlePointerUp}
             onContextMenu={clearMove}

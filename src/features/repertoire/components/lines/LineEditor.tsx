@@ -8,6 +8,7 @@ import type {
     RepertoireWithMethods,
 } from '@/types/repertoire';
 import type { Colour, MoveInfo } from '@/types/chessboard';
+import styles from './editor.module.css';
 
 type LineEditorProps = {
     id: UUID | 'new';
@@ -31,13 +32,8 @@ export function LineEditor({
         line ? 'board' : 'FEN/PGN'
     );
 
-    const {
-        activeColour,
-        position,
-        startingFEN,
-        moves,
-        loadNewPosition,
-    } = useRepertoireChessboard(line?.PGN, line?.startingFEN);
+    const { activeColour, position, startingFEN, moves, loadNewPosition } =
+        useRepertoireChessboard(line?.PGN, line?.startingFEN);
 
     useEffect(() => {
         dialogRef.current?.showModal();
@@ -67,33 +63,49 @@ export function LineEditor({
     }
 
     return (
-        <dialog ref={dialogRef} onClose={closeEditor}>
+        <dialog className={styles.editor} ref={dialogRef} onClose={closeEditor}>
             {editorInterface === 'board' ? (
-                <>
+                <div className={styles.boardEditor}>
                     <Chessboard
+                        boardSizeClass={styles.boardSize}
                         position={position.current}
                         playerColour={activeColour}
                         orientation={currentTab}
                         playMove={(move: MoveInfo) => moves.play(move)}
                     />
-                    <div>
-                        <button onClick={() => setEditorInterface('FEN/PGN')}>
-                            Load FEN/PGN
-                        </button>
+                    <div className={styles.side}>
                         <MoveList
                             moveString={moves.list}
                             highlightedMoveIndex={position.currentIndex}
                         />
-                        <div>
-                            <button onClick={() => dialogRef.current?.close()}>
+                        <div className={styles.buttons}>
+                            <button
+                                className={styles.highlighted}
+                                onClick={() => setEditorInterface('FEN/PGN')}
+                            >
+                                Load FEN/PGN
+                            </button>
+                            <button
+                                className={styles.highlighted}
+                                onClick={() => dialogRef.current?.close()}
+                            >
                                 Cancel
                             </button>
-                            <button onClick={saveLine}>Save</button>
+                            <button
+                                className={styles.highlighted}
+                                onClick={saveLine}
+                            >
+                                Save
+                            </button>
                         </div>
                     </div>
-                </>
+                </div>
             ) : (
-                <form method="dialog" onSubmit={submitNewPosition}>
+                <form
+                    className={styles.fenPngEditor}
+                    method="dialog"
+                    onSubmit={submitNewPosition}
+                >
                     <label>
                         Starting FEN{' '}
                         <input name="startingFEN" defaultValue={startingFEN} />

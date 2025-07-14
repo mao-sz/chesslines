@@ -40,20 +40,3 @@
         align-self: flex-start;
     }
 }
-
-.fullMove {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-
-    & .whiteMove {
-        grid-column: 2;
-    }
-
-    & .blackMove {
-        grid-column: 3;
-    }
-}
-
-.highlighted {
-    background-color: var(--bg-light);
-}

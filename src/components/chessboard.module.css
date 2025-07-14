@@ -1,9 +1,10 @@
-.board {
+.boardSize {
     --board-size: min(85vw, 600px);
+}
+
+.board {
     --square-size: calc(var(--board-size) / 8);
     --8-squares: repeat(8, var(--square-size));
-
-    margin: auto;
 
     display: grid;
     grid-template-columns: var(--8-squares);
@@ -31,6 +32,7 @@
 
 .selected {
     background-color: #44882273;
+    z-index: 1000;
 }
 
 .square > img {
