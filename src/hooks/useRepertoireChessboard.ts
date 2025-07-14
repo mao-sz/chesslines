@@ -1,17 +1,26 @@
 import { Chess } from '@maoshizhong/chess';
 import { useRef, useState } from 'react';
-import { extractActiveColour, getMoves, getPosition } from '@/util/util';
+import {
+    constructFullPGN,
+    extractActiveColour,
+    getMoves,
+    getPosition,
+} from '@/util/util';
 import { STANDARD_STARTING_FEN } from '@/util/constants';
 import type { MoveInfo } from '@/types/chessboard';
 
 export function useRepertoireChessboard(pgn?: string, startPosition?: string) {
     if (pgn && startPosition !== STANDARD_STARTING_FEN) {
-        pgn = `$[FEN "${startPosition}"]\n\n${pgn}`;
+        pgn = constructFullPGN(startPosition || STANDARD_STARTING_FEN, pgn);
     }
     const chessboard = useRef(
-        new Chess(pgn, { isPGN: typeof pgn === 'string' })
+        new Chess(pgn || startPosition, {
+            isPGN: typeof pgn === 'string' && pgn.length > 0,
+        })
     );
-    const moveList = getMoves(chessboard.current.toPGN());
+    const [moveList, setMoveList] = useState(
+        getMoves(chessboard.current.toPGN())
+    );
 
     // Not fullmove! Just straight up individual moves (annoying that halfmoves are specifically
     // about non-capture/pawn moves and not just individual moves)
@@ -22,6 +31,21 @@ export function useRepertoireChessboard(pgn?: string, startPosition?: string) {
     const [startingFEN, setStartingFEN] = useState(
         startPosition || STANDARD_STARTING_FEN
     );
+
+    function loadNewPosition(FEN: string, moves: string) {
+        if (!moves) {
+            chessboard.current = new Chess(FEN);
+        } else {
+            const pgn = constructFullPGN(FEN, moves);
+            chessboard.current = new Chess(pgn, { isPGN: true });
+        }
+
+        const newMoveList = getMoves(chessboard.current.toPGN());
+        setStartingFEN(FEN);
+        setMoveList(newMoveList);
+        setCurrentMoveIndex(newMoveList.length);
+        setActiveColour(extractActiveColour(chessboard.current.toFEN()));
+    }
 
     function playMove(move: MoveInfo): void {
         const isOverwritingMoves = currentMoveNumber < moveList.length;
@@ -74,10 +98,10 @@ export function useRepertoireChessboard(pgn?: string, startPosition?: string) {
             toPrevious: toPreviousPosition,
         },
         startingFEN: startingFEN,
-        currentPGN: chessboard.current.toPGN(),
         moves: {
             list: chessboard.current.toPGN({ movesOnly: true }),
             play: playMove,
         },
+        loadNewPosition: loadNewPosition,
     };
 }

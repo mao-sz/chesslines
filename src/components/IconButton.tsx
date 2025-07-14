@@ -5,7 +5,7 @@ type IconButtonProps = {
     type: ButtonHTMLAttributes<HTMLButtonElement>['type'];
     icon: FontAwesomeIcon;
     ariaLabel: string;
-    onClick?: (e?: MouseEvent) => void;
+    onClick?: (e: MouseEvent) => void | (() => void);
 };
 
 export function IconButton({

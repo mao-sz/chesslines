@@ -1,15 +1,13 @@
 import { type FormEvent, useEffect, useRef, useState } from 'react';
 import { Chessboard } from '@/components/Chessboard';
 import { useRepertoireChessboard } from '@/hooks/useRepertoireChessboard';
-import { ICONS } from '@/util/constants';
 import type { UUID } from '@/types/utility';
+import { MoveList } from './MoveList';
 import type {
     RepertoireFolderID,
     RepertoireWithMethods,
 } from '@/types/repertoire';
 import type { Colour, MoveInfo } from '@/types/chessboard';
-import { IconButton } from '@/components/IconButton';
-import { MoveList } from './MoveList';
 
 type LineEditorProps = {
     id: UUID | 'new';
@@ -29,8 +27,17 @@ export function LineEditor({
     const dialogRef = useRef<HTMLDialogElement>(null);
     const line = id === 'new' ? null : lines[id];
 
-    const { activeColour, position, startingFEN, currentPGN, moves } =
-        useRepertoireChessboard(line?.PGN, line?.startingFEN);
+    const [editorInterface, setEditorInterface] = useState<'board' | 'FEN/PGN'>(
+        line ? 'board' : 'FEN/PGN'
+    );
+
+    const {
+        activeColour,
+        position,
+        startingFEN,
+        moves,
+        loadNewPosition,
+    } = useRepertoireChessboard(line?.PGN, line?.startingFEN);
 
     useEffect(() => {
         dialogRef.current?.showModal();
@@ -40,27 +47,69 @@ export function LineEditor({
         e.preventDefault();
 
         if (id === 'new') {
-            lines.create(startingFEN, currentPGN, parentFolder);
+            lines.create(startingFEN, moves.list, parentFolder);
         } else {
-            lines.updateLine(id, startingFEN, currentPGN);
+            lines.updateLine(id, startingFEN, moves.list);
         }
         closeEditor();
     }
 
+    function submitNewPosition(e: FormEvent) {
+        e.preventDefault();
+        const form = e.currentTarget as HTMLFormElement;
+
+        const startingFEN = (form.elements[0] as HTMLInputElement).value;
+        const PGN = (form.elements[1] as HTMLTextAreaElement).value;
+
+        // TODO: Validate position/PGN!
+        loadNewPosition(startingFEN, PGN);
+        setEditorInterface('board');
+    }
+
     return (
         <dialog ref={dialogRef} onClose={closeEditor}>
-            <Chessboard
-                position={position.current}
-                playerColour={activeColour}
-                orientation={currentTab}
-                playMove={(move: MoveInfo) => moves.play(move)}
-            />
-            <MoveList
-                moveString={moves.list}
-                highlightedMoveIndex={position.currentIndex}
-            />
-            <button onClick={() => dialogRef.current?.close()}>Cancel</button>
-            <button onClick={saveLine}>Save</button>
+            {editorInterface === 'board' ? (
+                <>
+                    <Chessboard
+                        position={position.current}
+                        playerColour={activeColour}
+                        orientation={currentTab}
+                        playMove={(move: MoveInfo) => moves.play(move)}
+                    />
+                    <div>
+                        <button onClick={() => setEditorInterface('FEN/PGN')}>
+                            Load FEN/PGN
+                        </button>
+                        <MoveList
+                            moveString={moves.list}
+                            highlightedMoveIndex={position.currentIndex}
+                        />
+                        <div>
+                            <button onClick={() => dialogRef.current?.close()}>
+                                Cancel
+                            </button>
+                            <button onClick={saveLine}>Save</button>
+                        </div>
+                    </div>
+                </>
+            ) : (
+                <form method="dialog" onSubmit={submitNewPosition}>
+                    <label>
+                        Starting FEN{' '}
+                        <input name="startingFEN" defaultValue={startingFEN} />
+                    </label>
+                    <label>
+                        PGN <textarea name="PGN" defaultValue={moves.list} />
+                    </label>
+                    <button
+                        type="button"
+                        onClick={() => setEditorInterface('board')}
+                    >
+                        Cancel
+                    </button>
+                    <button type="submit">Load</button>
+                </form>
+            )}
         </dialog>
     );
 }

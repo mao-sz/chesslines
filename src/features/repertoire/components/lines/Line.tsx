@@ -24,7 +24,8 @@ export function Line({ id, lines, openLine }: LineProps) {
         openLine();
     }
 
-    function deleteLine() {
+    function deleteLine(e: MouseEvent) {
+        e.stopPropagation();
         lines.delete(id);
     }
 

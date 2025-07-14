@@ -118,7 +118,7 @@ describe('Line editor', () => {
         await user.click(whiteFolder);
     }
 
-    it('Opens line editor with chessboard when line clicked on', async () => {
+    it('Opens line editor to board interface when line clicked on', async () => {
         const user = userEvent.setup();
         await openLineFolderInPanel(user);
 
@@ -135,24 +135,7 @@ describe('Line editor', () => {
         expect(boardSquares).toHaveLength(64);
     });
 
-    it('Opens line editor with chessboard when line clicked on', async () => {
-        const user = userEvent.setup();
-        await openLineFolderInPanel(user);
-
-        const lineList = screen.getByRole('list', { name: /lines/i });
-        const lineItem = lineList.firstElementChild as HTMLLIElement;
-        await user.click(lineItem);
-
-        const lineEditor = screen.getByRole('dialog');
-
-        expect(lineEditor).toBeInTheDocument();
-        const boardSquares = within(lineEditor).getAllByRole('button', {
-            name: /square/i,
-        });
-        expect(boardSquares).toHaveLength(64);
-    });
-
-    it('Includes a list of moves in the line editor', async () => {
+    it('Includes a list of moves in the board interface', async () => {
         const user = userEvent.setup();
         await openLineFolderInPanel(user);
 
@@ -175,8 +158,7 @@ describe('Line editor', () => {
         ).toBeInTheDocument();
     });
 
-    // replace with "load FEN/PGN" component when implemented
-    it.skip('Opens line editor with default FEN/PGN sections when new line button clicked', async () => {
+    it('Opens line editor with the FEN/PGN interface when new line button clicked', async () => {
         const user = userEvent.setup();
         await openLineFolderInPanel(user);
 
@@ -195,7 +177,7 @@ describe('Line editor', () => {
         expect(PGNTextarea).toHaveValue('');
     });
 
-    it("Updates existing line's PGN after submitting form", async () => {
+    it("Updates existing line's PGN after saving a line with new moves added", async () => {
         const user = userEvent.setup();
         await openLineFolderInPanel(user);
 
@@ -221,14 +203,16 @@ describe('Line editor', () => {
         expect(within(lineItem).getByText(/d4/i)).toBeInTheDocument();
     });
 
-    // temporarily disabling new line submission
-    it.skip('Creates new line when submitting form for new line', async () => {
+    it('Creates new line when submitting form for new line', async () => {
         const newStartingFEN =
             'rnbqkbnr/pp1ppppp/8/2p5/4P3/8/PPPP1PPP/RNBQKBNR w KQkq - 0 1';
         const newPGN = '1. d4 d5 2. c4';
 
         const user = userEvent.setup();
         await openLineFolderInPanel(user);
+
+        expect(screen.getAllByRole('listitem')).toHaveLength(1);
+        expect(screen.queryByText(`PGN: ${newPGN}`)).not.toBeInTheDocument();
 
         const newLineButton = screen.getByRole('button', { name: /new line/i });
         await user.click(newLineButton);
@@ -241,7 +225,7 @@ describe('Line editor', () => {
             name: /pgn/i,
         });
         const submitButton = within(lineEditor).getByRole('button', {
-            name: /save/i,
+            name: /load/i,
         });
 
         await user.type(
@@ -252,17 +236,14 @@ describe('Line editor', () => {
             PGNTextarea,
             `{Control>}A{/Control}[Backspace]${newPGN}`
         );
-        await user.click(submitButton);
+        await user.click(submitButton); // switches to board interface
 
-        expect(
-            screen.getByText(
-                new RegExp(`^Starting FEN: ${newStartingFEN}$`, 'i')
-            )
-        ).toBeInTheDocument();
-        expect(
-            screen.getByText(new RegExp(`^PGN: ${newPGN}$`, 'i'))
-        ).toBeInTheDocument();
+        // save in board interface
+        const saveButton = screen.getByRole('button', { name: /save/i });
+        await user.click(saveButton);
+
         expect(screen.getAllByRole('listitem')).toHaveLength(2);
+        expect(screen.getByText(`PGN: ${newPGN}`)).toBeInTheDocument();
     });
 
     it('Can open a new editor dialog after closing the previous one', async () => {

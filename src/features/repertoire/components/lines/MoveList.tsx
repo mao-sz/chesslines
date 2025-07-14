@@ -21,7 +21,7 @@ export function MoveList({ moveString, highlightedMoveIndex }: MoveListProps) {
                     isHighlighted: moveIndex === highlightedMoveIndex,
                 };
                 if (white.move) {
-                    moveIndex++;
+                moveIndex++;
                 }
 
                 const black = {
@@ -29,9 +29,7 @@ export function MoveList({ moveString, highlightedMoveIndex }: MoveListProps) {
                     index: moveIndex,
                     isHighlighted: moveIndex === highlightedMoveIndex,
                 };
-                if (black.move) {
-                    moveIndex++;
-                }
+                moveIndex++;
 
                 return (
                     <li key={moveNumber} className={styles.fullMove}>

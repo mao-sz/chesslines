@@ -53,3 +53,7 @@ export function extractActiveColour(FEN: string): Colour {
     const isWhite = FEN.includes('w');
     return isWhite ? 'w' : 'b';
 }
+
+export function constructFullPGN(FEN: string, moves: string): string {
+    return `[FEN "${FEN}"]\n\n${moves}`;
+}
