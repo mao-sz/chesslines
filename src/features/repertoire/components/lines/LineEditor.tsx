@@ -106,20 +106,31 @@ export function LineEditor({
                     method="dialog"
                     onSubmit={submitNewPosition}
                 >
-                    <label>
+                    <label className={styles.fen}>
                         Starting FEN{' '}
-                        <input name="startingFEN" defaultValue={startingFEN} />
+                        <input
+                            className={styles.textbox}
+                            name="startingFEN"
+                            defaultValue={startingFEN}
+                        />
                     </label>
-                    <label>
-                        PGN <textarea name="PGN" defaultValue={moves.list} />
+                    <label className={styles.pgn}>
+                        PGN (no tag pairs){' '}
+                        <textarea
+                            className={styles.textbox}
+                            name="PGN"
+                            defaultValue={moves.list}
+                        />
                     </label>
-                    <button
-                        type="button"
-                        onClick={() => setEditorInterface('board')}
-                    >
-                        Cancel
-                    </button>
-                    <button type="submit">Load</button>
+                    <div className={styles.buttons}>
+                        <button
+                            type="button"
+                            onClick={() => setEditorInterface('board')}
+                        >
+                            Cancel
+                        </button>
+                        <button type="submit">Load</button>
+                    </div>
                 </form>
             )}
         </dialog>

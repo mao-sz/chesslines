@@ -1,7 +1,6 @@
 .editor {
     --editor-width: 95vw;
 
-    box-sizing: content-box;
     background-color: var(--bg-mid-light);
     border-color: var(--bg-dark);
     color: var(--text-normal);
@@ -16,8 +15,27 @@
     @media (--small-viewport) {
         padding: 0;
         height: 90svh;
+
+        &:has(> .boardEditor) {
+            box-sizing: content-box;
+        }
+
+        &:has(> .fenPngEditor) {
+            padding: 12px;
+        }
     }
 }
+
+button:not([aria-label*="square"]) {
+    border-radius: 4px;
+    padding: 4px 10px;
+
+    &:hover {
+        background-color: var(--bg-mid-dark);
+    }
+}
+
+/* BOARD INTERFACE */
 
 .boardEditor {
     display: flex;
@@ -48,15 +66,6 @@
     gap: 24px;
     min-width: 33%;
 
-    & button {
-        border-radius: 4px;
-        padding: 4px 10px;
-
-        &:hover {
-            background-color: var(--bg-mid-dark);
-        }
-    }
-
     @media (--small-viewport) {
         margin-inline: 12px;
     }
@@ -84,12 +93,15 @@
         grid-column: 2;
     }
 
+    /* Needed when move list starts with black move mid-game (e.g. 3... Nf6).
+       Only one move for the fullMove but it should go in the blackMove column */
     & .blackMove {
         grid-column: 3;
     }
 }
 
-.highlighted {
+.highlighted,
+.fenPngEditor button {
     background-color: var(--bg-light);
 }
 
@@ -101,5 +113,41 @@
 
     & > :first-child {
         margin-right: auto;
+    }
+}
+
+/* FEN/PNG INTERFACE */
+
+.fenPngEditor {
+    display: flex;
+    flex-direction: column;
+    margin-inline: auto;
+    max-width: 800px;
+    height: 100%;
+    gap: 16px;
+
+    & label {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    .buttons {
+        align-self: flex-end;
+    }
+}
+
+.textbox {
+    background-color: var(--bg-light);
+    border: 2px solid var(--bg-dark);
+    border-radius: 4px;
+    padding: 8px;
+}
+
+.pgn {
+    flex: 1;
+
+    & > textarea {
+        flex: 1;
     }
 }

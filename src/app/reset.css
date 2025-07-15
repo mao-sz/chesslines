@@ -39,8 +39,10 @@ main {
     margin: 0;
 }
 
-:is(button, input) {
+:is(button, input, textarea) {
     color: inherit;
+    font-family: inherit;
+    font-size: inherit;
 }
 
 ul {
@@ -51,5 +53,4 @@ button {
     background-color: transparent;
     border: none;
     cursor: pointer;
-    font-size: inherit;
 }
