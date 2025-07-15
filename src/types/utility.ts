@@ -11,6 +11,11 @@ type FontAwesomeIconName =
     | 'check'
     | 'xmark'
     | 'plus'
-    | 'caret-up'
+    | 'forward-step'
+    | 'forward-fast'
+    | 'backward-step'
+    | 'backward-fast'
+    | 'plus'
+    | 'caret-down'
     | 'caret-right';
 export type FontAwesomeIcon = `fa-solid fa-${FontAwesomeIconName}`;

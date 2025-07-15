@@ -1,5 +1,6 @@
 import { type FormEvent, useEffect, useRef, useState } from 'react';
 import { Chessboard } from '@/components/Chessboard';
+import { IconButton } from '@/components/IconButton';
 import { useRepertoireChessboard } from '@/hooks/useRepertoireChessboard';
 import type { UUID } from '@/types/utility';
 import { MoveList } from './MoveList';
@@ -9,6 +10,7 @@ import type {
 } from '@/types/repertoire';
 import type { Colour, MoveInfo } from '@/types/chessboard';
 import styles from './editor.module.css';
+import { ICONS } from '@/util/constants';
 
 type LineEditorProps = {
     id: UUID | 'new';
@@ -150,7 +152,34 @@ export function LineEditor({
                         <MoveList
                             moveString={moves.list}
                             highlightedMoveIndex={position.currentIndex}
+                            goToPosition={position.toNth}
                         />
+                        <div className={`${styles.buttons} ${styles.controls}`}>
+                            <IconButton
+                                type="button"
+                                icon={ICONS.START}
+                                ariaLabel="skip to first move"
+                                onClick={() => position.toNth(0)}
+                            />
+                            <IconButton
+                                type="button"
+                                icon={ICONS.PREVIOUS}
+                                ariaLabel="previous move"
+                                onClick={position.toPrevious}
+                            />
+                            <IconButton
+                                type="button"
+                                icon={ICONS.NEXT}
+                                ariaLabel="next move"
+                                onClick={position.toNext}
+                            />
+                            <IconButton
+                                type="button"
+                                icon={ICONS.END}
+                                ariaLabel="skip to last move"
+                                onClick={() => position.toNth(Infinity)}
+                            />
+                        </div>
                         <div className={styles.buttons}>
                             <button
                                 className={styles.highlighted}

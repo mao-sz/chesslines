@@ -1,9 +1,17 @@
-import { useEffect, useLayoutEffect, useRef } from 'react';
+import { useEffect, useRef } from 'react';
 import styles from './editor.module.css';
 
-type MoveListProps = { moveString: string; highlightedMoveIndex: number };
+type MoveListProps = {
+    moveString: string;
+    highlightedMoveIndex: number;
+    goToPosition: (n: number) => void;
+};
 
-export function MoveList({ moveString, highlightedMoveIndex }: MoveListProps) {
+export function MoveList({
+    moveString,
+    highlightedMoveIndex,
+    goToPosition,
+}: MoveListProps) {
     const moveListRef = useRef<HTMLOListElement>(null);
 
     useEffect(() => {
@@ -57,10 +65,11 @@ export function MoveList({ moveString, highlightedMoveIndex }: MoveListProps) {
                             <button
                                 data-moveindex={white.index}
                                 className={`${styles.whiteMove} ${white.isHighlighted ? styles.highlighted : ''}`}
+                                onClick={() => goToPosition(white.index)}
                                 // do not use autoFocus https://github.com/facebook/react/issues/23301
-                                ref={autoFocusIfHighlighted(
-                                    white.isHighlighted
-                                )}
+                                // ref={autoFocusIfHighlighted(
+                                //     white.isHighlighted
+                                // )}
                             >
                                 {white.move}
                             </button>
@@ -69,6 +78,8 @@ export function MoveList({ moveString, highlightedMoveIndex }: MoveListProps) {
                             <button
                                 data-moveindex={black.index}
                                 className={`${styles.blackMove} ${black.isHighlighted ? styles.highlighted : ''}`}
+                                onClick={() => goToPosition(black.index)}
+                                // do not use autoFocus https://github.com/facebook/react/issues/23301
                                 ref={autoFocusIfHighlighted(
                                     black.isHighlighted
                                 )}

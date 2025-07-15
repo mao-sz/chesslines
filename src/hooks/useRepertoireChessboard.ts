@@ -39,7 +39,7 @@ export function useRepertoireChessboard(pgn?: string, startPosition?: string) {
 
     // Not fullmove! Just straight up individual moves (annoying that halfmoves are specifically
     // about non-capture/pawn moves and not just individual moves)
-    const [currentMoveNumber, setCurrentMoveIndex] = useState(moveList.length);
+    const [currentMoveIndex, setCurrentMoveIndex] = useState(moveList.length);
     const [activeColour, setActiveColour] = useState(
         extractActiveColour(chessboard.current.toFEN())
     );
@@ -65,6 +65,7 @@ export function useRepertoireChessboard(pgn?: string, startPosition?: string) {
 
         chessboard.current = newBoard;
         const newMoveList = getMoves(chessboard.current.toPGN());
+
         setStartingFEN(FEN);
         setMoveList(newMoveList);
         setCurrentMoveIndex(newMoveList.length);
@@ -74,19 +75,21 @@ export function useRepertoireChessboard(pgn?: string, startPosition?: string) {
     }
 
     function playMove(move: MoveInfo): void {
-        const isOverwritingMoves = currentMoveNumber < moveList.length;
+        const isOverwritingMoves = currentMoveIndex < moveList.length;
         if (isOverwritingMoves) {
             // TODO: overwrite moves
             console.log('FIX ME!');
-        } else {
-            const [error] = chessboard.current.playMove(move);
-            if (error) {
-                return;
-            }
-
-            setCurrentMoveIndex(currentMoveNumber + 1);
-            setActiveColour(activeColour === 'w' ? 'b' : 'w');
+            return;
         }
+
+        const [error] = chessboard.current.playMove(move);
+        if (error) {
+            return;
+        }
+
+        setMoveList(getMoves(chessboard.current.toPGN()));
+        setCurrentMoveIndex(currentMoveIndex + 1);
+        setActiveColour(activeColour === 'w' ? 'b' : 'w');
     }
 
     function toNthPosition(n: number): void {
@@ -102,15 +105,15 @@ export function useRepertoireChessboard(pgn?: string, startPosition?: string) {
 
     function toNextPosition(): void {
         chessboard.current.toNextPosition();
-        if (currentMoveNumber < moveList.length) {
-            setCurrentMoveIndex(currentMoveNumber + 1);
+        if (currentMoveIndex < moveList.length) {
+            setCurrentMoveIndex(currentMoveIndex + 1);
         }
     }
 
     function toPreviousPosition(): void {
         chessboard.current.toPreviousPosition();
-        if (currentMoveNumber > 0) {
-            setCurrentMoveIndex(currentMoveNumber - 1);
+        if (currentMoveIndex > 0) {
+            setCurrentMoveIndex(currentMoveIndex - 1);
         }
     }
 
@@ -120,7 +123,7 @@ export function useRepertoireChessboard(pgn?: string, startPosition?: string) {
         activeColour: activeColour,
         position: {
             current: getPosition(chessboard.current.toFEN()),
-            currentIndex: currentMoveNumber,
+            currentIndex: currentMoveIndex,
             toNth: toNthPosition,
             toNext: toNextPosition,
             toPrevious: toPreviousPosition,

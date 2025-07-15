@@ -132,6 +132,16 @@ button:not([aria-label*='square']) {
     }
 }
 
+.controls {
+    & > :not(:first-child, :last-child) {
+        transform: scale(1.5);
+    }
+
+    & > * {
+        margin: auto;
+    }
+}
+
 /* FEN/PGN INTERFACE */
 
 .fenPngEditor {
