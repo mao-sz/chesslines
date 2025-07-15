@@ -13,7 +13,7 @@
         backdrop-filter: brightness(0.5) blur(3px);
     }
 
-    @media (width<700px) {
+    @media (--small-viewport) {
         padding: 0;
         height: 90svh;
     }
@@ -26,7 +26,7 @@
     gap: min(64px, 6%);
     height: 100%;
 
-    @media (width < 700px) {
+    @media (--small-viewport) {
         flex-direction: column;
         justify-content: flex-start;
         gap: 0;
@@ -36,7 +36,7 @@
 .boardSize {
     --board-size: min(600px, 50vw);
 
-    @media (width < 700px) {
+    @media (--small-viewport) {
         --board-size: var(--editor-width);
     }
 }
@@ -57,7 +57,7 @@
         }
     }
 
-    @media (width < 700px) {
+    @media (--small-viewport) {
         margin-inline: 12px;
     }
 }
@@ -67,8 +67,7 @@
     padding: 0;
     overflow: scroll;
 
-    
-    @media (width < 700px) {
+    @media (--small-viewport) {
         max-height: 600px;
         margin-inline: 24px;
     }
