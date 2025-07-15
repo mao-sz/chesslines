@@ -1,5 +1,4 @@
-import { Chess } from '@maoshizhong/chess';
-import { useRef, useState } from 'react';
+import { useLayoutEffect, useRef, useState } from 'react';
 import {
     constructFullPGN,
     extractActiveColour,
@@ -7,17 +6,33 @@ import {
     getPosition,
 } from '@/util/util';
 import { STANDARD_STARTING_FEN } from '@/util/constants';
+import { CaughtChess } from '@/util/caughtChess';
 import type { MoveInfo } from '@/types/chessboard';
 
 export function useRepertoireChessboard(pgn?: string, startPosition?: string) {
     if (pgn && startPosition !== STANDARD_STARTING_FEN) {
         pgn = constructFullPGN(startPosition || STANDARD_STARTING_FEN, pgn);
     }
+
+    // clear unnecessary whitespace
+    pgn = pgn?.replaceAll(/\s+/g, ' ').trim();
+    startPosition = startPosition?.replaceAll(/\s+/g, ' ').trim();
+
     const chessboard = useRef(
-        new Chess(pgn || startPosition, {
+        new CaughtChess(pgn || startPosition, {
             isPGN: typeof pgn === 'string' && pgn.length > 0,
         })
     );
+
+    const [initialisationError, setInitialisationError] = useState(false);
+    // Ensure state setting only occurs when editor is opened for the first time, else too many rerenders
+    // Normal effect would flash empty chessboard briefly
+    useLayoutEffect(() => {
+        if (chessboard.current.invalid) {
+            setInitialisationError(true);
+        }
+    }, []);
+
     const [moveList, setMoveList] = useState(
         getMoves(chessboard.current.toPGN())
     );
@@ -32,19 +47,30 @@ export function useRepertoireChessboard(pgn?: string, startPosition?: string) {
         startPosition || STANDARD_STARTING_FEN
     );
 
-    function loadNewPosition(FEN: string, moves: string) {
-        if (!moves) {
-            chessboard.current = new Chess(FEN);
-        } else {
-            const pgn = constructFullPGN(FEN, moves);
-            chessboard.current = new Chess(pgn, { isPGN: true });
+    function loadNewPosition(FEN: string, moves: string): boolean {
+        // clear unnecessary whitespace
+        FEN = FEN.replaceAll(/\s+/g, ' ').trim();
+        moves = moves.replaceAll(/\s+/g, ' ').trim();
+
+        const pgn = constructFullPGN(FEN, moves);
+        const newBoard = moves
+            ? new CaughtChess(pgn, { isPGN: true })
+            : new CaughtChess(FEN);
+
+        // prevent loading invalid board
+        if (newBoard.invalid) {
+            setInitialisationError(true);
+            return false;
         }
 
+        chessboard.current = newBoard;
         const newMoveList = getMoves(chessboard.current.toPGN());
         setStartingFEN(FEN);
         setMoveList(newMoveList);
         setCurrentMoveIndex(newMoveList.length);
         setActiveColour(extractActiveColour(chessboard.current.toFEN()));
+        setInitialisationError(false);
+        return true;
     }
 
     function playMove(move: MoveInfo): void {
@@ -89,6 +115,8 @@ export function useRepertoireChessboard(pgn?: string, startPosition?: string) {
     }
 
     return {
+        initialisationError: initialisationError,
+        clearInitialisationError: () => setInitialisationError(false),
         activeColour: activeColour,
         position: {
             current: getPosition(chessboard.current.toFEN()),
@@ -97,9 +125,11 @@ export function useRepertoireChessboard(pgn?: string, startPosition?: string) {
             toNext: toNextPosition,
             toPrevious: toPreviousPosition,
         },
-        startingFEN: startingFEN,
+        startingFEN: initialisationError ? startPosition : startingFEN,
         moves: {
-            list: chessboard.current.toPGN({ movesOnly: true }),
+            list: initialisationError
+                ? (pgn ?? '')
+                : chessboard.current.toPGN({ movesOnly: true }),
             play: playMove,
         },
         loadNewPosition: loadNewPosition,

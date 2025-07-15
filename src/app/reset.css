@@ -10,6 +10,7 @@
         --bg-light: #3c3d50;
         --text-normal: #cccccc;
         --text-faint: #888888;
+        --text-error: #ff6d6d;
 
         color: var(--text-normal);
     }

@@ -32,8 +32,15 @@ export function LineEditor({
         line ? 'board' : 'FEN/PGN'
     );
 
-    const { activeColour, position, startingFEN, moves, loadNewPosition } =
-        useRepertoireChessboard(line?.PGN, line?.startingFEN);
+    const {
+        initialisationError,
+        clearInitialisationError,
+        activeColour,
+        position,
+        startingFEN,
+        moves,
+        loadNewPosition,
+    } = useRepertoireChessboard(line?.PGN, line?.startingFEN);
 
     useEffect(() => {
         dialogRef.current?.showModal();
@@ -57,14 +64,74 @@ export function LineEditor({
         const startingFEN = (form.elements[0] as HTMLInputElement).value;
         const PGN = (form.elements[1] as HTMLTextAreaElement).value;
 
-        // TODO: Validate position/PGN!
-        loadNewPosition(startingFEN, PGN);
+        const success = loadNewPosition(startingFEN, PGN);
+        if (success) {
+            setEditorInterface('board');
+        }
+    }
+
+    function returnToBoardInterface() {
         setEditorInterface('board');
+        clearInitialisationError();
     }
 
     return (
         <dialog className={styles.editor} ref={dialogRef} onClose={closeEditor}>
-            {editorInterface === 'board' ? (
+            {editorInterface === 'FEN/PGN' ? (
+                <form
+                    className={styles.fenPngEditor}
+                    method="dialog"
+                    onSubmit={submitNewPosition}
+                >
+                    <label className={styles.fen}>
+                        Starting FEN{' '}
+                        <input
+                            className={styles.textbox}
+                            name="startingFEN"
+                            defaultValue={startingFEN}
+                        />
+                    </label>
+                    <label className={styles.pgn}>
+                        PGN (no tag pairs){' '}
+                        <textarea
+                            className={styles.textbox}
+                            name="PGN"
+                            defaultValue={moves.list}
+                        />
+                    </label>{' '}
+                    <div className={styles.buttons}>
+                        {initialisationError && (
+                            <p className={styles.error}>
+                                Invalid FEN and/or PGN combination!
+                            </p>
+                        )}
+                        <button type="button" onClick={returnToBoardInterface}>
+                            Cancel
+                        </button>
+                        <button type="submit">Load</button>
+                    </div>
+                </form>
+            ) : initialisationError ? (
+                <div className={styles.invalid}>
+                    <p className={styles.error}>
+                        Invalid FEN and/or PGN combination!
+                    </p>
+                    <div className={styles.buttons}>
+                        <button
+                            className={styles.highlighted}
+                            onClick={() => dialogRef.current?.close()}
+                        >
+                            Close
+                        </button>
+                        <button
+                            className={styles.highlighted}
+                            onClick={() => setEditorInterface('FEN/PGN')}
+                        >
+                            Fix FEN/PGN
+                        </button>
+                    </div>
+                </div>
+            ) : (
                 <div className={styles.boardEditor}>
                     <Chessboard
                         boardSizeClass={styles.boardSize}
@@ -100,38 +167,6 @@ export function LineEditor({
                         </div>
                     </div>
                 </div>
-            ) : (
-                <form
-                    className={styles.fenPngEditor}
-                    method="dialog"
-                    onSubmit={submitNewPosition}
-                >
-                    <label className={styles.fen}>
-                        Starting FEN{' '}
-                        <input
-                            className={styles.textbox}
-                            name="startingFEN"
-                            defaultValue={startingFEN}
-                        />
-                    </label>
-                    <label className={styles.pgn}>
-                        PGN (no tag pairs){' '}
-                        <textarea
-                            className={styles.textbox}
-                            name="PGN"
-                            defaultValue={moves.list}
-                        />
-                    </label>
-                    <div className={styles.buttons}>
-                        <button
-                            type="button"
-                            onClick={() => setEditorInterface('board')}
-                        >
-                            Cancel
-                        </button>
-                        <button type="submit">Load</button>
-                    </div>
-                </form>
             )}
         </dialog>
     );
