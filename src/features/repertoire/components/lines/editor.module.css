@@ -41,7 +41,12 @@ button:not([aria-label*='square']) {
     display: flex;
     flex-direction: column;
     justify-content: center;
+    gap: 24px;
     height: 100%;
+
+    & .error {
+        font-size: x-large;
+    }
 
     & > * {
         align-self: center !important;
@@ -127,7 +132,7 @@ button:not([aria-label*='square']) {
     }
 }
 
-/* FEN/PNG INTERFACE */
+/* FEN/PGN INTERFACE */
 
 .fenPngEditor {
     display: flex;
@@ -141,6 +146,10 @@ button:not([aria-label*='square']) {
         display: flex;
         flex-direction: column;
         gap: 8px;
+    }
+
+    & .buttons {
+        align-self: flex-end;
     }
 }
 
@@ -157,11 +166,6 @@ button:not([aria-label*='square']) {
     & > textarea {
         flex: 1;
     }
-}
-
-.error,
-.fenPngEditor .buttons {
-    align-self: flex-end;
 }
 
 .error {

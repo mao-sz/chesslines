@@ -34,7 +34,7 @@ export function LineEditor({
 
     const {
         initialisationError,
-        clearInitialisationError,
+        setInitialisationError,
         activeColour,
         position,
         startingFEN,
@@ -61,10 +61,10 @@ export function LineEditor({
         e.preventDefault();
         const form = e.currentTarget as HTMLFormElement;
 
-        const startingFEN = (form.elements[0] as HTMLInputElement).value;
-        const PGN = (form.elements[1] as HTMLTextAreaElement).value;
+        const startingFEN = form.elements[0] as HTMLInputElement;
+        const PGN = form.elements[1] as HTMLTextAreaElement;
 
-        const success = loadNewPosition(startingFEN, PGN);
+        const success = loadNewPosition(startingFEN.value, PGN.value);
         if (success) {
             setEditorInterface('board');
         }
@@ -72,7 +72,7 @@ export function LineEditor({
 
     function returnToBoardInterface() {
         setEditorInterface('board');
-        clearInitialisationError();
+        setInitialisationError(false);
     }
 
     return (
@@ -89,6 +89,7 @@ export function LineEditor({
                             className={styles.textbox}
                             name="startingFEN"
                             defaultValue={startingFEN}
+                            onChange={() => setInitialisationError(false)}
                         />
                     </label>
                     <label className={styles.pgn}>
@@ -97,9 +98,14 @@ export function LineEditor({
                             className={styles.textbox}
                             name="PGN"
                             defaultValue={moves.list}
+                            onChange={() => setInitialisationError(false)}
                         />
-                    </label>{' '}
-                    <div className={styles.buttons}>
+                    </label>
+                    <div
+                        className={styles.buttons}
+                        aria-live="assertive"
+                        aria-relevant="additions"
+                    >
                         {initialisationError && (
                             <p className={styles.error}>
                                 Invalid FEN and/or PGN combination!
@@ -113,7 +119,7 @@ export function LineEditor({
                 </form>
             ) : initialisationError ? (
                 <div className={styles.invalid}>
-                    <p className={styles.error}>
+                    <p className={styles.error} aria-live="polite">
                         Invalid FEN and/or PGN combination!
                     </p>
                     <div className={styles.buttons}>

@@ -116,7 +116,7 @@ export function useRepertoireChessboard(pgn?: string, startPosition?: string) {
 
     return {
         initialisationError: initialisationError,
-        clearInitialisationError: () => setInitialisationError(false),
+        setInitialisationError: setInitialisationError,
         activeColour: activeColour,
         position: {
             current: getPosition(chessboard.current.toFEN()),
@@ -125,7 +125,7 @@ export function useRepertoireChessboard(pgn?: string, startPosition?: string) {
             toNext: toNextPosition,
             toPrevious: toPreviousPosition,
         },
-        startingFEN: initialisationError ? startPosition : startingFEN,
+        startingFEN: initialisationError ? (startPosition ?? '') : startingFEN,
         moves: {
             list: initialisationError
                 ? (pgn ?? '')

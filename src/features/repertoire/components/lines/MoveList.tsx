@@ -18,6 +18,16 @@ export function MoveList({ moveString, highlightedMoveIndex }: MoveListProps) {
     // hence moves are effectively 1-indexed
     let moveIndex = 1;
 
+    function autoFocusIfHighlighted(
+        isHighlighted: boolean
+    ): (el: HTMLElement | null) => void {
+        return (element: HTMLElement | null) => {
+            if (element && isHighlighted) {
+                element.autofocus = true;
+            }
+        };
+    }
+
     return (
         <ol className={styles.moveList} aria-label="moves" ref={moveListRef}>
             {moves.map((fullMove) => {
@@ -47,6 +57,10 @@ export function MoveList({ moveString, highlightedMoveIndex }: MoveListProps) {
                             <button
                                 data-moveindex={white.index}
                                 className={`${styles.whiteMove} ${white.isHighlighted ? styles.highlighted : ''}`}
+                                // do not use autoFocus https://github.com/facebook/react/issues/23301
+                                ref={autoFocusIfHighlighted(
+                                    white.isHighlighted
+                                )}
                             >
                                 {white.move}
                             </button>
@@ -55,6 +69,9 @@ export function MoveList({ moveString, highlightedMoveIndex }: MoveListProps) {
                             <button
                                 data-moveindex={black.index}
                                 className={`${styles.blackMove} ${black.isHighlighted ? styles.highlighted : ''}`}
+                                ref={autoFocusIfHighlighted(
+                                    black.isHighlighted
+                                )}
                             >
                                 {black.move}
                             </button>

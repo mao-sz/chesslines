@@ -82,6 +82,25 @@ const repertoire = {
             },
         };
     },
+    get withInvalidLineInWhite(): Repertoire {
+        return {
+            folders: {
+                w: {
+                    name: 'White',
+                    contains: 'lines',
+                    children: [UUIDS.lines[0]],
+                },
+                b: { name: 'Black', contains: 'either', children: [] },
+            },
+            lines: {
+                [UUIDS.lines[0]]: {
+                    startingFEN:
+                        'rnbqkbnr/psd8as8d7ppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1',
+                    PGN: '1. asdklke4 e5',
+                },
+            },
+        };
+    },
     get manyFoldersAndLines(): Repertoire {
         return {
             folders: {
