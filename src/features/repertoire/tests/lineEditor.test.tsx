@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { render, screen, within } from '@testing-library/react';
-import userEvent, { type UserEvent } from '@testing-library/user-event';
+import userEvent from '@testing-library/user-event';
 import { RepertoirePage } from '../RepertoirePage';
 import { helpers } from '@/testing/helpers';
 import { STANDARD_STARTING_FEN } from '@/util/constants';
@@ -226,5 +226,167 @@ describe('Validation', () => {
         expect(
             within(lineEditor).queryAllByRole('button', { name: /square$/i })
         ).toHaveLength(0);
+    });
+});
+
+describe('Move history navigation', () => {
+    it('Opens existing line on latest position', async () => {
+        await openLineEditor(helpers.repertoire.withLineInWhite);
+        expect(
+            screen.getByRole('button', { name: /e4 square/i })
+        ).toHaveAttribute('data-contains', 'P');
+        expect(
+            screen.getByRole('button', { name: /e5 square/i })
+        ).toHaveAttribute('data-contains', 'p');
+    });
+
+    it('Loads previous position when "previous" button clicked', async () => {
+        const user = await openLineEditor(helpers.repertoire.withLineInWhite);
+        const previousButton = screen.getByRole('button', {
+            name: /previous/i,
+        });
+        await user.click(previousButton);
+
+        expect(
+            screen.getByRole('button', { name: /e4 square/i })
+        ).toHaveAttribute('data-contains', 'P');
+        expect(
+            screen.getByRole('button', { name: /e5 square/i })
+        ).not.toHaveAttribute('data-contains', 'p');
+
+        await user.click(previousButton);
+
+        expect(
+            screen.getByRole('button', { name: /e4 square/i })
+        ).not.toHaveAttribute('data-contains', 'P');
+        expect(
+            screen.getByRole('button', { name: /e5 square/i })
+        ).not.toHaveAttribute('data-contains', 'p');
+    });
+
+    it('Loads next position when "next" button clicked', async () => {
+        const user = await openLineEditor(helpers.repertoire.withLineInWhite);
+        const previousButton = screen.getByRole('button', {
+            name: /previous/i,
+        });
+        const nextButton = screen.getByRole('button', { name: /next/i });
+        await user.click(previousButton);
+        await user.click(nextButton);
+
+        expect(
+            screen.getByRole('button', { name: /e4 square/i })
+        ).toHaveAttribute('data-contains', 'P');
+        expect(
+            screen.getByRole('button', { name: /e5 square/i })
+        ).toHaveAttribute('data-contains', 'p');
+    });
+
+    it('Loads initial position when "skip to first move" button clicked', async () => {
+        const user = await openLineEditor(helpers.repertoire.withLineInWhite);
+        const skipToFirstButton = screen.getByRole('button', {
+            name: /skip to first move/i,
+        });
+        await user.click(skipToFirstButton);
+
+        expect(
+            screen.getByRole('button', { name: /e4 square/i })
+        ).not.toHaveAttribute('data-contains', 'P');
+        expect(
+            screen.getByRole('button', { name: /e5 square/i })
+        ).not.toHaveAttribute('data-contains', 'p');
+    });
+
+    it('Loads latest position when "skip to last move" button clicked', async () => {
+        const user = await openLineEditor(helpers.repertoire.withLineInWhite);
+        const previousButton = screen.getByRole('button', {
+            name: /previous/i,
+        });
+        const skipToLastButton = screen.getByRole('button', {
+            name: /skip to last move/i,
+        });
+        await user.click(previousButton);
+        await user.click(previousButton);
+        await user.click(skipToLastButton);
+
+        expect(
+            screen.getByRole('button', { name: /e4 square/i })
+        ).toHaveAttribute('data-contains', 'P');
+        expect(
+            screen.getByRole('button', { name: /e5 square/i })
+        ).toHaveAttribute('data-contains', 'p');
+    });
+
+    it('Does nothing if on initial position and trying to go to previous move', async () => {
+        const user = await openLineEditor(helpers.repertoire.withLineInWhite);
+        const skipToFirstButton = screen.getByRole('button', {
+            name: /skip to first move/i,
+        });
+        const previousButton = screen.getByRole('button', {
+            name: /previous/i,
+        });
+        await user.click(skipToFirstButton);
+        const initialPosition = helpers.serialiseCurrentBoard();
+
+        await user.click(previousButton);
+        const currentPosition = helpers.serialiseCurrentBoard();
+
+        expect(currentPosition).toEqual(initialPosition);
+    });
+
+    it('Does nothing if on latest position and trying to go to next move', async () => {
+        const user = await openLineEditor(helpers.repertoire.withLineInWhite);
+
+        const latestPosition = helpers.serialiseCurrentBoard();
+        const nextButton = screen.getByRole('button', { name: /next/i });
+        await user.click(nextButton);
+        const currentPosition = helpers.serialiseCurrentBoard();
+
+        expect(currentPosition).toEqual(latestPosition);
+    });
+
+    it('Moves to nth move position when nth move button clicked', async () => {
+        const user = await openLineEditor(helpers.repertoire.withLineInWhite);
+
+        expect(
+            screen.getByRole('button', { name: /e4 square/i })
+        ).toHaveAttribute('data-contains', 'P');
+        expect(
+            screen.getByRole('button', { name: /e5 square/i })
+        ).toHaveAttribute('data-contains', 'p');
+
+        const firstMoveButton = screen.getByRole('button', { name: 'e4' });
+        await user.click(firstMoveButton);
+
+        expect(
+            screen.getByRole('button', { name: /e4 square/i })
+        ).toHaveAttribute('data-contains', 'P');
+        expect(
+            screen.getByRole('button', { name: /e5 square/i })
+        ).not.toHaveAttribute('data-contains', 'p');
+    });
+
+    it('Allows history navigation through newly entered moves', async () => {
+        const user = await openLineEditor(helpers.repertoire.withLineInWhite);
+
+        const initialLatestPosition = helpers.serialiseCurrentBoard();
+
+        const d2Square = screen.getByRole('button', { name: /d2 square/i });
+        const d4Square = screen.getByRole('button', { name: /d4 square/i });
+        const previousButton = screen.getByRole('button', {
+            name: /previous/i,
+        });
+        const nextButton = screen.getByRole('button', { name: /next/i });
+
+        await user.click(d2Square);
+        await user.click(d4Square);
+
+        const nextLatestPosition = helpers.serialiseCurrentBoard();
+        expect(nextLatestPosition).not.toEqual(initialLatestPosition);
+
+        await user.click(previousButton);
+        expect(helpers.serialiseCurrentBoard()).toEqual(initialLatestPosition);
+
+        await user.click(nextButton);
+        expect(helpers.serialiseCurrentBoard()).toEqual(nextLatestPosition);
     });
 });

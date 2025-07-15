@@ -1,4 +1,4 @@
-import { renderHook } from '@testing-library/react';
+import { renderHook, screen } from '@testing-library/react';
 import { useRepertoire } from '@/hooks/useRepertoire';
 import type { UUID } from '@/types/utility';
 import type { Line } from '@/types/chessboard';
@@ -196,4 +196,18 @@ const hooks = {
     },
 };
 
-export const helpers = { repertoire, lines, hooks };
+function serialiseCurrentBoard() {
+    return screen
+        .getAllByRole('button', { name: /square$/i })
+        .map((node: HTMLElement) => {
+            const attributesParentProperty = Object.keys(node).find((key) =>
+                key.startsWith('__reactProps')
+            )!;
+            // @ts-expect-error Hacky way to serialise React virtual DOM nodes based on attributes contents without messing with exact types
+            const attributes = node[attributesParentProperty];
+
+            return `${attributes['aria-label']} ${attributes['data-contains']}`;
+        });
+}
+
+export const helpers = { repertoire, lines, hooks, serialiseCurrentBoard };
