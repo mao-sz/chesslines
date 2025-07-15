@@ -124,7 +124,7 @@ const repertoire = {
                 [UUIDS.lines[0]]: {
                     startingFEN:
                         'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1',
-                    PGN: '1. sdade4 e5 2. Nc3',
+                    PGN: '1. e4 e5 2. Nc3',
                 },
                 [UUIDS.lines[1]]: {
                     startingFEN:

@@ -7,24 +7,30 @@ import { STANDARD_STARTING_FEN } from '@/util/constants';
 import type { Repertoire } from '@/types/repertoire';
 
 async function openLineFolderInPanel(
-    user: UserEvent,
     repertoire: Repertoire = helpers.repertoire.withLineInWhite
 ) {
     render(<RepertoirePage repertoire={repertoire} />);
 
+    const user = userEvent.setup();
     const whiteFolder = screen.getByRole('generic', { name: /white.*folder/i })
         .firstElementChild as HTMLElement;
     await user.click(whiteFolder);
+    return user;
+}
+
+async function openLineEditor(
+    repertoire: Repertoire = helpers.repertoire.withLineInWhite
+) {
+    const user = await openLineFolderInPanel(repertoire);
+    const lineList = screen.getByRole('list', { name: /lines/i });
+    const firstLine = lineList.firstElementChild as HTMLLIElement;
+    await user.click(firstLine);
+    return user;
 }
 
 describe('Opening and interaction', () => {
     it('Opens line editor to board interface when line clicked on', async () => {
-        const user = userEvent.setup();
-        await openLineFolderInPanel(user);
-
-        const lineList = screen.getByRole('list', { name: /lines/i });
-        const lineItem = lineList.firstElementChild as HTMLLIElement;
-        await user.click(lineItem);
+        await openLineEditor();
 
         const lineEditor = screen.getByRole('dialog');
 
@@ -36,12 +42,7 @@ describe('Opening and interaction', () => {
     });
 
     it('Includes a list of moves in the board interface', async () => {
-        const user = userEvent.setup();
-        await openLineFolderInPanel(user);
-
-        const lineList = screen.getByRole('list', { name: /lines/i });
-        const lineItem = lineList.firstElementChild as HTMLLIElement;
-        await user.click(lineItem);
+        await openLineEditor();
 
         const lineEditor = screen.getByRole('dialog');
         const moveList = within(lineEditor).getByRole('list', {
@@ -59,8 +60,7 @@ describe('Opening and interaction', () => {
     });
 
     it('Opens line editor with the FEN/PGN interface when new line button clicked', async () => {
-        const user = userEvent.setup();
-        await openLineFolderInPanel(user);
+        const user = await openLineFolderInPanel();
 
         const newLineButton = screen.getByRole('button', { name: /new line/i });
         await user.click(newLineButton);
@@ -78,8 +78,7 @@ describe('Opening and interaction', () => {
     });
 
     it("Updates existing line's PGN after saving a line with new moves added", async () => {
-        const user = userEvent.setup();
-        await openLineFolderInPanel(user);
+        const user = await openLineFolderInPanel();
 
         const lineList = screen.getByRole('list', { name: /lines/i });
         const lineItem = lineList.firstElementChild as HTMLLIElement;
@@ -104,8 +103,7 @@ describe('Opening and interaction', () => {
     });
 
     it('Can open a new editor dialog after closing the previous one', async () => {
-        const user = userEvent.setup();
-        await openLineFolderInPanel(user);
+        const user = await openLineFolderInPanel();
 
         const lineList = screen.getByRole('list', { name: /lines/i });
         const lineItem = lineList.firstElementChild as HTMLLIElement;
@@ -130,8 +128,7 @@ describe('Validation', () => {
             'rnbqkbnr/pp1ppppp/8/2p5/4P3/8/PPPP1PPP/RNBQKBNR w KQkq - 0 1';
         const newPGN = '1. d4 d5 2. c4';
 
-        const user = userEvent.setup();
-        await openLineFolderInPanel(user);
+        const user = await openLineFolderInPanel();
 
         expect(screen.getAllByRole('listitem')).toHaveLength(1);
         expect(screen.queryByText(`PGN: ${newPGN}`)).not.toBeInTheDocument();
@@ -185,8 +182,7 @@ describe('Validation', () => {
             '1. d4 d5 2. exd5',
         ],
     ])('Prevents FEN/PGN loading if %s', async (_, newStartingFEN, newPGN) => {
-        const user = userEvent.setup();
-        await openLineFolderInPanel(user);
+        const user = await openLineFolderInPanel();
 
         const newLineButton = screen.getByRole('button', { name: /new line/i });
         await user.click(newLineButton);
@@ -218,15 +214,7 @@ describe('Validation', () => {
     });
 
     it('Shows invalid FEN/PGN screen when opening editor for an invalid line', async () => {
-        const user = userEvent.setup();
-        await openLineFolderInPanel(
-            user,
-            helpers.repertoire.withInvalidLineInWhite
-        );
-
-        const lineList = screen.getByRole('list', { name: /lines/i });
-        const lineItem = lineList.firstElementChild as HTMLLIElement;
-        await user.click(lineItem);
+        await openLineEditor(helpers.repertoire.withInvalidLineInWhite);
 
         const lineEditor = screen.getByRole('dialog');
 
