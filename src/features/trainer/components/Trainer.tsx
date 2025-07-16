@@ -1,9 +1,9 @@
 import { useState } from 'react';
-import { Chessboard } from '@/components/Chessboard';
+import { Chessboard } from '@/components/chessboard/Chessboard';
 import { useTrainerChessboard } from '@/hooks/useTrainerChessboard';
 import type { Line } from '@/types/chessboard';
 import styles from './trainer.module.css';
-import boardStyles from '@/components/chessboard.module.css';
+import boardStyles from '@/components/chessboard/chessboard.module.css';
 
 type TrainerProps = { line: Line };
 

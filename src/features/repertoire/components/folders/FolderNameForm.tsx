@@ -1,5 +1,5 @@
-import { TextInput } from '@/components/TextInput';
-import { IconButton } from '@/components/IconButton';
+import { TextInput } from '@/components/util/TextInput';
+import { IconButton } from '@/components/util/IconButton';
 import type { FormEvent } from 'react';
 import type { FontAwesomeIcon } from '@/types/utility';
 import styles from './folders.module.css';

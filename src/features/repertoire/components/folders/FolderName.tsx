@@ -2,7 +2,7 @@ import { FolderNameForm } from './FolderNameForm';
 import { ICONS } from '@/util/constants';
 import type { FormEvent } from 'react';
 import type { StateSetter } from '@/types/utility';
-import { IconButton } from '@/components/IconButton';
+import { IconButton } from '@/components/util/IconButton';
 
 type FolderNameProps = {
     name: string;

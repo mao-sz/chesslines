@@ -5,7 +5,7 @@ import type {
     RepertoireWithMethods,
 } from '@/types/repertoire';
 import styles from './lines.module.css';
-import { IconButton } from '@/components/IconButton';
+import { IconButton } from '@/components/util/IconButton';
 import { ICONS } from '@/util/constants';
 
 type LinePanelProps = {

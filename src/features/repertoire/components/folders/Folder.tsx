@@ -8,7 +8,7 @@ import type {
 } from '@/types/repertoire';
 import styles from './folders.module.css';
 import { FolderName } from './FolderName';
-import { IconButton } from '@/components/IconButton';
+import { IconButton } from '@/components/util/IconButton';
 
 type FolderProps = {
     id: RepertoireFolderID;

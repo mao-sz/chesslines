@@ -3,7 +3,7 @@ import type { MouseEvent } from 'react';
 import type { UUID } from '@/types/utility';
 import type { RepertoireWithMethods } from '@/types/repertoire';
 import styles from './lines.module.css';
-import { IconButton } from '@/components/IconButton';
+import { IconButton } from '@/components/util/IconButton';
 
 type LineProps = {
     id: UUID;

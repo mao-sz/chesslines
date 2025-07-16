@@ -1,6 +1,6 @@
 import { type FormEvent, useEffect, useRef, useState } from 'react';
-import { Chessboard } from '@/components/Chessboard';
-import { IconButton } from '@/components/IconButton';
+import { Chessboard } from '@/components/chessboard/Chessboard';
+import { IconButton } from '@/components/util/IconButton';
 import { useRepertoireChessboard } from '@/hooks/useRepertoireChessboard';
 import type { UUID } from '@/types/utility';
 import { MoveList } from './MoveList';
