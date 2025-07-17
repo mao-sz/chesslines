@@ -21,9 +21,9 @@ export function FolderPanel({
     folders,
     currentLinesFolder,
     setCurrentLinesFolder,
+    currentTab,
+    setCurrentTab,
 }: FolderPanelProps) {
-    const [currentTab, setCurrentTab] = useState<Colour>('w');
-
     return (
         <div className={styles.panel}>
             <Tabs currentTab={currentTab} setCurrentTab={setCurrentTab} />
