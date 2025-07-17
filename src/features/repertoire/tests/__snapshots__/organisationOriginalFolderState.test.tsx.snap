@@ -1,0 +1,150 @@
+<div>
+  <main
+    class="_main_756822"
+  >
+    <div
+      class="_panel_1631d9"
+    >
+      <div
+        class="_tabs_1631d9"
+        role="tablist"
+      >
+        <button
+          aria-label="white repertoire"
+          aria-selected="true"
+          class="_tab_1631d9"
+          id="_whiteTab_1631d9"
+          role="tab"
+        >
+          White
+        </button>
+        <button
+          aria-label="black repertoire"
+          aria-selected="false"
+          class="_tab_1631d9"
+          id="_blackTab_1631d9"
+          role="tab"
+        >
+          Black
+        </button>
+      </div>
+      <div
+        aria-labelledby="_whiteTab_1631d9"
+        class="_folders_1631d9"
+        role="tabpanel"
+      >
+        <div
+          aria-label="White open folder"
+          class="_folder_1631d9"
+          draggable="false"
+          id="id-w"
+        >
+          <div
+            class="_heading_1631d9 _base_1631d9"
+          >
+            <i
+              class="fa-solid fa-caret-down"
+            />
+            <h2>
+              White
+            </h2>
+            <button
+              aria-label="rename folder"
+              class="iconButton"
+              type="button"
+            >
+              <i
+                class="fa-solid fa-pencil"
+              />
+            </button>
+            <button
+              aria-label="new folder"
+              class="iconButton"
+              type="button"
+            >
+              <i
+                class="fa-solid fa-folder-plus"
+              />
+            </button>
+          </div>
+          <ul
+            aria-label="folders within White folder"
+            class="_contents_1631d9"
+            role="list"
+          >
+            <li>
+              <div
+                aria-label="line folder closed folder"
+                class="_folder_1631d9"
+                draggable="true"
+                id="id-68cafccd-d7b8-4f92-9153-9df59eee4f03"
+              >
+                <div
+                  class="_heading_1631d9 "
+                >
+                  <h2>
+                    line folder
+                  </h2>
+                  <button
+                    aria-label="rename folder"
+                    class="iconButton"
+                    type="button"
+                  >
+                    <i
+                      class="fa-solid fa-pencil"
+                    />
+                  </button>
+                </div>
+              </div>
+            </li>
+            <li>
+              <div
+                aria-label="folder folder closed folder"
+                class="_folder_1631d9"
+                draggable="true"
+                id="id-68cafccd-d7b8-4f92-9153-9df59eee4f04"
+              >
+                <div
+                  class="_heading_1631d9 "
+                >
+                  <i
+                    class="fa-solid fa-caret-right"
+                  />
+                  <h2>
+                    folder folder
+                  </h2>
+                  <button
+                    aria-label="rename folder"
+                    class="iconButton"
+                    type="button"
+                  >
+                    <i
+                      class="fa-solid fa-pencil"
+                    />
+                  </button>
+                  <button
+                    aria-label="new folder"
+                    class="iconButton"
+                    type="button"
+                  >
+                    <i
+                      class="fa-solid fa-folder-plus"
+                    />
+                  </button>
+                </div>
+              </div>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <section
+      aria-label="empty line panel"
+      class="_panel_5a5bf8 _empty_5a5bf8"
+    >
+      <p>
+        No lines to show
+      </p>
+    </section>
+  </main>
+</div>

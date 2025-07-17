@@ -13,6 +13,7 @@ export const UUIDS: Record<'folders' | 'lines', UUID[]> = {
     folders: [
         '68cafccd-d7b8-4f92-9153-9df59eee4f03',
         '68cafccd-d7b8-4f92-9153-9df59eee4f04',
+        '68cafccd-d7b8-4f92-9153-9df59eee4f05',
     ],
 };
 
@@ -106,18 +107,28 @@ const repertoire = {
             folders: {
                 w: {
                     name: 'White',
-                    contains: 'lines',
-                    children: [UUIDS.lines[0], UUIDS.lines[1]],
+                    contains: 'folders',
+                    children: [UUIDS.folders[0], UUIDS.folders[1]],
                 },
                 b: {
                     name: 'Black',
-                    contains: 'folders',
-                    children: [UUIDS.folders[0]],
+                    contains: 'lines',
+                    children: [UUIDS.lines[0]],
                 },
                 [UUIDS.folders[0]]: {
-                    name: 'lines here',
+                    name: 'line folder',
                     contains: 'lines',
-                    children: [UUIDS.lines[2]],
+                    children: [UUIDS.lines[1], UUIDS.lines[2]],
+                },
+                [UUIDS.folders[1]]: {
+                    name: 'folder folder',
+                    contains: 'folders',
+                    children: [UUIDS.folders[2]],
+                },
+                [UUIDS.folders[2]]: {
+                    name: 'empty folder',
+                    contains: 'either',
+                    children: [],
                 },
             },
             lines: {
@@ -129,7 +140,7 @@ const repertoire = {
                 [UUIDS.lines[1]]: {
                     startingFEN:
                         'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1',
-                    PGN: '1. e4 e5 2. d4 d5 3. f4',
+                    PGN: '1. e4 e5 2. d4 d5 3. f4 f5',
                 },
                 [UUIDS.lines[2]]: {
                     startingFEN:

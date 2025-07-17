@@ -1,5 +1,6 @@
 import type { MouseEvent } from 'react';
 import type { Colour } from '@/types/chessboard';
+import { UUID } from '@/types/utility';
 
 export function reverse(str: string): string {
     return str.split('').reverse().join('');
@@ -76,3 +77,12 @@ export function extractActiveColour(FEN: string): Colour {
 export function constructFullPGN(FEN: string, moves: string): string {
     return `[FEN "${FEN}"]\n\n${moves}`;
 }
+
+export const convert = {
+    uuidToId(uuid: string): string {
+        return `id-${uuid}`;
+    },
+    idToUuid(id: string): string {
+        return id.slice(3);
+    },
+};
