@@ -1,14 +1,15 @@
-import { type FormEvent, MouseEvent, useState } from 'react';
+import { DragEvent, type FormEvent, MouseEvent, useState } from 'react';
 import { FolderNameForm } from './FolderNameForm';
+import { FolderName } from './FolderName';
+import { IconButton } from '@/components/util/IconButton';
 import { ICONS } from '@/util/constants';
-import type { StateSetter } from '@/types/utility';
+import type { StateSetter, UUID } from '@/types/utility';
 import type {
     RepertoireFolderID,
     RepertoireWithMethods,
 } from '@/types/repertoire';
 import styles from './folders.module.css';
-import { FolderName } from './FolderName';
-import { IconButton } from '@/components/util/IconButton';
+import { convert } from '@/util/util';
 
 type FolderProps = {
     id: RepertoireFolderID;
@@ -80,10 +81,58 @@ export function Folder({
         folders.delete(id);
     }
 
+    // https://developer.mozilla.org/en-US/docs/Web/API/HTML_Drag_and_Drop_API/Drag_operations#specifying_drop_targets
+    function makeDropTarget(e: DragEvent) {
+        if (folder.contains !== 'lines') {
+            e.preventDefault();
+        }
+    }
+
+    function startDrag(e: DragEvent) {
+        // must not be able to drag base w/b folders
+        if (id === 'w' || id === 'b') {
+            return;
+        }
+
+        // prevent dragging ancestor folders along with it
+        e.stopPropagation();
+        e.dataTransfer.clearData();
+        e.dataTransfer.setData('text/plain', id);
+        e.dataTransfer.effectAllowed = 'move';
+    }
+
+    function appendDraggedFolder(e: DragEvent) {
+        // restrict dropping to direct drop target only
+        e.stopPropagation();
+        e.preventDefault();
+
+        const targetFolder = e.currentTarget as HTMLElement;
+        const draggedId = e.dataTransfer.getData('text');
+        if (draggedId === 'w' || draggedId === 'b' || draggedId === id) {
+            return;
+        }
+
+        const isAlreadyInFolder = Boolean(
+            targetFolder.querySelector(
+                `[aria-label="folders within ${folder.name} folder"] > li > #${convert.uuidToId(draggedId)}`
+            )
+        );
+        if (!isAlreadyInFolder && folder.contains !== 'lines') {
+            folders.updateLocation(draggedId as UUID, id);
+            setIsOpen(true);
+        }
+    }
+
     return (
         <div
+            id={convert.uuidToId(id)}
             className={styles.folder}
             aria-label={`${folder.name} ${isOpen || id === currentLinesFolder ? 'open' : 'closed'} folder`}
+            draggable={!isBaseFolder}
+            onDragEnter={makeDropTarget}
+            onDragOver={makeDropTarget}
+            onDragStart={startDrag}
+            onDrop={appendDraggedFolder}
         >
             <div
                 className={`${styles.heading} ${isBaseFolder ? styles.base : ''}`}
@@ -134,7 +183,11 @@ export function Folder({
             {/* https://developer.mozilla.org/en-US/docs/Web/CSS/list-style#accessibility
                 list-style: none removes list accessibility role in Safari */}
             {isOpen && (
-                <ul role="list" className={styles.contents}>
+                <ul
+                    role="list"
+                    className={styles.contents}
+                    aria-label={`folders within ${folder.name} folder`}
+                >
                     {folder.children.map((childId) => (
                         <li key={childId}>
                             <Folder
