@@ -14,6 +14,7 @@ export const UUIDS: Record<'folders' | 'lines', UUID[]> = {
         '68cafccd-d7b8-4f92-9153-9df59eee4f03',
         '68cafccd-d7b8-4f92-9153-9df59eee4f04',
         '68cafccd-d7b8-4f92-9153-9df59eee4f05',
+        '68cafccd-d7b8-4f92-9153-9df59eee4f06',
     ],
 };
 
@@ -108,13 +109,13 @@ const repertoire = {
                 w: {
                     name: 'White',
                     contains: 'folders',
-                    children: [UUIDS.folders[0], UUIDS.folders[1]],
+                    children: [
+                        UUIDS.folders[0],
+                        UUIDS.folders[1],
+                        UUIDS.folders[3],
+                    ],
                 },
-                b: {
-                    name: 'Black',
-                    contains: 'lines',
-                    children: [UUIDS.lines[0]],
-                },
+                b: { name: 'Black', contains: 'either', children: [] },
                 [UUIDS.folders[0]]: {
                     name: 'line folder',
                     contains: 'lines',
@@ -130,12 +131,17 @@ const repertoire = {
                     contains: 'either',
                     children: [],
                 },
+                [UUIDS.folders[3]]: {
+                    name: 'another line folder',
+                    contains: 'lines',
+                    children: [UUIDS.lines[0]],
+                },
             },
             lines: {
                 [UUIDS.lines[0]]: {
                     startingFEN:
                         'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1',
-                    PGN: '1. e4 e5 2. Nc3',
+                    PGN: '1. e4 e5 2. Nc3 Nf6',
                 },
                 [UUIDS.lines[1]]: {
                     startingFEN:

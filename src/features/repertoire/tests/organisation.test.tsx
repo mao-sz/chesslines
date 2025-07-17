@@ -13,7 +13,7 @@ describe('Moving folders', () => {
         );
 
         const lineFolder = screen.getByRole('generic', {
-            name: /line folder/i,
+            name: /^line folder/i,
         });
         const folderFolder = screen.getByRole('generic', {
             name: /folder folder/i,
@@ -22,10 +22,12 @@ describe('Moving folders', () => {
 
         fireEvent.drag(lineFolder);
         fireEvent.drop(folderFolder, {
-            dataTransfer: { getData: () => convert.idToUuid(lineFolder.id) },
+            dataTransfer: {
+                getData: () => `folder ${convert.idToUuid(lineFolder.id)}`,
+            },
         });
         expect(folderFolder).toContainElement(
-            screen.getByRole('generic', { name: /line folder/i })
+            screen.getByRole('generic', { name: /^line folder/i })
         );
     });
 
@@ -37,7 +39,7 @@ describe('Moving folders', () => {
         );
 
         const lineFolder = screen.getByRole('generic', {
-            name: /line folder/i,
+            name: /^line folder/i,
         });
         const folderFolder = screen.getByRole('generic', {
             name: /folder folder/i,
@@ -46,10 +48,12 @@ describe('Moving folders', () => {
         // user-events cannot simulate drag* events - must manually fire
         fireEvent.drag(lineFolder);
         fireEvent.drop(document.body, {
-            dataTransfer: { getData: () => convert.idToUuid(lineFolder.id) },
+            dataTransfer: {
+                getData: () => `folder ${convert.idToUuid(lineFolder.id)}`,
+            },
         });
         expect(folderFolder).not.toContainElement(
-            screen.getByRole('generic', { name: /line folder/i })
+            screen.getByRole('generic', { name: /^line folder/i })
         );
     });
 
@@ -61,7 +65,7 @@ describe('Moving folders', () => {
         );
 
         const lineFolder = screen.getByRole('generic', {
-            name: /line folder/i,
+            name: /^line folder/i,
         });
         const folderFolder = screen.getByRole('generic', {
             name: /folder folder/i,
@@ -70,7 +74,9 @@ describe('Moving folders', () => {
         // user-events cannot simulate drag* events - must manually fire
         fireEvent.drag(folderFolder);
         fireEvent.drop(lineFolder, {
-            dataTransfer: { getData: () => convert.idToUuid(folderFolder.id) },
+            dataTransfer: {
+                getData: () => `folder ${convert.idToUuid(folderFolder.id)}`,
+            },
         });
         await expect(container).toMatchFileSnapshot(
             './__snapshots__/organisationOriginalFolderState.test.tsx.snap'
@@ -85,14 +91,16 @@ describe('Moving folders', () => {
         );
 
         const lineFolder = screen.getByRole('generic', {
-            name: /line folder/i,
+            name: /^line folder/i,
         });
         const whiteFolder = screen.getByRole('generic', { name: /white/i });
 
         // user-events cannot simulate drag* events - must manually fire
         fireEvent.drag(lineFolder);
         fireEvent.drop(whiteFolder, {
-            dataTransfer: { getData: () => convert.idToUuid(lineFolder.id) },
+            dataTransfer: {
+                getData: () => `folder ${convert.idToUuid(lineFolder.id)}`,
+            },
         });
         await expect(container).toMatchFileSnapshot(
             './__snapshots__/organisationOriginalFolderState.test.tsx.snap'
@@ -114,7 +122,9 @@ describe('Moving folders', () => {
         // user-events cannot simulate drag* events - must manually fire
         fireEvent.drag(whiteFolder);
         fireEvent.drop(folderFolder, {
-            dataTransfer: { getData: () => convert.idToUuid(whiteFolder.id) },
+            dataTransfer: {
+                getData: () => `folder ${convert.idToUuid(whiteFolder.id)}`,
+            },
         });
         await expect(container).toMatchFileSnapshot(
             './__snapshots__/organisationOriginalFolderState.test.tsx.snap'
@@ -134,7 +144,9 @@ describe('Moving folders', () => {
         // user-events cannot simulate drag* events - must manually fire
         fireEvent.drag(folderFolder);
         fireEvent.drop(folderFolder, {
-            dataTransfer: { getData: () => convert.idToUuid(folderFolder.id) },
+            dataTransfer: {
+                getData: () => `folder ${convert.idToUuid(folderFolder.id)}`,
+            },
         });
         await expect(container).toMatchFileSnapshot(
             './__snapshots__/organisationOriginalFolderState.test.tsx.snap'

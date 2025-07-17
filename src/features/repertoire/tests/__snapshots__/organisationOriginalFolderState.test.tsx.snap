@@ -36,6 +36,7 @@
         <div
           aria-label="White open folder"
           class="_folder_1631d9"
+          data-type="folder"
           draggable="false"
           id="id-w"
         >
@@ -76,6 +77,7 @@
               <div
                 aria-label="line folder closed folder"
                 class="_folder_1631d9"
+                data-type="folder"
                 draggable="true"
                 id="id-68cafccd-d7b8-4f92-9153-9df59eee4f03"
               >
@@ -101,6 +103,7 @@
               <div
                 aria-label="folder folder closed folder"
                 class="_folder_1631d9"
+                data-type="folder"
                 draggable="true"
                 id="id-68cafccd-d7b8-4f92-9153-9df59eee4f04"
               >
@@ -129,6 +132,32 @@
                   >
                     <i
                       class="fa-solid fa-folder-plus"
+                    />
+                  </button>
+                </div>
+              </div>
+            </li>
+            <li>
+              <div
+                aria-label="another line folder closed folder"
+                class="_folder_1631d9"
+                data-type="folder"
+                draggable="true"
+                id="id-68cafccd-d7b8-4f92-9153-9df59eee4f06"
+              >
+                <div
+                  class="_heading_1631d9 "
+                >
+                  <h2>
+                    another line folder
+                  </h2>
+                  <button
+                    aria-label="rename folder"
+                    class="iconButton"
+                    type="button"
+                  >
+                    <i
+                      class="fa-solid fa-pencil"
                     />
                   </button>
                 </div>
