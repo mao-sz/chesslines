@@ -1,9 +1,10 @@
+import { IconButton } from '@/components/util/IconButton';
 import { ICONS, STANDARD_STARTING_FEN } from '@/util/constants';
-import type { MouseEvent } from 'react';
+import type { DragEvent, MouseEvent } from 'react';
 import type { UUID } from '@/types/utility';
 import type { RepertoireWithMethods } from '@/types/repertoire';
 import styles from './lines.module.css';
-import { IconButton } from '@/components/util/IconButton';
+import { convert } from '@/util/util';
 
 type LineProps = {
     id: UUID;
@@ -29,8 +30,23 @@ export function Line({ id, lines, openLine }: LineProps) {
         lines.delete(id);
     }
 
+    function startDrag(e: DragEvent) {
+        // prevent dragging ancestor folders along with it
+        e.stopPropagation();
+        e.dataTransfer.clearData();
+        e.dataTransfer.setData('text/plain', `line ${id}`);
+        e.dataTransfer.effectAllowed = 'move';
+    }
+
     return (
-        <li className={styles.line} onClick={editLine}>
+        <li
+            id={convert.uuidToId(id)}
+            className={styles.line}
+            onClick={editLine}
+            draggable={true}
+            onDragStart={startDrag}
+            data-type="line"
+        >
             <div>
                 <p>Starting FEN: {displayFEN}</p>
                 <p>PGN: {PGN}</p>

@@ -117,7 +117,7 @@ export function useRepertoire(repertoire: Repertoire) {
                 folders
             );
             const oldParentChildrenWithoutLine = oldParent.children.filter(
-                (ids) => ids !== idToMove
+                (id) => id !== idToMove
             );
 
             setFolders({
@@ -125,7 +125,7 @@ export function useRepertoire(repertoire: Repertoire) {
                 [oldParentId]: {
                     ...oldParent,
                     contains: oldParentChildrenWithoutLine.length
-                        ? lines
+                        ? 'lines'
                         : 'either',
                     children: oldParentChildrenWithoutLine,
                 },

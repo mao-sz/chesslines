@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import { Tabs } from './Tabs';
 import { Folder } from './Folder';
 import type { StateSetter } from '@/types/utility';
@@ -10,7 +9,7 @@ import type {
 import styles from './folders.module.css';
 
 type FolderPanelProps = {
-    folders: RepertoireWithMethods['folders'];
+    repertoire: RepertoireWithMethods;
     currentLinesFolder: RepertoireFolderID | null;
     setCurrentLinesFolder: StateSetter<RepertoireFolderID | null>;
     currentTab: Colour;
@@ -18,7 +17,7 @@ type FolderPanelProps = {
 };
 
 export function FolderPanel({
-    folders,
+    repertoire,
     currentLinesFolder,
     setCurrentLinesFolder,
     currentTab,
@@ -39,7 +38,7 @@ export function FolderPanel({
                     // key prevents sharing stale isOpen state when switching tabs
                     key={currentTab}
                     id={currentTab}
-                    folders={folders}
+                    repertoire={repertoire}
                     currentLinesFolder={currentLinesFolder}
                     setCurrentLinesFolder={setCurrentLinesFolder}
                 />

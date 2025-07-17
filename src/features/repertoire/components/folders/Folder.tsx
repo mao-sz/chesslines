@@ -13,17 +13,18 @@ import { convert } from '@/util/util';
 
 type FolderProps = {
     id: RepertoireFolderID;
-    folders: RepertoireWithMethods['folders'];
+    repertoire: RepertoireWithMethods;
     currentLinesFolder: RepertoireFolderID | null;
     setCurrentLinesFolder: StateSetter<RepertoireFolderID | null>;
 };
 
 export function Folder({
     id,
-    folders,
+    repertoire,
     currentLinesFolder,
     setCurrentLinesFolder,
 }: FolderProps) {
+    const { folders, lines } = repertoire;
     const folder = folders[id];
     const isBaseFolder = id === 'w' || id === 'b';
 
@@ -57,7 +58,6 @@ export function Folder({
 
     function showNewFolderForm() {
         setIsCreatingNewFolder(true);
-        // setIsOpen(isOpen);
     }
 
     function createFolder(e: FormEvent) {
@@ -83,9 +83,7 @@ export function Folder({
 
     // https://developer.mozilla.org/en-US/docs/Web/API/HTML_Drag_and_Drop_API/Drag_operations#specifying_drop_targets
     function makeDropTarget(e: DragEvent) {
-        if (folder.contains !== 'lines') {
-            e.preventDefault();
-        }
+        e.preventDefault();
     }
 
     function startDrag(e: DragEvent) {
@@ -97,29 +95,33 @@ export function Folder({
         // prevent dragging ancestor folders along with it
         e.stopPropagation();
         e.dataTransfer.clearData();
-        e.dataTransfer.setData('text/plain', id);
+        e.dataTransfer.setData('text/plain', `folder ${id}`);
         e.dataTransfer.effectAllowed = 'move';
     }
 
-    function appendDraggedFolder(e: DragEvent) {
+    function appendDraggedItem(e: DragEvent) {
         // restrict dropping to direct drop target only
         e.stopPropagation();
         e.preventDefault();
 
-        const targetFolder = e.currentTarget as HTMLElement;
-        const draggedId = e.dataTransfer.getData('text');
+        const [type, draggedId] = e.dataTransfer.getData('text').split(' ');
         if (draggedId === 'w' || draggedId === 'b' || draggedId === id) {
             return;
         }
 
-        const isAlreadyInFolder = Boolean(
-            targetFolder.querySelector(
-                `[aria-label="folders within ${folder.name} folder"] > li > #${convert.uuidToId(draggedId)}`
-            )
-        );
-        if (!isAlreadyInFolder && folder.contains !== 'lines') {
-            folders.updateLocation(draggedId as UUID, id);
+        const draggedUUID = draggedId as UUID;
+        const isAlreadyInFolder =
+            folder.contains === (`${type}s` as 'folders' | 'lines') &&
+            folder.children.includes(draggedUUID);
+        if (isAlreadyInFolder) {
+            return;
+        }
+
+        if (type === 'folder' && folder.contains !== 'lines') {
+            folders.updateLocation(draggedUUID, id);
             setIsOpen(true);
+        } else if (type === 'line' && folder.contains !== 'folders') {
+            lines.updateLocation(draggedUUID, id);
         }
     }
 
@@ -128,11 +130,12 @@ export function Folder({
             id={convert.uuidToId(id)}
             className={styles.folder}
             aria-label={`${folder.name} ${isOpen || id === currentLinesFolder ? 'open' : 'closed'} folder`}
+            data-type="folder"
             draggable={!isBaseFolder}
             onDragEnter={makeDropTarget}
             onDragOver={makeDropTarget}
             onDragStart={startDrag}
-            onDrop={appendDraggedFolder}
+            onDrop={appendDraggedItem}
         >
             <div
                 className={`${styles.heading} ${isBaseFolder ? styles.base : ''}`}
@@ -192,7 +195,7 @@ export function Folder({
                         <li key={childId}>
                             <Folder
                                 id={childId}
-                                folders={folders}
+                                repertoire={repertoire}
                                 currentLinesFolder={currentLinesFolder}
                                 setCurrentLinesFolder={setCurrentLinesFolder}
                             />

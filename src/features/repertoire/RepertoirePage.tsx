@@ -22,7 +22,7 @@ export function RepertoirePage({ repertoire }: RepertoirePageProps) {
     return (
         <main className={styles.main}>
             <FolderPanel
-                folders={folders}
+                repertoire={{ folders, lines }}
                 currentLinesFolder={currentLinesFolder}
                 setCurrentLinesFolder={setCurrentLinesFolder}
                 currentTab={currentTab}
