@@ -101,12 +101,14 @@ export function useRepertoireChessboard(pgn?: string, startPosition?: string) {
         } else {
             setCurrentMoveIndex(0);
         }
+        setActiveColour(extractActiveColour(chessboard.current.toFEN()));
     }
 
     function toNextPosition(): void {
         chessboard.current.toNextPosition();
         if (currentMoveIndex < moveList.length) {
             setCurrentMoveIndex(currentMoveIndex + 1);
+            setActiveColour(extractActiveColour(chessboard.current.toFEN()));
         }
     }
 
@@ -114,6 +116,7 @@ export function useRepertoireChessboard(pgn?: string, startPosition?: string) {
         chessboard.current.toPreviousPosition();
         if (currentMoveIndex > 0) {
             setCurrentMoveIndex(currentMoveIndex - 1);
+            setActiveColour(extractActiveColour(chessboard.current.toFEN()));
         }
     }
 
