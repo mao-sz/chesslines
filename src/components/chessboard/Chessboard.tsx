@@ -43,6 +43,7 @@ export function Chessboard({
     );
 
     const displayPosition = orientation === 'w' ? position : reverse(position);
+    const isShowingPromotions = promotionOptions !== null;
 
     // Clear selectedSquare if dragged and dropped outside of the board
     useEffect(() => {
@@ -57,85 +58,62 @@ export function Chessboard({
             window.removeEventListener('pointerup', clearSelectedSquare);
     }, []);
 
-    function handleSquareClick(e: ReactPointerEvent): void {
+    function selectSquare(e: ReactPointerEvent): void {
         const square = e.target as HTMLElement;
         const RIGHT_CLICK = 2;
         if (
             square.tagName !== 'BUTTON' ||
             e.button === RIGHT_CLICK ||
-            promotionOptions !== null
+            isShowingPromotions
         ) {
             return;
         }
 
         const { rank, file, contains } = square.dataset;
-
-        // clicking empty square but not moving piece
-        if (!selectedSquare && !contains) {
-            setShouldShowFeedback?.(false);
-            return;
-        }
-
-        const isOwnPiece = isSameColour(playerColour, contains);
-        const isSamePiece = `${file}${rank}` == selectedSquare;
-
-        if (isPawnPromoting(selectedPiece, Number(rank))) {
-            setPromotionOptions(`${file}${rank}`);
-            return;
-        }
-
-        if (selectedSquare && !isOwnPiece && !isSamePiece) {
-            play({ from: selectedSquare, to: `${file}${rank}` });
-            return;
-        }
-
-        setSelectedSquare(isOwnPiece && !isSamePiece ? `${file}${rank}` : null);
-        setSelectedPiece(isOwnPiece && !isSamePiece ? contains! : null);
         setShouldShowFeedback?.(false);
+
+        if (contains && isSameColour(playerColour, contains)) {
+            setSelectedSquare(`${file}${rank}`);
+            setSelectedPiece(contains);
+        }
     }
 
-    function clearMove(e: MouseEvent): void {
-        e.preventDefault();
-        setSelectedSquare(null);
-        setSelectedPiece(null);
-        setPromotionOptions(null);
-        setShouldShowFeedback?.(false);
-    }
-
-    function handlePointerUp(e: ReactPointerEvent) {
-        const square = e.target as HTMLButtonElement;
-        const { rank, file, contains } = square.dataset;
-        const isOwnPiece = isSameColour(playerColour, contains);
+    function releasePiece(e: ReactPointerEvent) {
+        const destinationSquare = e.target as HTMLButtonElement;
+        const { rank, file, contains } = destinationSquare.dataset;
         const isSamePiece = `${file}${rank}` === selectedSquare;
-        const isLeftMouseButton = e.button === 0;
-        const isReleaseFromDrag = isLeftMouseButton && !isSamePiece;
 
-        // Clicking on a square is handled in `handleSquareClick`
-        // This should only be for actual dragging onto different square
-        if (!isReleaseFromDrag || promotionOptions !== null) {
+        if (!selectedSquare || isSamePiece || isShowingPromotions) {
             return;
         }
 
+        const isOwnPiece = isSameColour(playerColour, contains);
         if (isPawnPromoting(selectedPiece, Number(rank))) {
             setPromotionOptions(`${file}${rank}`);
-        } else if (selectedSquare && !isOwnPiece) {
+        } else if (!isOwnPiece) {
             play({ from: selectedSquare, to: `${file}${rank}` });
         }
     }
 
     function play(move: MoveInfo): void {
         playMove(move);
+        clearMove();
+        setShouldShowFeedback?.(true);
+    }
+
+    function clearMove(e?: MouseEvent): void {
+        e?.preventDefault();
         setSelectedSquare(null);
         setSelectedPiece(null);
         setPromotionOptions(null);
-        setShouldShowFeedback?.(true);
+        setShouldShowFeedback?.(false);
     }
 
     return (
         <div
             className={`${styles.board} ${boardSizeClass}`}
-            onPointerDown={handleSquareClick}
-            onPointerUp={handlePointerUp}
+            onPointerDown={selectSquare}
+            onPointerUp={releasePiece}
             onContextMenu={clearMove}
         >
             {promotionOptions && (
