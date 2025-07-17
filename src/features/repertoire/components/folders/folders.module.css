@@ -112,3 +112,8 @@
 .newFolder {
     margin-inline-start: var(--list-item-indent);
 }
+
+.highlighted {
+    background-color: var(--bg-mid-light) !important;
+    outline: 2px solid var(--text-faint);
+}

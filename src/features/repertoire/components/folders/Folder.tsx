@@ -125,6 +125,12 @@ export function Folder({
         }
     }
 
+    function highlightWhenDraggedOver(action: 'add' | 'remove') {
+        return (e: DragEvent) => {
+            e.currentTarget.classList[action](styles.highlighted);
+        };
+    }
+
     return (
         <div
             id={convert.uuidToId(id)}
@@ -140,6 +146,9 @@ export function Folder({
             <div
                 className={`${styles.heading} ${isBaseFolder ? styles.base : ''}`}
                 onClick={handleClickOnFolder}
+                onDragEnter={highlightWhenDraggedOver('add')}
+                onDragExit={highlightWhenDraggedOver('remove')}
+                onDrop={highlightWhenDraggedOver('remove')}
             >
                 {folder.contains === 'folders' && (
                     <i className={isOpen ? ICONS.OPENED : ICONS.CLOSED}></i>
