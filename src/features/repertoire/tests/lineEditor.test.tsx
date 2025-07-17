@@ -354,7 +354,9 @@ describe('Move history navigation', () => {
             screen.getByRole('button', { name: /e5 square/i })
         ).toHaveAttribute('data-contains', 'p');
 
-        const firstMoveButton = screen.getByRole('button', { name: 'e4' });
+        const firstMoveButton = screen.getByRole('button', {
+            name: /full move 1\. e4/i,
+        });
         await user.click(firstMoveButton);
 
         expect(
@@ -388,5 +390,30 @@ describe('Move history navigation', () => {
 
         await user.click(nextButton);
         expect(helpers.serialiseCurrentBoard()).toEqual(nextLatestPosition);
+    });
+
+    it('Overwrites future moves if move played when not at latest move', async () => {
+        const user = await openLineEditor(helpers.repertoire.withLineInWhite);
+
+        const firstFullMove = screen.getByRole('listitem', {
+            name: /full move 1\./i,
+        });
+        expect(firstFullMove.children[1]).toHaveAccessibleName(
+            /black full move 1\. e5/i
+        );
+
+        const previousButton = screen.getByRole('button', {
+            name: /previous/i,
+        });
+        await user.click(previousButton);
+
+        const d7Square = screen.getByRole('button', { name: /d7 square/i });
+        const d5Square = screen.getByRole('button', { name: /d5 square/i });
+        await user.click(d7Square);
+        await user.click(d5Square);
+
+        expect(firstFullMove.children[1]).toHaveAccessibleName(
+            /black full move 1\. d5/i
+        );
     });
 });

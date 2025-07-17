@@ -75,13 +75,6 @@ export function useRepertoireChessboard(pgn?: string, startPosition?: string) {
     }
 
     function playMove(move: MoveInfo): void {
-        const isOverwritingMoves = currentMoveIndex < moveList.length;
-        if (isOverwritingMoves) {
-            // TODO: overwrite moves
-            console.log('FIX ME!');
-            return;
-        }
-
         const [error] = chessboard.current.playMove(move);
         if (error) {
             return;

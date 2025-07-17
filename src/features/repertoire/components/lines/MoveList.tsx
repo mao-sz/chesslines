@@ -59,13 +59,18 @@ export function MoveList({
                 moveIndex++;
 
                 return (
-                    <li key={moveNumber} className={styles.fullMove}>
+                    <li
+                        key={moveNumber}
+                        className={styles.fullMove}
+                        aria-label={`full move ${moveNumber}`}
+                    >
                         {moveNumber}
                         {white.move && (
                             <button
                                 data-moveindex={white.index}
                                 className={`${styles.whiteMove} ${white.isHighlighted ? styles.highlighted : ''}`}
                                 onClick={() => goToPosition(white.index)}
+                                aria-label={`white full move ${moveNumber} ${white.move}`}
                                 // do not use autoFocus https://github.com/facebook/react/issues/23301
                                 // ref={autoFocusIfHighlighted(
                                 //     white.isHighlighted
@@ -79,10 +84,7 @@ export function MoveList({
                                 data-moveindex={black.index}
                                 className={`${styles.blackMove} ${black.isHighlighted ? styles.highlighted : ''}`}
                                 onClick={() => goToPosition(black.index)}
-                                // do not use autoFocus https://github.com/facebook/react/issues/23301
-                                ref={autoFocusIfHighlighted(
-                                    black.isHighlighted
-                                )}
+                                aria-label={`black full move ${moveNumber} ${black.move}`}
                             >
                                 {black.move}
                             </button>
