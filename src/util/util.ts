@@ -1,3 +1,4 @@
+import type { MouseEvent } from 'react';
 import type { Colour } from '@/types/chessboard';
 
 export function reverse(str: string): string {
@@ -36,6 +37,20 @@ export function isSameColour(
     return player === 'w'
         ? pieceLetter.toUpperCase() === pieceLetter
         : pieceLetter.toLowerCase() === pieceLetter;
+}
+
+export function isPawnPromoting(
+    pieceLetter: string | null,
+    destinationRank: number
+): boolean {
+    if (!pieceLetter) {
+        return false;
+    }
+
+    const isPawn = pieceLetter === 'p' || pieceLetter === 'P';
+    const promotionRank = pieceLetter === 'P' ? 8 : 1;
+
+    return isPawn && destinationRank === promotionRank;
 }
 
 export function getMoves(pgnMoves: string): string[] {

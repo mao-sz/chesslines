@@ -52,3 +52,35 @@
         opacity: 0.6;
     }
 }
+
+.promotions {
+    padding: 0;
+    margin: 0;
+    z-index: 2000;
+    background-color: transparent;
+    border: none;
+
+    &::backdrop {
+        backdrop-filter: brightness(0.5);
+    }
+}
+
+.options {
+    composes: board;
+
+    border-radius: 0;
+    grid-template-columns: 1fr;
+    grid-template-rows: repeat(4, var(--square-size));
+    height: calc(var(--board-size) / 2);
+    width: var(--square-size);
+    margin: 0;
+    padding: 0;
+
+    & > .dark:hover {
+        background-color: var(--text-normal);
+    }
+
+    & > .light:hover {
+        background-color: var(--bg-light);
+    }
+}

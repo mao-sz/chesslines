@@ -10,6 +10,14 @@ type SquareProps = {
     rank: number;
     file: string;
     selectedSquare: string | null;
+    isPromotionOption?: boolean;
+};
+
+const PROMOTION_PIECE_NAMES: Record<string, string> = {
+    Q: 'queen',
+    N: 'knight',
+    R: 'rook',
+    B: 'bishop',
 };
 
 export function Square({
@@ -18,6 +26,7 @@ export function Square({
     rank,
     file,
     selectedSquare,
+    isPromotionOption = false,
 }: SquareProps) {
     const isEvenRank = rank % 2 === 0;
     const isEvenFile = 'abcdefgh'.indexOf(file) % 2 === 0;
@@ -72,7 +81,11 @@ export function Square({
     return (
         <button
             className={classNames.join(' ')}
-            aria-label={`${coordinate} square`}
+            aria-label={
+                isPromotionOption
+                    ? `promote to ${PROMOTION_PIECE_NAMES[contains!]}`
+                    : `${coordinate} square`
+            }
             data-rank={rank}
             data-file={file}
             data-contains={contains}

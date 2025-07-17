@@ -5,13 +5,19 @@ import {
     useState,
 } from 'react';
 import { Square } from './Square';
-import { expandEmptySquares, isSameColour, reverse } from '@/util/util';
+import {
+    expandEmptySquares,
+    isPawnPromoting,
+    isSameColour,
+    reverse,
+} from '@/util/util';
 import type { StateSetter } from '@/types/utility';
 import type { Colour, MoveInfo } from '@/types/chessboard';
 import styles from './chessboard.module.css';
+import { PromotionOptions } from './PromotionOptions';
 
 type ChessboardProps = {
-    boardSizeClass: string;
+    boardSizeClass?: string;
     position: string;
     playerColour: Colour;
     orientation: Colour;
@@ -23,7 +29,7 @@ const RANK = [8, 7, 6, 5, 4, 3, 2, 1, 0];
 const FILE = 'abcdefgh';
 
 export function Chessboard({
-    boardSizeClass,
+    boardSizeClass = styles.boardSize,
     position,
     playerColour,
     orientation,
@@ -31,6 +37,11 @@ export function Chessboard({
     setShouldShowFeedback,
 }: ChessboardProps) {
     const [selectedSquare, setSelectedSquare] = useState<string | null>(null);
+    const [selectedPiece, setSelectedPiece] = useState<string | null>(null);
+    const [promotionOptions, setPromotionOptions] = useState<string | null>(
+        null
+    );
+
     const displayPosition = orientation === 'w' ? position : reverse(position);
 
     // Clear selectedSquare if dragged and dropped outside of the board
@@ -49,7 +60,11 @@ export function Chessboard({
     function handleSquareClick(e: ReactPointerEvent): void {
         const square = e.target as HTMLElement;
         const RIGHT_CLICK = 2;
-        if (square.tagName !== 'BUTTON' || e.button === RIGHT_CLICK) {
+        if (
+            square.tagName !== 'BUTTON' ||
+            e.button === RIGHT_CLICK ||
+            promotionOptions !== null
+        ) {
             return;
         }
 
@@ -64,20 +79,26 @@ export function Chessboard({
         const isOwnPiece = isSameColour(playerColour, contains);
         const isSamePiece = `${file}${rank}` == selectedSquare;
 
+        if (isPawnPromoting(selectedPiece, Number(rank))) {
+            setPromotionOptions(`${file}${rank}`);
+            return;
+        }
+
         if (selectedSquare && !isOwnPiece && !isSamePiece) {
-            playMove({ from: selectedSquare, to: `${file}${rank}` });
-            setSelectedSquare(null);
-            setShouldShowFeedback?.(true);
+            play({ from: selectedSquare, to: `${file}${rank}` });
             return;
         }
 
         setSelectedSquare(isOwnPiece && !isSamePiece ? `${file}${rank}` : null);
+        setSelectedPiece(isOwnPiece && !isSamePiece ? contains! : null);
         setShouldShowFeedback?.(false);
     }
 
     function clearMove(e: MouseEvent): void {
         e.preventDefault();
         setSelectedSquare(null);
+        setSelectedPiece(null);
+        setPromotionOptions(null);
         setShouldShowFeedback?.(false);
     }
 
@@ -91,16 +112,23 @@ export function Chessboard({
 
         // Clicking on a square is handled in `handleSquareClick`
         // This should only be for actual dragging onto different square
-        if (!isReleaseFromDrag) {
+        if (!isReleaseFromDrag || promotionOptions !== null) {
             return;
         }
 
-        if (selectedSquare && !isOwnPiece) {
-            playMove({ from: selectedSquare, to: `${file}${rank}` });
-            setSelectedSquare(null);
-            setShouldShowFeedback?.(true);
-            return;
+        if (isPawnPromoting(selectedPiece, Number(rank))) {
+            setPromotionOptions(`${file}${rank}`);
+        } else if (selectedSquare && !isOwnPiece) {
+            play({ from: selectedSquare, to: `${file}${rank}` });
         }
+    }
+
+    function play(move: MoveInfo): void {
+        playMove(move);
+        setSelectedSquare(null);
+        setSelectedPiece(null);
+        setPromotionOptions(null);
+        setShouldShowFeedback?.(true);
     }
 
     return (
@@ -110,6 +138,15 @@ export function Chessboard({
             onPointerUp={handlePointerUp}
             onContextMenu={clearMove}
         >
+            {promotionOptions && (
+                <PromotionOptions
+                    colour={playerColour}
+                    from={selectedSquare as string} // cannot be null in this situation
+                    to={promotionOptions}
+                    closeOptions={clearMove}
+                    play={play}
+                />
+            )}
             {displayPosition
                 .split('/')
                 .map((row, rank) =>
