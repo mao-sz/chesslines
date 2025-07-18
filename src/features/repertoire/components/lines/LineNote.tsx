@@ -26,7 +26,7 @@ export function LineNote({ notes, setNotes, currentMoveIndex }: LineNoteProps) {
             </label>
             <textarea
                 id="notes"
-                className={styles.noteText}
+                className={`${styles.textbox} ${styles.noteText}`}
                 name="notes"
                 aria-label="notes"
                 value={notes[currentMoveIndex]}

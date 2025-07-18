@@ -27,13 +27,9 @@ export function MoveList({
     let moveIndex = 1;
 
     return (
-        <div>
+        <div className={styles.moveList}>
             <h3 className={styles.heading}>Moves:</h3>
-            <ol
-                className={styles.moveList}
-                aria-label="moves"
-                ref={moveListRef}
-            >
+            <ol aria-label="moves" ref={moveListRef}>
                 {moves.map((fullMove) => {
                     const [moveNumber, firstMove, secondMove] =
                         fullMove.split(' ');
