@@ -436,4 +436,27 @@ describe('Move history navigation', () => {
             /black full move 1\. d5/i
         );
     });
+
+    it("Does not load old moves' notes after being overwritten", async () => {
+        const user = await openLineEditor(helpers.repertoire.withLineWithNotes);
+
+        const notesBox = screen.getByRole('textbox', {
+            name: /notes/i,
+        }) as HTMLTextAreaElement;
+        const latestNoteText = notesBox.value;
+
+        const previousButton = screen.getByRole('button', {
+            name: /previous/i,
+        });
+        await user.click(previousButton);
+
+        const d7Square = screen.getByRole('button', { name: /d7 square/i });
+        const d5Square = screen.getByRole('button', { name: /d5 square/i });
+        await user.click(d7Square);
+        await user.click(d5Square);
+
+        expect(
+            within(notesBox).queryByText(latestNoteText)
+        ).not.toBeInTheDocument();
+    });
 });
