@@ -1,9 +1,8 @@
 import { type FormEvent, useEffect, useRef, useState } from 'react';
-import { Chessboard } from '@/components/chessboard/Chessboard';
-import { IconButton } from '@/components/util/IconButton';
+import { FENPGNInterface } from './FENPGNInterface';
+import { BoardInterface } from './BoardInterface';
 import { useRepertoireChessboard } from '@/hooks/useRepertoireChessboard';
 import type { UUID } from '@/types/utility';
-import { MoveList } from './MoveList';
 import type {
     LineNotes,
     RepertoireFolderID,
@@ -11,8 +10,6 @@ import type {
 } from '@/types/repertoire';
 import type { Colour, MoveInfo } from '@/types/chessboard';
 import styles from './editor.module.css';
-import { ICONS } from '@/util/constants';
-import { LineNote } from './LineNote';
 
 type LineEditorProps = {
     id: UUID | 'new';
@@ -90,141 +87,34 @@ export function LineEditor({
         moves.play(move);
     }
 
-    function returnToBoardInterface() {
-        setEditorInterface('board');
-        setInitialisationError(false);
-    }
-
     return (
         <dialog className={styles.editor} ref={dialogRef} onClose={closeEditor}>
             {editorInterface === 'FEN/PGN' ? (
-                <form
-                    className={styles.fenPngEditor}
-                    method="dialog"
-                    onSubmit={submitNewPosition}
-                >
-                    <label className={styles.fen}>
-                        Starting FEN{' '}
-                        <input
-                            className={styles.textbox}
-                            name="startingFEN"
-                            defaultValue={startingFEN}
-                            onChange={() => setInitialisationError(false)}
-                        />
-                    </label>
-                    <label className={styles.pgn}>
-                        PGN (no tag pairs){' '}
-                        <textarea
-                            className={styles.textbox}
-                            name="PGN"
-                            defaultValue={moves.list}
-                            onChange={() => setInitialisationError(false)}
-                        />
-                    </label>
-                    <div
-                        className={styles.buttons}
-                        aria-live="assertive"
-                        aria-relevant="additions"
-                    >
-                        {initialisationError && (
-                            <p className={styles.error}>
-                                Invalid FEN and/or PGN combination!
-                            </p>
-                        )}
-                        <button type="button" onClick={returnToBoardInterface}>
-                            Cancel
-                        </button>
-                        <button type="submit">Load</button>
-                    </div>
-                </form>
-            ) : initialisationError ? (
-                <div className={styles.invalid}>
-                    <p className={styles.error} aria-live="polite">
-                        Invalid FEN and/or PGN combination!
-                    </p>
-                    <div className={styles.buttons}>
-                        <button
-                            className={styles.highlighted}
-                            onClick={() => dialogRef.current?.close()}
-                        >
-                            Close
-                        </button>
-                        <button
-                            className={styles.highlighted}
-                            onClick={() => setEditorInterface('FEN/PGN')}
-                        >
-                            Fix FEN/PGN
-                        </button>
-                    </div>
-                </div>
+                <FENPGNInterface
+                    startingFEN={startingFEN}
+                    moveListString={moves.list}
+                    submitNewPosition={submitNewPosition}
+                    initialisationError={initialisationError}
+                    clearErrors={() => setInitialisationError(false)}
+                    switchInterface={() => {
+                        setEditorInterface('board');
+                        setInitialisationError(false);
+                    }}
+                />
             ) : (
-                <div className={styles.boardEditor}>
-                    <Chessboard
-                        boardSizeClass={styles.boardSize}
-                        position={position.current}
-                        playerColour={activeColour}
-                        orientation={currentTab}
-                        playMove={playMove}
-                    />
-                    <div className={styles.side}>
-                        <LineNote
-                            notes={notes}
-                            setNotes={setNotes}
-                            currentMoveIndex={position.currentIndex}
-                        />
-                        <MoveList
-                            moveString={moves.list}
-                            highlightedMoveIndex={position.currentIndex}
-                            goToPosition={position.toNth}
-                        />
-                        <div className={`${styles.buttons} ${styles.controls}`}>
-                            <IconButton
-                                type="button"
-                                icon={ICONS.START}
-                                ariaLabel="skip to first move"
-                                onClick={() => position.toNth(0)}
-                            />
-                            <IconButton
-                                type="button"
-                                icon={ICONS.PREVIOUS}
-                                ariaLabel="previous move"
-                                onClick={position.toPrevious}
-                            />
-                            <IconButton
-                                type="button"
-                                icon={ICONS.NEXT}
-                                ariaLabel="next move"
-                                onClick={position.toNext}
-                            />
-                            <IconButton
-                                type="button"
-                                icon={ICONS.END}
-                                ariaLabel="skip to last move"
-                                onClick={() => position.toNth(Infinity)}
-                            />
-                        </div>
-                        <div className={styles.buttons}>
-                            <button
-                                className={styles.highlighted}
-                                onClick={() => setEditorInterface('FEN/PGN')}
-                            >
-                                Load FEN/PGN
-                            </button>
-                            <button
-                                className={styles.highlighted}
-                                onClick={() => dialogRef.current?.close()}
-                            >
-                                Cancel
-                            </button>
-                            <button
-                                className={styles.highlighted}
-                                onClick={saveLine}
-                            >
-                                Save
-                            </button>
-                        </div>
-                    </div>
-                </div>
+                <BoardInterface
+                    initialisationError={initialisationError}
+                    dialogRef={dialogRef}
+                    position={position}
+                    switchInterface={() => setEditorInterface('FEN/PGN')}
+                    activeColour={activeColour}
+                    currentTab={currentTab}
+                    moveListString={moves.list}
+                    playMove={playMove}
+                    saveLine={saveLine}
+                    notes={notes}
+                    setNotes={setNotes}
+                />
             )}
         </dialog>
     );
