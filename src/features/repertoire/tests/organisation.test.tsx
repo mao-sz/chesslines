@@ -33,7 +33,7 @@ describe('Moving folders', () => {
     });
 
     it('Does nothing if folder is not released on valid drop target', async () => {
-        render(
+        const { container } = render(
             <RepertoirePage
                 repertoire={helpers.repertoire.manyFoldersAndLines}
             />
@@ -42,9 +42,9 @@ describe('Moving folders', () => {
         const lineFolder = screen.getByRole('generic', {
             name: /^line folder/i,
         });
-        const folderFolder = screen.getByRole('generic', {
-            name: /folder folder/i,
-        });
+        await expect(container).toMatchFileSnapshot(
+            './__snapshots__/organisationOriginalFolderState.html'
+        );
 
         // user-events cannot simulate drag* events - must manually fire
         fireEvent.drag(lineFolder);
@@ -53,8 +53,8 @@ describe('Moving folders', () => {
                 getData: () => `folder ${convert.idToUuid(lineFolder.id)}`,
             },
         });
-        expect(folderFolder).not.toContainElement(
-            screen.getByRole('generic', { name: /^line folder/i })
+        await expect(container).toMatchFileSnapshot(
+            './__snapshots__/organisationOriginalFolderState.html'
         );
     });
 
@@ -71,6 +71,9 @@ describe('Moving folders', () => {
         const folderFolder = screen.getByRole('generic', {
             name: /folder folder/i,
         });
+        await expect(container).toMatchFileSnapshot(
+            './__snapshots__/organisationOriginalFolderState.html'
+        );
 
         // user-events cannot simulate drag* events - must manually fire
         fireEvent.drag(folderFolder);
@@ -80,7 +83,7 @@ describe('Moving folders', () => {
             },
         });
         await expect(container).toMatchFileSnapshot(
-            './__snapshots__/organisationOriginalFolderState.test.tsx.snap'
+            './__snapshots__/organisationOriginalFolderState.html'
         );
     });
 
@@ -95,6 +98,9 @@ describe('Moving folders', () => {
             name: /^line folder/i,
         });
         const whiteFolder = screen.getByRole('generic', { name: /white/i });
+        await expect(container).toMatchFileSnapshot(
+            './__snapshots__/organisationOriginalFolderState.html'
+        );
 
         // user-events cannot simulate drag* events - must manually fire
         fireEvent.drag(lineFolder);
@@ -104,7 +110,7 @@ describe('Moving folders', () => {
             },
         });
         await expect(container).toMatchFileSnapshot(
-            './__snapshots__/organisationOriginalFolderState.test.tsx.snap'
+            './__snapshots__/organisationOriginalFolderState.html'
         );
     });
 
@@ -119,6 +125,9 @@ describe('Moving folders', () => {
             name: /folder folder/i,
         });
         const whiteFolder = screen.getByRole('generic', { name: /white/i });
+        await expect(container).toMatchFileSnapshot(
+            './__snapshots__/organisationOriginalFolderState.html'
+        );
 
         // user-events cannot simulate drag* events - must manually fire
         fireEvent.drag(whiteFolder);
@@ -128,7 +137,7 @@ describe('Moving folders', () => {
             },
         });
         await expect(container).toMatchFileSnapshot(
-            './__snapshots__/organisationOriginalFolderState.test.tsx.snap'
+            './__snapshots__/organisationOriginalFolderState.html'
         );
     });
 
@@ -142,6 +151,10 @@ describe('Moving folders', () => {
         const folderFolder = screen.getByRole('generic', {
             name: /folder folder/i,
         });
+        await expect(container).toMatchFileSnapshot(
+            './__snapshots__/organisationOriginalFolderState.html'
+        );
+
         // user-events cannot simulate drag* events - must manually fire
         fireEvent.drag(folderFolder);
         fireEvent.drop(folderFolder, {
@@ -150,7 +163,7 @@ describe('Moving folders', () => {
             },
         });
         await expect(container).toMatchFileSnapshot(
-            './__snapshots__/organisationOriginalFolderState.test.tsx.snap'
+            './__snapshots__/organisationOriginalFolderState.html'
         );
     });
 });
@@ -231,6 +244,10 @@ describe('Moving lines', () => {
         const linesPanel = screen.getByRole('list', { name: /lines/i });
         const lineToDrag = linesPanel.firstElementChild as HTMLElement;
 
+        await expect(container).toMatchFileSnapshot(
+            './__snapshots__/organisationOriginalLineState.html'
+        );
+
         fireEvent.drag(lineToDrag);
         fireEvent.drop(document.body, {
             dataTransfer: {
@@ -239,7 +256,7 @@ describe('Moving lines', () => {
         });
 
         await expect(container).toMatchFileSnapshot(
-            './__snapshots__/organisationOriginalLineState.test.tsx.snap'
+            './__snapshots__/organisationOriginalLineState.html'
         );
     });
 
@@ -252,6 +269,10 @@ describe('Moving lines', () => {
             name: /^folder folder/i,
         });
 
+        await expect(container).toMatchFileSnapshot(
+            './__snapshots__/organisationOriginalLineState.html'
+        );
+
         fireEvent.drag(lineToDrag);
         fireEvent.drop(targetFolderFolder, {
             dataTransfer: {
@@ -260,7 +281,7 @@ describe('Moving lines', () => {
         });
 
         await expect(container).toMatchFileSnapshot(
-            './__snapshots__/organisationOriginalLineState.test.tsx.snap'
+            './__snapshots__/organisationOriginalLineState.html'
         );
     });
 
@@ -273,6 +294,10 @@ describe('Moving lines', () => {
             name: /^line folder/i,
         });
 
+        await expect(container).toMatchFileSnapshot(
+            './__snapshots__/organisationOriginalLineState.html'
+        );
+
         fireEvent.drag(lineToDrag);
         fireEvent.drop(originalParentFolder, {
             dataTransfer: {
@@ -281,7 +306,7 @@ describe('Moving lines', () => {
         });
 
         await expect(container).toMatchFileSnapshot(
-            './__snapshots__/organisationOriginalLineState.test.tsx.snap'
+            './__snapshots__/organisationOriginalLineState.html'
         );
     });
 });
