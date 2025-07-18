@@ -5,12 +5,14 @@ import { useRepertoireChessboard } from '@/hooks/useRepertoireChessboard';
 import type { UUID } from '@/types/utility';
 import { MoveList } from './MoveList';
 import type {
+    LineNotes,
     RepertoireFolderID,
     RepertoireWithMethods,
 } from '@/types/repertoire';
 import type { Colour, MoveInfo } from '@/types/chessboard';
 import styles from './editor.module.css';
 import { ICONS } from '@/util/constants';
+import { LineNote } from './LineNote';
 
 type LineEditorProps = {
     id: UUID | 'new';
@@ -33,6 +35,7 @@ export function LineEditor({
     const [editorInterface, setEditorInterface] = useState<'board' | 'FEN/PGN'>(
         line ? 'board' : 'FEN/PGN'
     );
+    const [notes, setNotes] = useState<LineNotes>(line?.notes ?? ['']);
 
     const {
         initialisationError,
@@ -52,9 +55,9 @@ export function LineEditor({
         e.preventDefault();
 
         if (id === 'new') {
-            lines.create(startingFEN, moves.list, parentFolder);
+            lines.create(startingFEN, moves.list, notes, parentFolder);
         } else {
-            lines.updateLine(id, startingFEN, moves.list);
+            lines.updateLine(id, startingFEN, moves.list, notes);
         }
         closeEditor();
     }
@@ -66,10 +69,25 @@ export function LineEditor({
         const startingFEN = form.elements[0] as HTMLInputElement;
         const PGN = form.elements[1] as HTMLTextAreaElement;
 
-        const success = loadNewPosition(startingFEN.value, PGN.value);
-        if (success) {
+        const [success, newMovesList] = loadNewPosition(
+            startingFEN.value,
+            PGN.value
+        );
+
+        if (success && newMovesList) {
+            // +1 because of start position with no moves played yet
+            setNotes(Array(newMovesList.length + 1).fill('') as LineNotes);
             setEditorInterface('board');
         }
+    }
+
+    function playMove(move: MoveInfo) {
+        const notesUntilNewMove = notes.slice(
+            0,
+            position.currentIndex + 1
+        ) as LineNotes;
+        setNotes([...notesUntilNewMove, '']);
+        moves.play(move);
     }
 
     function returnToBoardInterface() {
@@ -146,9 +164,14 @@ export function LineEditor({
                         position={position.current}
                         playerColour={activeColour}
                         orientation={currentTab}
-                        playMove={(move: MoveInfo) => moves.play(move)}
+                        playMove={playMove}
                     />
                     <div className={styles.side}>
+                        <LineNote
+                            notes={notes}
+                            setNotes={setNotes}
+                            currentMoveIndex={position.currentIndex}
+                        />
                         <MoveList
                             moveString={moves.list}
                             highlightedMoveIndex={position.currentIndex}

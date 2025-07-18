@@ -47,7 +47,7 @@ export function useRepertoireChessboard(pgn?: string, startPosition?: string) {
         startPosition || STANDARD_STARTING_FEN
     );
 
-    function loadNewPosition(FEN: string, moves: string): boolean {
+    function loadNewPosition(FEN: string, moves: string): [boolean, string[]?] {
         // clear unnecessary whitespace
         FEN = FEN.replaceAll(/\s+/g, ' ').trim();
         moves = moves.replaceAll(/\s+/g, ' ').trim();
@@ -60,7 +60,7 @@ export function useRepertoireChessboard(pgn?: string, startPosition?: string) {
         // prevent loading invalid board
         if (newBoard.invalid) {
             setInitialisationError(true);
-            return false;
+            return [false];
         }
 
         chessboard.current = newBoard;
@@ -71,7 +71,7 @@ export function useRepertoireChessboard(pgn?: string, startPosition?: string) {
         setCurrentMoveIndex(newMoveList.length);
         setActiveColour(extractActiveColour(chessboard.current.toFEN()));
         setInitialisationError(false);
-        return true;
+        return [true, newMoveList];
     }
 
     function playMove(move: MoveInfo): void {
