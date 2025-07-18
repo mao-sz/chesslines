@@ -1,6 +1,4 @@
-import type { MouseEvent } from 'react';
 import type { Colour } from '@/types/chessboard';
-import { UUID } from '@/types/utility';
 
 export function reverse(str: string): string {
     return str.split('').reverse().join('');

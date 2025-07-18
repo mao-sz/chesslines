@@ -26,16 +26,6 @@ export function MoveList({
     // hence moves are effectively 1-indexed
     let moveIndex = 1;
 
-    function autoFocusIfHighlighted(
-        isHighlighted: boolean
-    ): (el: HTMLElement | null) => void {
-        return (element: HTMLElement | null) => {
-            if (element && isHighlighted) {
-                element.autofocus = true;
-            }
-        };
-    }
-
     return (
         <ol className={styles.moveList} aria-label="moves" ref={moveListRef}>
             {moves.map((fullMove) => {
@@ -71,10 +61,6 @@ export function MoveList({
                                 className={`${styles.whiteMove} ${white.isHighlighted ? styles.highlighted : ''}`}
                                 onClick={() => goToPosition(white.index)}
                                 aria-label={`white full move ${moveNumber} ${white.move}`}
-                                // do not use autoFocus https://github.com/facebook/react/issues/23301
-                                // ref={autoFocusIfHighlighted(
-                                //     white.isHighlighted
-                                // )}
                             >
                                 {white.move}
                             </button>
