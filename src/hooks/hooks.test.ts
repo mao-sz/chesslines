@@ -42,6 +42,7 @@ describe('useRepertoire', () => {
         result.current.lines.create(
             'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1',
             '1. e4 e5 2. Nc3',
+            [''],
             'w'
         );
         rerender();
@@ -52,6 +53,7 @@ describe('useRepertoire', () => {
                 startingFEN:
                     'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1',
                 PGN: '1. e4 e5 2. Nc3',
+                notes: [''],
             },
         });
     });
@@ -61,6 +63,7 @@ describe('useRepertoire', () => {
         result.current.lines.create(
             'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1',
             '1. e4 e5 2. Nc3',
+            [''],
             'w'
         );
         rerender();
@@ -98,6 +101,7 @@ describe('useRepertoire', () => {
         result.current.lines.create(
             'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1',
             '1. e4 e5 2. Nc3',
+            ['', '', '', ''],
             'w'
         );
         rerender();
@@ -106,7 +110,8 @@ describe('useRepertoire', () => {
         result.current.lines.updateLine(
             uuid,
             'rnbqkbnr/pp1ppppp/8/2p5/4P3/8/PPPP1PPP/RNBQKBNR w KQkq - 0 2',
-            '2. Nc3 Nc6'
+            '2. Nc3 Nc6',
+            ['', '', 'change']
         );
         rerender();
 
@@ -115,6 +120,7 @@ describe('useRepertoire', () => {
                 startingFEN:
                     'rnbqkbnr/pp1ppppp/8/2p5/4P3/8/PPPP1PPP/RNBQKBNR w KQkq - 0 2',
                 PGN: '2. Nc3 Nc6',
+                notes: ['', '', 'change'],
             },
         });
     });
@@ -124,6 +130,7 @@ describe('useRepertoire', () => {
         result.current.lines.create(
             'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1',
             '1. e4 e5 2. Nc3',
+            [''],
             'w'
         );
         rerender();
@@ -195,6 +202,7 @@ describe('useRepertoire', () => {
         result.current.lines.create(
             'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1',
             '1. e4 e5 2. Nc3',
+            [''],
             'w'
         );
         rerender();
@@ -211,6 +219,7 @@ describe('useRepertoire', () => {
         result.current.lines.create(
             'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1',
             '1. e4 e5 2. Nc3',
+            [''],
             'w'
         );
         rerender();

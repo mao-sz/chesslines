@@ -61,6 +61,7 @@ const repertoire = {
                     startingFEN:
                         'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1',
                     PGN: '1. e4 e5',
+                    notes: [],
                 },
             },
         };
@@ -80,6 +81,35 @@ const repertoire = {
                     startingFEN:
                         'rnbqkbnr/pp1ppppp/8/2p5/4P3/8/PPPP1PPP/RNBQKBNR w KQkq - 0 2',
                     PGN: '2. Nc3',
+                    notes: [],
+                },
+            },
+        };
+    },
+    get withLineWithNotes(): Repertoire {
+        return {
+            folders: {
+                w: {
+                    name: 'White',
+                    contains: 'lines',
+                    children: [UUIDS.lines[0]],
+                },
+                b: { name: 'Black', contains: 'either', children: [] },
+            },
+            lines: {
+                [UUIDS.lines[0]]: {
+                    startingFEN:
+                        'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1',
+                    PGN: '1. e4 e5 2. Nc3 Nf6 3. f4 exf4',
+                    notes: [
+                        '',
+                        '',
+                        '',
+                        'Vienna',
+                        '',
+                        'Vienna gambit',
+                        'mistake',
+                    ],
                 },
             },
         };
@@ -99,6 +129,7 @@ const repertoire = {
                     startingFEN:
                         'rnbqkbnr/psd8as8d7ppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1',
                     PGN: '1. asdklke4 e5',
+                    notes: [],
                 },
             },
         };
@@ -142,16 +173,19 @@ const repertoire = {
                     startingFEN:
                         'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1',
                     PGN: '1. e4 e5 2. Nc3 Nf6',
+                    notes: [],
                 },
                 [UUIDS.lines[1]]: {
                     startingFEN:
                         'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1',
                     PGN: '1. e4 e5 2. d4 d5 3. f4 f5',
+                    notes: [],
                 },
                 [UUIDS.lines[2]]: {
                     startingFEN:
                         'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1',
                     PGN: '1. e4 e5 2. d4 exd4 3. c3 dxc3',
+                    notes: [],
                 },
             },
         };

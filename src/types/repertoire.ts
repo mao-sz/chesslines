@@ -1,6 +1,7 @@
 import type { NonEmptyArray, UUID } from './utility';
 
-type RepertoireLine = { startingFEN: string; PGN: string };
+export type LineNotes = [string, ...string[]];
+type RepertoireLine = { startingFEN: string; PGN: string; notes: LineNotes };
 type RepertoireLines = Record<UUID, RepertoireLine>;
 
 type Folder = { name: string };
@@ -33,9 +34,15 @@ export type RepertoireWithMethods = {
         create: (
             startingFEN: string,
             PGN: string,
+            notes: LineNotes,
             parent: RepertoireFolderID
         ) => void;
-        updateLine: (id: UUID, newStartingFEN: string, newPGN: string) => void;
+        updateLine: (
+            id: UUID,
+            newStartingFEN: string,
+            newPGN: string,
+            notes: LineNotes
+        ) => void;
         updateLocation: (
             idToMove: UUID,
             newParentId: RepertoireFolderID

@@ -3,6 +3,7 @@ import type {
     Repertoire,
     RepertoireWithMethods,
     RepertoireFolderID,
+    LineNotes,
 } from '@/types/repertoire';
 import type { UUID } from '@/types/utility';
 
@@ -93,6 +94,7 @@ export function useRepertoire(repertoire: Repertoire) {
         create(
             startingFEN: string,
             PGN: string,
+            notes: LineNotes,
             parent: RepertoireFolderID
         ): void {
             const newLineUUID = crypto.randomUUID();
@@ -102,13 +104,22 @@ export function useRepertoire(repertoire: Repertoire) {
                 children: [...folders[parent].children, newLineUUID],
             };
 
-            setLines({ ...lines, [newLineUUID]: { startingFEN, PGN } });
+            setLines({ ...lines, [newLineUUID]: { startingFEN, PGN, notes } });
             setFolders({ ...folders, [parent]: newParentFolder });
         },
-        updateLine(id: UUID, newStartingFEN: string, newPGN: string): void {
+        updateLine(
+            id: UUID,
+            newStartingFEN: string,
+            newPGN: string,
+            newNotes: LineNotes
+        ): void {
             setLines({
                 ...lines,
-                [id]: { startingFEN: newStartingFEN, PGN: newPGN },
+                [id]: {
+                    startingFEN: newStartingFEN,
+                    PGN: newPGN,
+                    notes: newNotes,
+                },
             });
         },
         updateLocation(idToMove: UUID, newParentId: RepertoireFolderID): void {
