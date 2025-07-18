@@ -59,6 +59,26 @@ describe('Opening and interaction', () => {
         ).toBeInTheDocument();
     });
 
+    it('Includes "notes" box in the board interface', async () => {
+        await openLineEditor();
+
+        expect(
+            screen.getByRole('textbox', { name: /notes/i })
+        ).toBeInTheDocument();
+    });
+
+    it('Displays current notes value as you type in it', async () => {
+        const user = await openLineEditor();
+
+        const textBox = screen.getByRole('textbox', { name: /notes/i });
+        const randomTypedText = String(window.crypto.randomUUID());
+        await user.type(textBox, randomTypedText);
+
+        expect(
+            within(textBox).getByText(new RegExp(`${randomTypedText}$`, 'i'))
+        ).toBeInTheDocument();
+    });
+
     it('Opens line editor with the FEN/PGN interface when new line button clicked', async () => {
         const user = await openLineFolderInPanel();
 
