@@ -1,0 +1,24 @@
+.header {
+    display: flex;
+    justify-content: space-between;
+    width: var(--content-width);
+    padding-inline: 36px;
+
+    & > * {
+        display: flex;
+        align-items: center;
+        gap: 1.6rem;
+    }
+
+    & a {
+        color: var(--text-normal);
+        text-decoration: none;
+        padding: 8px;
+        border-radius: 8px;
+        transition: 120ms;
+
+        &:hover {
+            background-color: var(--bg-light);
+        }
+    }
+}

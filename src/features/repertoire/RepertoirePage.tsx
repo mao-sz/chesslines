@@ -1,16 +1,19 @@
 import { useState } from 'react';
+import { useOutletContext } from 'react-router';
 import { useRepertoire } from '@/hooks/useRepertoire';
 import { FolderPanel } from './components/folders/FolderPanel';
 import { LinePanel } from './components/lines/LinePanel';
 import { LineEditor } from './components/lines/LineEditor';
-import type { UUID } from '@/types/utility';
-import type { Repertoire, RepertoireFolderID } from '@/types/repertoire';
+import type { OutletContext, UUID } from '@/types/utility';
+import type { RepertoireFolderID } from '@/types/repertoire';
 import type { Colour } from '@/types/chessboard';
 import styles from './page.module.css';
 
-type RepertoirePageProps = { repertoire: Repertoire };
+export function RepertoirePage() {
+    document.title = 'Chesslines | Repertoire';
 
-export function RepertoirePage({ repertoire }: RepertoirePageProps) {
+    const { repertoire } = useOutletContext<OutletContext>();
+
     const { folders, lines } = useRepertoire(repertoire);
     const [currentTab, setCurrentTab] = useState<Colour>('w');
     const [currentLinesFolder, setCurrentLinesFolder] =

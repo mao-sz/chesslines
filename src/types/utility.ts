@@ -1,4 +1,5 @@
 import type { Dispatch, SetStateAction } from 'react';
+import type { Repertoire } from './repertoire';
 
 export type UUID = `${string}-${string}-${string}-${string}-${string}`;
 export type StateSetter<T> = Dispatch<SetStateAction<T>>;
@@ -19,3 +20,5 @@ type FontAwesomeIconName =
     | 'caret-down'
     | 'caret-right';
 export type FontAwesomeIcon = `fa-solid fa-${FontAwesomeIconName}`;
+
+export type OutletContext = { repertoire: Repertoire };

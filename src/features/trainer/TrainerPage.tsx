@@ -1,12 +1,18 @@
+import { useOutletContext } from 'react-router';
 import { Trainer } from './components/Trainer';
 import { useShuffledLines } from '@/hooks/useShuffledLines';
-import type { Line } from '@/types/chessboard';
+import type { OutletContext } from '@/types/utility';
 
-type TrainerPageProps = { lines: Line[] };
+export function TrainerPage() {
+    document.title = 'Chesslines | Trainer';
 
-export function TrainerPage({ lines }: TrainerPageProps) {
-    const { currentLine, toNextLine, progress } = useShuffledLines(lines);
-    const hasLinesLeft = progress < lines.length;
+    // TODO: Implement pre-trainer line select page!
+    const { repertoire } = useOutletContext<OutletContext>();
+    const linesToTrain = Object.values(repertoire.lines);
+
+    const { currentLine, toNextLine, progress } =
+        useShuffledLines(linesToTrain);
+    const hasLinesLeft = progress < linesToTrain.length;
 
     return (
         <>
@@ -17,7 +23,7 @@ export function TrainerPage({ lines }: TrainerPageProps) {
                     </button>
                 )}
                 <p>
-                    Line {progress}/{lines.length}
+                    Line {progress}/{linesToTrain.length}
                 </p>
             </div>
 
