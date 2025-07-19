@@ -6,7 +6,11 @@ export function Header() {
         <header className={styles.header}>
             <div className={styles.left}>
                 Chesslines
-                <a target="_black" rel="noopener noreferrer">
+                <a
+                    href="https://github.com/MaoShizhong/chesslines"
+                    target="_black"
+                    rel="noopener noreferrer"
+                >
                     <i
                         className="fa-brands fa-github"
                         aria-label="open github repo in new tab"

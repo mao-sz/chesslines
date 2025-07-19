@@ -1,15 +1,20 @@
-import { describe, it, expect } from 'vitest';
+import { useOutletContext } from 'react-router';
+import { describe, it, expect, afterEach, vi } from 'vitest';
 import { render, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { RepertoirePage } from '../RepertoirePage';
 import { helpers, UUIDS } from '@/testing/helpers';
 
+afterEach(vi.restoreAllMocks);
+vi.mock('react-router');
+
 describe('Lines panel', () => {
     it('Opens lines folder in line panel when clicked on', async () => {
+        vi.mocked(useOutletContext).mockReturnValue({
+            repertoire: helpers.repertoire.withLineInWhite,
+        });
         const user = userEvent.setup();
-        render(
-            <RepertoirePage repertoire={helpers.repertoire.withLineInWhite} />
-        );
+        render(<RepertoirePage />);
 
         const whiteFolder = screen.getByRole('generic', {
             name: /white.*folder/i,
@@ -24,10 +29,11 @@ describe('Lines panel', () => {
     });
 
     it("Lists open lines folder's lines in line panel", async () => {
+        vi.mocked(useOutletContext).mockReturnValue({
+            repertoire: helpers.repertoire.withLineInWhite,
+        });
         const user = userEvent.setup();
-        render(
-            <RepertoirePage repertoire={helpers.repertoire.withLineInWhite} />
-        );
+        render(<RepertoirePage />);
 
         const whiteFolder = screen.getByRole('generic', {
             name: /white.*folder/i,
@@ -42,10 +48,11 @@ describe('Lines panel', () => {
     });
 
     it("Shows starting FEN as 'Standard' if standard starting position", async () => {
+        vi.mocked(useOutletContext).mockReturnValue({
+            repertoire: helpers.repertoire.withLineInWhite,
+        });
         const user = userEvent.setup();
-        render(
-            <RepertoirePage repertoire={helpers.repertoire.withLineInWhite} />
-        );
+        render(<RepertoirePage />);
 
         const whiteFolder = screen.getByRole('generic', {
             name: /white.*folder/i,
@@ -56,12 +63,11 @@ describe('Lines panel', () => {
     });
 
     it('Shows non-standard starting FEN in full', async () => {
+        vi.mocked(useOutletContext).mockReturnValue({
+            repertoire: helpers.repertoire.withNonstandardLineInWhite,
+        });
         const user = userEvent.setup();
-        render(
-            <RepertoirePage
-                repertoire={helpers.repertoire.withNonstandardLineInWhite}
-            />
-        );
+        render(<RepertoirePage />);
 
         const whiteFolder = screen.getByRole('generic', {
             name: /white.*folder/i,
@@ -76,8 +82,11 @@ describe('Lines panel', () => {
     });
 
     it('Does not render new line button if open folder contains other folders', async () => {
+        vi.mocked(useOutletContext).mockReturnValue({
+            repertoire: helpers.repertoire.empty,
+        });
         const user = userEvent.setup();
-        render(<RepertoirePage repertoire={helpers.repertoire.empty} />);
+        render(<RepertoirePage />);
 
         // open White folder in panel (opens because it could contain lines)
         const whiteFolder = screen.getByRole('generic', {

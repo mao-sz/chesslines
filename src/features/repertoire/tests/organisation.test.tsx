@@ -1,17 +1,20 @@
-import { describe, it, expect } from 'vitest';
+import { useOutletContext } from 'react-router';
+import { describe, it, expect, afterEach, vi } from 'vitest';
 import { fireEvent, render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { RepertoirePage } from '../RepertoirePage';
 import { helpers } from '@/testing/helpers';
 import { convert } from '@/util/util';
 
+afterEach(vi.restoreAllMocks);
+vi.mock('react-router');
+
 describe('Moving folders', () => {
     it('Moves folder inside another folder when dropped on it', async () => {
-        render(
-            <RepertoirePage
-                repertoire={helpers.repertoire.manyFoldersAndLines}
-            />
-        );
+        vi.mocked(useOutletContext).mockReturnValue({
+            repertoire: helpers.repertoire.manyFoldersAndLines,
+        });
+        render(<RepertoirePage />);
 
         const lineFolder = screen.getByRole('generic', {
             name: /^line folder/i,
@@ -33,11 +36,10 @@ describe('Moving folders', () => {
     });
 
     it('Does nothing if folder is not released on valid drop target', async () => {
-        const { container } = render(
-            <RepertoirePage
-                repertoire={helpers.repertoire.manyFoldersAndLines}
-            />
-        );
+        vi.mocked(useOutletContext).mockReturnValue({
+            repertoire: helpers.repertoire.manyFoldersAndLines,
+        });
+        const { container } = render(<RepertoirePage />);
 
         const lineFolder = screen.getByRole('generic', {
             name: /^line folder/i,
@@ -59,11 +61,10 @@ describe('Moving folders', () => {
     });
 
     it('Does nothing if the target folder contains lines', async () => {
-        const { container } = render(
-            <RepertoirePage
-                repertoire={helpers.repertoire.manyFoldersAndLines}
-            />
-        );
+        vi.mocked(useOutletContext).mockReturnValue({
+            repertoire: helpers.repertoire.manyFoldersAndLines,
+        });
+        const { container } = render(<RepertoirePage />);
 
         const lineFolder = screen.getByRole('generic', {
             name: /^line folder/i,
@@ -88,11 +89,10 @@ describe('Moving folders', () => {
     });
 
     it('Does nothing if dropped on the current direct parent folder', async () => {
-        const { container } = render(
-            <RepertoirePage
-                repertoire={helpers.repertoire.manyFoldersAndLines}
-            />
-        );
+        vi.mocked(useOutletContext).mockReturnValue({
+            repertoire: helpers.repertoire.manyFoldersAndLines,
+        });
+        const { container } = render(<RepertoirePage />);
 
         const lineFolder = screen.getByRole('generic', {
             name: /^line folder/i,
@@ -115,11 +115,10 @@ describe('Moving folders', () => {
     });
 
     it('Prevents dragging base colour folders', async () => {
-        const { container } = render(
-            <RepertoirePage
-                repertoire={helpers.repertoire.manyFoldersAndLines}
-            />
-        );
+        vi.mocked(useOutletContext).mockReturnValue({
+            repertoire: helpers.repertoire.manyFoldersAndLines,
+        });
+        const { container } = render(<RepertoirePage />);
 
         const folderFolder = screen.getByRole('generic', {
             name: /folder folder/i,
@@ -142,11 +141,10 @@ describe('Moving folders', () => {
     });
 
     it('Prevents dropping onto self', async () => {
-        const { container } = render(
-            <RepertoirePage
-                repertoire={helpers.repertoire.manyFoldersAndLines}
-            />
-        );
+        vi.mocked(useOutletContext).mockReturnValue({
+            repertoire: helpers.repertoire.manyFoldersAndLines,
+        });
+        const { container } = render(<RepertoirePage />);
 
         const folderFolder = screen.getByRole('generic', {
             name: /folder folder/i,
@@ -170,12 +168,11 @@ describe('Moving folders', () => {
 
 describe('Moving lines', () => {
     async function openLineFolder() {
+        vi.mocked(useOutletContext).mockReturnValue({
+            repertoire: helpers.repertoire.manyFoldersAndLines,
+        });
         const user = userEvent.setup();
-        const { container } = render(
-            <RepertoirePage
-                repertoire={helpers.repertoire.manyFoldersAndLines}
-            />
-        );
+        const { container } = render(<RepertoirePage />);
         const lineFolder = screen.getByRole('generic', {
             name: /^line folder/i,
         }).firstElementChild as HTMLElement;

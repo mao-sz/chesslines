@@ -1,17 +1,27 @@
-import { describe, it, expect } from 'vitest';
+import { useOutletContext } from 'react-router';
+import { describe, it, expect, vi, afterEach } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import { RepertoirePage } from '../RepertoirePage';
 import { helpers } from '@/testing/helpers';
 
+afterEach(vi.restoreAllMocks);
+vi.mock('react-router');
+
 describe('Initial elements', () => {
     it('Renders a button for each of white and black repertoires', () => {
-        render(<RepertoirePage repertoire={helpers.repertoire.empty} />);
+        vi.mocked(useOutletContext).mockReturnValue({
+            repertoire: helpers.repertoire.empty,
+        });
+        render(<RepertoirePage />);
 
         expect(screen.getAllByRole('tab')).toHaveLength(2);
     });
 
     it('Renders by default with the white repertoire tab panel showing only', () => {
-        render(<RepertoirePage repertoire={helpers.repertoire.empty} />);
+        vi.mocked(useOutletContext).mockReturnValue({
+            repertoire: helpers.repertoire.empty,
+        });
+        render(<RepertoirePage />);
 
         const whiteTabButton = screen.getByRole('tab', {
             name: /white repertoire/i,
@@ -31,9 +41,10 @@ describe('Initial elements', () => {
     });
 
     it('Renders an empty lines panel when first loaded', () => {
-        render(
-            <RepertoirePage repertoire={helpers.repertoire.withLineInWhite} />
-        );
+        vi.mocked(useOutletContext).mockReturnValue({
+            repertoire: helpers.repertoire.withLineInWhite,
+        });
+        render(<RepertoirePage />);
 
         expect(
             screen.getByRole('region', { name: /empty line panel/i })

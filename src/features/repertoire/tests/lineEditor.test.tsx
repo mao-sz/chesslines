@@ -1,4 +1,5 @@
-import { describe, it, expect } from 'vitest';
+import { useOutletContext } from 'react-router';
+import { describe, it, expect, afterEach, vi } from 'vitest';
 import { render, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { RepertoirePage } from '../RepertoirePage';
@@ -6,10 +7,14 @@ import { helpers } from '@/testing/helpers';
 import { STANDARD_STARTING_FEN } from '@/util/constants';
 import type { Repertoire } from '@/types/repertoire';
 
+afterEach(vi.restoreAllMocks);
+vi.mock('react-router');
+
 async function openLineFolderInPanel(
     repertoire: Repertoire = helpers.repertoire.withLineInWhite
 ) {
-    render(<RepertoirePage repertoire={repertoire} />);
+    vi.mocked(useOutletContext).mockReturnValue({ repertoire });
+    render(<RepertoirePage />);
 
     const user = userEvent.setup();
     const whiteFolder = screen.getByRole('generic', { name: /white.*folder/i })

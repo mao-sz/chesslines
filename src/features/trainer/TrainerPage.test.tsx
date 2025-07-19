@@ -1,12 +1,21 @@
-import { describe, it, expect } from 'vitest';
+import { useOutletContext } from 'react-router';
+import { describe, it, expect, afterEach, vi, beforeEach } from 'vitest';
 import { cleanup, render, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { TrainerPage } from './TrainerPage';
 import { helpers } from '@/testing/helpers';
 
+beforeEach(() => {
+    vi.mocked(useOutletContext).mockReturnValue({
+        repertoire: helpers.repertoire.manyFoldersAndLines,
+    });
+});
+afterEach(vi.restoreAllMocks);
+vi.mock('react-router');
+
 describe('Initial elements', () => {
     it('Renders 8x8 chessboard with pieces', () => {
-        render(<TrainerPage lines={helpers.lines.singleMove.w} />);
+        render(<TrainerPage />);
 
         expect(
             screen.getAllByRole('button', { name: /square$/i })
