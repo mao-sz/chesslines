@@ -52,9 +52,9 @@ export function LineEditor({
         e.preventDefault();
 
         if (id === 'new') {
-            lines.create(startingFEN, moves.list, notes, parentFolder);
+            lines.create(startingFEN, moves.string, notes, parentFolder);
         } else {
-            lines.updateLine(id, startingFEN, moves.list, notes);
+            lines.updateLine(id, startingFEN, moves.string, notes);
         }
         closeEditor();
     }
@@ -92,7 +92,7 @@ export function LineEditor({
             {editorInterface === 'FEN/PGN' ? (
                 <FENPGNInterface
                     startingFEN={startingFEN}
-                    moveListString={moves.list}
+                    moveListString={moves.string}
                     submitNewPosition={submitNewPosition}
                     initialisationError={initialisationError}
                     clearErrors={() => setInitialisationError(false)}
@@ -109,7 +109,7 @@ export function LineEditor({
                     switchInterface={() => setEditorInterface('FEN/PGN')}
                     activeColour={activeColour}
                     currentTab={currentTab}
-                    moveListString={moves.list}
+                    moveListString={moves.string}
                     playMove={playMove}
                     saveLine={saveLine}
                     notes={notes}

@@ -7,6 +7,8 @@ type MoveListProps = {
     goToPosition: (n: number) => void;
 };
 
+const RESULTS = ['1-0', '0-1', '1/2-1/2'];
+
 export function MoveList({
     moveString,
     highlightedMoveIndex,
@@ -22,6 +24,12 @@ export function MoveList({
 
     // https://regexr.com/8g0go to test this regex
     const moves = moveString.split(/\s(?=\d)/);
+    const lastEntry = moves[moves.length - 1];
+    const hasResult = RESULTS.includes(lastEntry);
+    if (hasResult) {
+        moves.splice(-1, 1);
+    }
+
     // maps to game history state (where 0 is the starting position)
     // hence moves are effectively 1-indexed
     let moveIndex = 1;
@@ -82,6 +90,7 @@ export function MoveList({
                     );
                 })}
             </ol>
+            {hasResult && <p className={styles.result}>{lastEntry}</p>}
         </div>
     );
 }

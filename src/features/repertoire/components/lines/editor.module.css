@@ -152,6 +152,7 @@
 }
 
 .highlighted,
+.result,
 .fenPngEditor button {
     background-color: var(--bg-light);
 }
@@ -175,6 +176,13 @@
     & > * {
         margin: auto;
     }
+}
+
+.result {
+    text-align: center;
+    padding-block: 8px;
+    border-radius: 8px;
+    font-weight: bold;
 }
 
 /* FEN/PGN INTERFACE */

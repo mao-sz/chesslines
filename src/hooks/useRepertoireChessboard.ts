@@ -126,7 +126,7 @@ export function useRepertoireChessboard(pgn?: string, startPosition?: string) {
         },
         startingFEN: initialisationError ? (startPosition ?? '') : startingFEN,
         moves: {
-            list: initialisationError
+            string: initialisationError
                 ? (pgn ?? '')
                 : chessboard.current.toPGN({ movesOnly: true }),
             play: playMove,
