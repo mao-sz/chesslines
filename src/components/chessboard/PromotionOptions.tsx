@@ -28,10 +28,7 @@ export function PromotionOptions({
     const options = ['Q', 'N', 'R', 'B'] as const;
 
     useEffect(() => {
-        const optionsModal = optionsRef.current;
-
-        optionsModal?.showModal();
-        return () => optionsModal?.close();
+        optionsRef.current?.showModal();
     }, []);
 
     // custom positioning of promotion options over target square

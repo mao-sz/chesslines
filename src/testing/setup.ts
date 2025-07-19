@@ -1,5 +1,5 @@
 import { expect, afterEach, vi } from 'vitest';
-import { cleanup } from '@testing-library/react';
+import { cleanup, configure } from '@testing-library/react';
 import * as matchers from '@testing-library/jest-dom/matchers';
 import '@testing-library/jest-dom/vitest'; // for matcher types
 
@@ -17,4 +17,5 @@ HTMLDialogElement.prototype.close ??= vi.fn(function (this: HTMLDialogElement) {
     this.dispatchEvent(new Event('close'));
 });
 
+configure({ reactStrictMode: true });
 afterEach(cleanup);
