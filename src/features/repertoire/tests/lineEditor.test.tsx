@@ -87,13 +87,17 @@ describe('Opening and interaction', () => {
 
         const lineEditor = screen.getByRole('dialog');
         const startingFENInput = within(lineEditor).getByRole('textbox', {
-            name: /starting FEN/i,
+            name: /custom starting FEN/i,
         }) as HTMLInputElement;
         const PGNTextarea = within(lineEditor).getByRole('textbox', {
             name: /PGN/i,
         }) as HTMLTextAreaElement;
 
-        expect(startingFENInput).toHaveValue(STANDARD_STARTING_FEN);
+        expect(startingFENInput).toHaveValue('');
+        expect(startingFENInput).toHaveAttribute(
+            'placeholder',
+            STANDARD_STARTING_FEN
+        );
         expect(PGNTextarea).toHaveValue('');
     });
 

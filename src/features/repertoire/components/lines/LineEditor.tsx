@@ -10,6 +10,7 @@ import type {
 } from '@/types/repertoire';
 import type { Colour, MoveInfo } from '@/types/chessboard';
 import styles from './editor.module.css';
+import { STANDARD_STARTING_FEN } from '@/util/constants';
 
 type LineEditorProps = {
     id: UUID | 'new';
@@ -67,7 +68,7 @@ export function LineEditor({
         const PGN = form.elements[1] as HTMLTextAreaElement;
 
         const [success, newMovesList] = loadNewPosition(
-            startingFEN.value,
+            startingFEN.value || STANDARD_STARTING_FEN,
             PGN.value
         );
 

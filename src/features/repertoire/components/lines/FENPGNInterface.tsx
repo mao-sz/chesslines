@@ -1,3 +1,4 @@
+import { STANDARD_STARTING_FEN } from '@/util/constants';
 import type { FormEvent } from 'react';
 import styles from './editor.module.css';
 
@@ -25,16 +26,19 @@ export function FENPGNInterface({
             onSubmit={submitNewPosition}
         >
             <label className={styles.fen}>
-                Starting FEN{' '}
+                Custom starting FEN
                 <input
                     className={styles.textbox}
                     name="startingFEN"
-                    defaultValue={startingFEN}
+                    defaultValue={
+                        startingFEN === STANDARD_STARTING_FEN ? '' : startingFEN
+                    }
                     onChange={clearErrors}
+                    placeholder={STANDARD_STARTING_FEN}
                 />
             </label>
             <label className={styles.pgn}>
-                PGN (no tag pairs){' '}
+                PGN (no tag pairs)
                 <textarea
                     className={styles.textbox}
                     name="PGN"
