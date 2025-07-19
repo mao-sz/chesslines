@@ -5,6 +5,8 @@
 .board {
     --square-size: calc(var(--board-size) / 8);
     --8-squares: repeat(8, var(--square-size));
+    --light-square: #f2e2c5;
+    --dark-square: #b17346;
 
     display: grid;
     grid-template-columns: var(--8-squares);
@@ -23,15 +25,15 @@
 }
 
 .dark {
-    background-color: #b17346;
+    background-color: var(--dark-square);
 }
 
 .light {
-    background-color: #f2e2c5;
+    background-color: var(--light-square);
 }
 
 .selected {
-    background-color: #44882273;
+    background-color: #449d2273;
     z-index: 1000;
 }
 
@@ -82,5 +84,52 @@
 
     & > .light:hover {
         background-color: var(--bg-light);
+    }
+}
+
+.legal {
+    position: relative;
+
+    &::after {
+        content: '';
+        background-color: var(--bg-light);
+        border-radius: 50%;
+        aspect-ratio: 1/1;
+        width: 25%;
+        transform: translate(-50%, -50%);
+        position: absolute;
+        z-index: 1;
+    }
+}
+
+.legal[data-contains] {
+    background-color: var(--bg-light);
+
+    &::after {
+        --corner: 25%;
+
+        border-radius: 0;
+        width: 100%;
+        transform: initial;
+        top: 0;
+        left: 0;
+        clip-path: polygon(
+            /* top edge */ var(--corner) 0%,
+            /* left top */ calc(100% - var(--corner)) 0%,
+            /* right top */ /* right edge */ 100% var(--corner),
+            /* right top */ 100% calc(100% - var(--corner)),
+            /* right bottom */ /* bottom edge*/ calc(100% - var(--corner)) 100%,
+            /* right bottom */ var(--corner) 100%,
+            /* left bottom*/ /* left edge */ 0% calc(100% - var(--corner)),
+            /* left bottom */ 0% var(--corner) /* left top */
+        );
+    }
+
+    &.light::after {
+        background-color: var(--light-square);
+    }
+
+    &.dark::after {
+        background-color: var(--dark-square);
     }
 }

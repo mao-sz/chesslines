@@ -7,6 +7,7 @@ import styles from './chessboard.module.css';
 type SquareProps = {
     selectedSquare: string | null;
     player: Colour;
+    legalMovesShown?: string[];
     contains: string | null;
     rank: number;
     file: string;
@@ -22,6 +23,7 @@ const PROMOTION_PIECE_NAMES: Record<string, string> = {
 
 export function Square({
     player,
+    legalMovesShown,
     contains,
     rank,
     file,
@@ -41,6 +43,9 @@ export function Square({
     const classNames = [styles.square, styles[shade]];
     if (coordinate === selectedSquare) {
         classNames.push(styles.selected);
+    }
+    if (legalMovesShown?.includes(coordinate)) {
+        classNames.push(styles.legal);
     }
 
     const [isDragging, setIsDragging] = useState(false);

@@ -54,6 +54,7 @@ export function Chessboard({
             const target = e.target as HTMLElement;
             if (!target.className.includes(styles.square)) {
                 setSelectedSquare(null);
+                setLegalMovesShown([]);
             }
         }
         window.addEventListener('pointerup', clearSelectedSquare);
@@ -77,8 +78,10 @@ export function Chessboard({
         setShouldShowFeedback?.(false);
 
         if (contains && isSameColour(playerColour, contains)) {
-            setSelectedSquare(`${file}${rank}`);
+            const coordinate = `${file}${rank}`;
+            setSelectedSquare(coordinate);
             setSelectedPiece(contains);
+            setLegalMovesShown(getLegalMoves(coordinate));
         }
     }
 
@@ -109,6 +112,7 @@ export function Chessboard({
         e?.preventDefault();
         setSelectedSquare(null);
         setSelectedPiece(null);
+        setLegalMovesShown([]);
         setPromotionOptions(null);
         setShouldShowFeedback?.(false);
     }
@@ -137,6 +141,7 @@ export function Chessboard({
                             key={`${file}${rank}`}
                             selectedSquare={selectedSquare}
                             player={playerColour}
+                            legalMovesShown={legalMovesShown}
                             contains={square}
                             rank={orientation === 'w' ? RANK[rank] : rank + 1}
                             file={
