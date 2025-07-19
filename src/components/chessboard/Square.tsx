@@ -5,11 +5,11 @@ import type { Colour } from '@/types/chessboard';
 import styles from './chessboard.module.css';
 
 type SquareProps = {
+    selectedSquare: string | null;
     player: Colour;
     contains: string | null;
     rank: number;
     file: string;
-    selectedSquare: string | null;
     isPromotionOption?: boolean;
 };
 

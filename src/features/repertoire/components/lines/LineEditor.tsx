@@ -110,7 +110,7 @@ export function LineEditor({
                     activeColour={activeColour}
                     currentTab={currentTab}
                     moveListString={moves.string}
-                    playMove={playMove}
+                    moves={{ ...moves, play: playMove }}
                     saveLine={saveLine}
                     notes={notes}
                     setNotes={setNotes}

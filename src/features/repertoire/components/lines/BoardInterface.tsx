@@ -23,7 +23,11 @@ type BoardInterfaceProps = {
     activeColour: Colour;
     currentTab: Colour;
     moveListString: string;
-    playMove: (move: MoveInfo) => void;
+    moves: {
+        string: string;
+        play: (moves: MoveInfo) => void;
+        getLegalOptions: (square: string) => string[];
+    };
     saveLine: (e: MouseEvent) => void;
     notes: LineNotes;
     setNotes: StateSetter<LineNotes>;
@@ -37,7 +41,7 @@ export function BoardInterface({
     activeColour,
     currentTab,
     moveListString,
-    playMove,
+    moves,
     saveLine,
     notes,
     setNotes,
@@ -69,7 +73,8 @@ export function BoardInterface({
                 position={position.current}
                 playerColour={activeColour}
                 orientation={currentTab}
-                playMove={playMove}
+                playMove={moves.play}
+                getLegalMoves={moves.getLegalOptions}
             />
             <div className={styles.side}>
                 <LineNote

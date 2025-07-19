@@ -22,6 +22,7 @@ type ChessboardProps = {
     playerColour: Colour;
     orientation: Colour;
     playMove: (move: MoveInfo) => void;
+    getLegalMoves: (square: string) => string[];
     setShouldShowFeedback?: StateSetter<boolean>;
 };
 
@@ -34,6 +35,7 @@ export function Chessboard({
     playerColour,
     orientation,
     playMove,
+    getLegalMoves,
     setShouldShowFeedback,
 }: ChessboardProps) {
     const [selectedSquare, setSelectedSquare] = useState<string | null>(null);
@@ -41,6 +43,7 @@ export function Chessboard({
     const [promotionOptions, setPromotionOptions] = useState<string | null>(
         null
     );
+    const [legalMovesShown, setLegalMovesShown] = useState<string[]>([]);
 
     const displayPosition = orientation === 'w' ? position : reverse(position);
     const isShowingPromotions = promotionOptions !== null;
@@ -66,6 +69,7 @@ export function Chessboard({
             e.button === RIGHT_CLICK ||
             isShowingPromotions
         ) {
+            setLegalMovesShown([]);
             return;
         }
 

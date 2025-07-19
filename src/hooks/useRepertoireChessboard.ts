@@ -130,6 +130,8 @@ export function useRepertoireChessboard(pgn?: string, startPosition?: string) {
                 ? (pgn ?? '')
                 : chessboard.current.toPGN({ movesOnly: true }),
             play: playMove,
+            getLegalOptions: (square: string) =>
+                chessboard.current.getLegalMoves(square),
         },
         loadNewPosition: loadNewPosition,
     };

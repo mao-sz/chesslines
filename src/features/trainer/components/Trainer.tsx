@@ -8,7 +8,7 @@ import boardStyles from '@/components/chessboard/chessboard.module.css';
 type TrainerProps = { line: Line };
 
 export function Trainer({ line }: TrainerProps) {
-    const { position, playMove, moveSuccess, lineSuccess } =
+    const { position, playMove, getLegalMoves, moveSuccess, lineSuccess } =
         useTrainerChessboard(line);
     const [shouldShowFeedback, setShouldShowFeedback] = useState(false);
 
@@ -21,6 +21,7 @@ export function Trainer({ line }: TrainerProps) {
                 playerColour={line.player}
                 orientation={line.player}
                 playMove={playMove}
+                getLegalMoves={getLegalMoves}
                 setShouldShowFeedback={setShouldShowFeedback}
             />
 

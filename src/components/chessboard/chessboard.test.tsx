@@ -15,6 +15,7 @@ function ChessboardTestWrapper({ FEN }: { FEN: string }) {
             orientation={'w'}
             position={position.current}
             playMove={moves.play}
+            getLegalMoves={moves.getLegalOptions}
         />
     );
 }

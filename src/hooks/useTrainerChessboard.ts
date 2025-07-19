@@ -50,5 +50,9 @@ export function useTrainerChessboard({ pgn, player }: Line) {
         setLineSuccess(comparison.current.toFEN() === finalPosition.current);
     }
 
-    return { position, playMove, moveSuccess, lineSuccess };
+    function getLegalMoves(square: string): string[] {
+        return comparison.current.getLegalMoves(square);
+    }
+
+    return { position, playMove, getLegalMoves, moveSuccess, lineSuccess };
 }
