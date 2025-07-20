@@ -40,9 +40,13 @@ describe('useRepertoire', () => {
     it('Adds new line', () => {
         const { result, rerender } = callUseRepertoire();
         result.current.lines.create(
-            'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1',
-            '1. e4 e5 2. Nc3',
-            [''],
+            {
+                player: 'w',
+                startingFEN:
+                    'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1',
+                PGN: '1. e4 e5 2. Nc3',
+                notes: [''],
+            },
             'w'
         );
         rerender();
@@ -50,6 +54,7 @@ describe('useRepertoire', () => {
         const uuid = getLatestUUID();
         expect(result.current.lines).toEqual({
             [uuid]: {
+                player: 'w',
                 startingFEN:
                     'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1',
                 PGN: '1. e4 e5 2. Nc3',
@@ -61,9 +66,13 @@ describe('useRepertoire', () => {
     it("Sets new line's parent folder to a lines type with the UUID as a child", () => {
         const { result, rerender } = callUseRepertoire();
         result.current.lines.create(
-            'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1',
-            '1. e4 e5 2. Nc3',
-            [''],
+            {
+                player: 'w',
+                startingFEN:
+                    'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1',
+                PGN: '1. e4 e5 2. Nc3',
+                notes: [''],
+            },
             'w'
         );
         rerender();
@@ -99,24 +108,31 @@ describe('useRepertoire', () => {
     it("Updates an existing line's contents", () => {
         const { result, rerender } = callUseRepertoire();
         result.current.lines.create(
-            'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1',
-            '1. e4 e5 2. Nc3',
-            ['', '', '', ''],
+            {
+                player: 'w',
+                startingFEN:
+                    'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1',
+                PGN: '1. e4 e5 2. Nc3',
+                notes: ['', '', '', ''],
+            },
             'w'
         );
         rerender();
 
         const uuid = getLatestUUID();
-        result.current.lines.updateLine(
-            uuid,
-            'rnbqkbnr/pp1ppppp/8/2p5/4P3/8/PPPP1PPP/RNBQKBNR w KQkq - 0 2',
-            '2. Nc3 Nc6',
-            ['', '', 'change']
-        );
+        result.current.lines.updateLine(uuid, {
+            player: 'w',
+            startingFEN:
+                'rnbqkbnr/pp1ppppp/8/2p5/4P3/8/PPPP1PPP/RNBQKBNR w KQkq - 0 2',
+
+            PGN: '2. Nc3 Nc6',
+            notes: ['', '', 'change'],
+        });
         rerender();
 
         expect(result.current.lines).toEqual({
             [uuid]: {
+                player: 'w',
                 startingFEN:
                     'rnbqkbnr/pp1ppppp/8/2p5/4P3/8/PPPP1PPP/RNBQKBNR w KQkq - 0 2',
                 PGN: '2. Nc3 Nc6',
@@ -128,9 +144,14 @@ describe('useRepertoire', () => {
     it("Updates an existing line's location", () => {
         const { result, rerender } = callUseRepertoire();
         result.current.lines.create(
-            'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1',
-            '1. e4 e5 2. Nc3',
-            [''],
+            {
+                player: 'w',
+                startingFEN:
+                    'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1',
+                PGN: '1. e4 e5 2. Nc3',
+
+                notes: [''],
+            },
             'w'
         );
         rerender();
@@ -200,9 +221,13 @@ describe('useRepertoire', () => {
     it('Deletes an existing line', () => {
         const { result, rerender } = callUseRepertoire();
         result.current.lines.create(
-            'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1',
-            '1. e4 e5 2. Nc3',
-            [''],
+            {
+                player: 'w',
+                startingFEN:
+                    'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1',
+                PGN: '1. e4 e5 2. Nc3',
+                notes: ['', '', '', ''],
+            },
             'w'
         );
         rerender();
@@ -217,9 +242,13 @@ describe('useRepertoire', () => {
     it('Removes lines ID from parent folder children array when deleted', () => {
         const { result, rerender } = callUseRepertoire();
         result.current.lines.create(
-            'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1',
-            '1. e4 e5 2. Nc3',
-            [''],
+            {
+                player: 'w',
+                startingFEN:
+                    'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1',
+                PGN: '1. e4 e5 2. Nc3',
+                notes: ['', '', '', ''],
+            },
             'w'
         );
         rerender();

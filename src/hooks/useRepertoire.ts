@@ -3,7 +3,8 @@ import type {
     Repertoire,
     RepertoireWithMethods,
     RepertoireFolderID,
-    LineNotes,
+    RepertoireLine,
+    RepertoireFolder,
 } from '@/types/repertoire';
 import type { UUID } from '@/types/utility';
 
@@ -92,9 +93,7 @@ export function useRepertoire(repertoire: Repertoire) {
     };
     const lineMethods = {
         create(
-            startingFEN: string,
-            PGN: string,
-            notes: LineNotes,
+            { player, startingFEN, PGN, notes }: RepertoireLine,
             parent: RepertoireFolderID
         ): void {
             const newLineUUID = crypto.randomUUID();
@@ -104,23 +103,17 @@ export function useRepertoire(repertoire: Repertoire) {
                 children: [...folders[parent].children, newLineUUID],
             };
 
-            setLines({ ...lines, [newLineUUID]: { startingFEN, PGN, notes } });
+            setLines({
+                ...lines,
+                [newLineUUID]: { player, startingFEN, PGN, notes },
+            });
             setFolders({ ...folders, [parent]: newParentFolder });
         },
         updateLine(
             id: UUID,
-            newStartingFEN: string,
-            newPGN: string,
-            newNotes: LineNotes
+            { player, startingFEN, PGN, notes }: RepertoireLine
         ): void {
-            setLines({
-                ...lines,
-                [id]: {
-                    startingFEN: newStartingFEN,
-                    PGN: newPGN,
-                    notes: newNotes,
-                },
-            });
+            setLines({ ...lines, [id]: { player, startingFEN, PGN, notes } });
         },
         updateLocation(idToMove: UUID, newParentId: RepertoireFolderID): void {
             const [oldParentId, oldParent] = findParentFolder(
@@ -181,7 +174,7 @@ export function useRepertoire(repertoire: Repertoire) {
 function findParentFolder(
     childId: UUID,
     folders: Repertoire['folders']
-): [string, Repertoire['folders'][RepertoireFolderID]] {
+): [string, RepertoireFolder] {
     return Object.entries(folders).find(
         ([_, folder]) =>
             folder.contains !== 'either' && folder.children.includes(childId)

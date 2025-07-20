@@ -53,9 +53,22 @@ export function LineEditor({
         e.preventDefault();
 
         if (id === 'new') {
-            lines.create(startingFEN, moves.string, notes, parentFolder);
+            lines.create(
+                {
+                    player: currentTab,
+                    startingFEN: startingFEN,
+                    PGN: moves.string,
+                    notes: notes,
+                },
+                parentFolder
+            );
         } else {
-            lines.updateLine(id, startingFEN, moves.string, notes);
+            lines.updateLine(id, {
+                player: currentTab,
+                startingFEN: startingFEN,
+                PGN: moves.string,
+                notes: notes,
+            });
         }
         closeEditor();
     }

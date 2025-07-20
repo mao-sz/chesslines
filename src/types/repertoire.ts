@@ -1,7 +1,13 @@
+import type { Colour } from './chessboard';
 import type { NonEmptyArray, UUID } from './utility';
 
 export type LineNotes = [string, ...string[]];
-type RepertoireLine = { startingFEN: string; PGN: string; notes: LineNotes };
+export type RepertoireLine = {
+    player: Colour;
+    startingFEN: string;
+    PGN: string;
+    notes: LineNotes;
+};
 type RepertoireLines = Record<UUID, RepertoireLine>;
 
 type Folder = { name: string };
@@ -10,7 +16,7 @@ type NonEmptyFolder = Folder & {
     contains: 'folders' | 'lines';
     children: NonEmptyArray<UUID>;
 };
-type RepertoireFolder = EmptyFolder | NonEmptyFolder;
+export type RepertoireFolder = EmptyFolder | NonEmptyFolder;
 type RepertoireFolders = {
     w: RepertoireFolder & { name: 'White' };
     b: RepertoireFolder & { name: 'Black' };
@@ -31,18 +37,8 @@ export type RepertoireWithMethods = {
         delete: (id: RepertoireFolderID) => boolean;
     };
     lines: RepertoireLines & {
-        create: (
-            startingFEN: string,
-            PGN: string,
-            notes: LineNotes,
-            parent: RepertoireFolderID
-        ) => void;
-        updateLine: (
-            id: UUID,
-            newStartingFEN: string,
-            newPGN: string,
-            notes: LineNotes
-        ) => void;
+        create: (line: RepertoireLine, parent: RepertoireFolderID) => void;
+        updateLine: (id: UUID, line: RepertoireLine) => void;
         updateLocation: (
             idToMove: UUID,
             newParentId: RepertoireFolderID
