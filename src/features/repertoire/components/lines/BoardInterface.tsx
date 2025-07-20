@@ -2,6 +2,7 @@ import { LineNote } from './LineNote';
 import { MoveList } from './MoveList';
 import { Chessboard } from '@/components/chessboard/Chessboard';
 import { IconButton } from '@/components/util/IconButton';
+import { LichessAnalysisButton } from '@/components/util/LichessAnalysisButton';
 import { ICONS } from '@/util/constants';
 import type { MouseEvent, RefObject } from 'react';
 import type { Colour, MoveInfo } from '@/types/chessboard';
@@ -12,6 +13,7 @@ import styles from './editor.module.css';
 type BoardInterfaceProps = {
     initialisationError: boolean;
     dialogRef: RefObject<HTMLDialogElement | null>;
+    startingFen: string;
     position: {
         current: string;
         currentIndex: number;
@@ -36,6 +38,7 @@ type BoardInterfaceProps = {
 export function BoardInterface({
     initialisationError,
     dialogRef,
+    startingFen,
     position,
     switchInterface,
     activeColour,
@@ -68,15 +71,22 @@ export function BoardInterface({
         </div>
     ) : (
         <div className={styles.boardEditor}>
-            <Chessboard
-                boardSizeClass={styles.boardSize}
-                position={position.current}
-                playerColour={activeColour}
-                orientation={currentTab}
-                playMove={moves.play}
-                getLegalMoves={moves.getLegalOptions}
-            />
-            <div className={styles.side}>
+            <div className={styles.left}>
+                <LichessAnalysisButton
+                    startingFEN={startingFen}
+                    moves={moveListString}
+                    orientation={currentTab}
+                />
+                <Chessboard
+                    boardSizeClass={styles.boardSize}
+                    position={position.current}
+                    playerColour={activeColour}
+                    orientation={currentTab}
+                    playMove={moves.play}
+                    getLegalMoves={moves.getLegalOptions}
+                />
+            </div>
+            <div className={styles.right}>
                 <LineNote
                     notes={notes}
                     setNotes={setNotes}

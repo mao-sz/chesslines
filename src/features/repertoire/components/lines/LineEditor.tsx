@@ -119,6 +119,7 @@ export function LineEditor({
                 <BoardInterface
                     initialisationError={initialisationError}
                     dialogRef={dialogRef}
+                    startingFen={startingFEN}
                     position={position}
                     switchInterface={() => setEditorInterface('FEN/PGN')}
                     activeColour={activeColour}
