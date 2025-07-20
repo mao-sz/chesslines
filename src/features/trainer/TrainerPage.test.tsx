@@ -1,20 +1,22 @@
 import { useOutletContext } from 'react-router';
-import { describe, it, expect, afterEach, vi, beforeEach } from 'vitest';
-import { cleanup, render, screen, within } from '@testing-library/react';
+import { describe, it, expect, afterEach, vi } from 'vitest';
+import { render, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { TrainerPage } from './TrainerPage';
 import { helpers } from '@/testing/helpers';
 
-beforeEach(() => {
-    vi.mocked(useOutletContext).mockReturnValue({
-        repertoire: helpers.repertoire.manyFoldersAndLines,
-    });
-});
 afterEach(vi.restoreAllMocks);
 vi.mock('react-router');
+vi.mock('@/util/util.ts', async (importActual) => ({
+    ...(await importActual()),
+    toShuffled: vi.fn((lines) => lines),
+}));
 
 describe('Initial elements', () => {
     it('Renders 8x8 chessboard with pieces', () => {
+        vi.mocked(useOutletContext).mockReturnValue({
+            repertoire: helpers.testRepertoire.withSingleWhiteLine,
+        });
         render(<TrainerPage />);
 
         expect(
@@ -33,7 +35,10 @@ describe('Initial elements', () => {
     });
 
     it('Renders flipped chessboard if line is played as black', () => {
-        render(<TrainerPage lines={helpers.lines.singleMove.b} />);
+        vi.mocked(useOutletContext).mockReturnValue({
+            repertoire: helpers.testRepertoire.withSingleBlackLine,
+        });
+        render(<TrainerPage />);
 
         const squares = screen.getAllByRole('button', { name: /square$/i });
         expect(squares.at(0)?.ariaLabel).toBe('h1 square');
@@ -44,7 +49,10 @@ describe('Initial elements', () => {
     });
 
     it('Renders button for next line when incomplete lines remain after current line', () => {
-        render(<TrainerPage lines={helpers.lines.multiLines.twoLines} />);
+        vi.mocked(useOutletContext).mockReturnValue({
+            repertoire: helpers.testRepertoire.withManyMixedLines,
+        });
+        render(<TrainerPage />);
 
         expect(
             screen.getByRole('button', { name: /next line/i })
@@ -52,7 +60,10 @@ describe('Initial elements', () => {
     });
 
     it('Does not render button for next line when current line is the last incomplete line', () => {
-        render(<TrainerPage lines={helpers.lines.singleMove.w} />);
+        vi.mocked(useOutletContext).mockReturnValue({
+            repertoire: helpers.testRepertoire.withSingleWhiteLine,
+        });
+        render(<TrainerPage />);
 
         expect(
             screen.queryByRole('button', { name: /next line/i })
@@ -60,22 +71,30 @@ describe('Initial elements', () => {
     });
 
     it('Shows progress out of current loaded lines', () => {
-        render(<TrainerPage lines={helpers.lines.multiLines.twoLines} />);
-        expect(screen.getByText(/1\/2/)).toBeInTheDocument();
-
-        cleanup();
-
-        render(<TrainerPage lines={helpers.lines.multiLines.tenLines} />);
-        expect(screen.queryByText(/1\/2/)).not.toBeInTheDocument();
-        expect(screen.getByText(/1\/10/)).toBeInTheDocument();
+        const testRepertoire = helpers.testRepertoire.withManyMixedLines;
+        vi.mocked(useOutletContext).mockReturnValue({
+            repertoire: testRepertoire,
+        });
+        render(<TrainerPage />);
+        expect(
+            screen.getByText(
+                new RegExp(
+                    `1/${Object.values(testRepertoire.lines).length}`,
+                    'i'
+                )
+            )
+        ).toBeInTheDocument();
     });
 });
 
 describe('Position after moves', () => {
     describe('Click move', () => {
         it('Renders new position after correct move played', async () => {
+            vi.mocked(useOutletContext).mockReturnValue({
+                repertoire: helpers.testRepertoire.withSingleWhiteLine,
+            });
             const user = userEvent.setup();
-            render(<TrainerPage lines={helpers.lines.singleMove.w} />);
+            render(<TrainerPage />);
 
             const d2Square = screen.getByRole('button', { name: 'd2 square' });
             const d4Square = screen.getByRole('button', { name: 'd4 square' });
@@ -99,8 +118,11 @@ describe('Position after moves', () => {
         });
 
         it('Does not change rendered position if incorrect move played', async () => {
+            vi.mocked(useOutletContext).mockReturnValue({
+                repertoire: helpers.testRepertoire.withSingleWhiteLine,
+            });
             const user = userEvent.setup();
-            render(<TrainerPage lines={helpers.lines.singleMove.w} />);
+            render(<TrainerPage />);
 
             const d2Square = screen.getByRole('button', { name: 'd2 square' });
             const d3Square = screen.getByRole('button', { name: 'd3 square' });
@@ -119,8 +141,11 @@ describe('Position after moves', () => {
 
     describe('Drag move', () => {
         it('Renders new position after correct move played', async () => {
+            vi.mocked(useOutletContext).mockReturnValue({
+                repertoire: helpers.testRepertoire.withSingleWhiteLine,
+            });
             const user = userEvent.setup();
-            render(<TrainerPage lines={helpers.lines.singleMove.w} />);
+            render(<TrainerPage />);
 
             const d2Square = screen.getByRole('button', { name: 'd2 square' });
             const d4Square = screen.getByRole('button', { name: 'd4 square' });
@@ -147,8 +172,11 @@ describe('Position after moves', () => {
         });
 
         it('Does not change rendered position if incorrect move played', async () => {
+            vi.mocked(useOutletContext).mockReturnValue({
+                repertoire: helpers.testRepertoire.withSingleWhiteLine,
+            });
             const user = userEvent.setup();
-            render(<TrainerPage lines={helpers.lines.singleMove.w} />);
+            render(<TrainerPage />);
 
             const d2Square = screen.getByRole('button', { name: 'd2 square' });
             const d6Square = screen.getByRole('button', { name: 'd6 square' });
@@ -171,8 +199,11 @@ describe('Position after moves', () => {
 
 describe('Success feedback', () => {
     it('Renders incorrect move message if incorrect move played', async () => {
+        vi.mocked(useOutletContext).mockReturnValue({
+            repertoire: helpers.testRepertoire.withSingleWhiteLine,
+        });
         const user = userEvent.setup();
-        render(<TrainerPage lines={helpers.lines.singleMove.w} />);
+        render(<TrainerPage />);
 
         const d2Square = screen.getByRole('button', { name: 'd2 square' });
         const d3Square = screen.getByRole('button', { name: 'd3 square' });
@@ -183,8 +214,11 @@ describe('Success feedback', () => {
     });
 
     it('Removes incorrect move message when board is clicked', async () => {
+        vi.mocked(useOutletContext).mockReturnValue({
+            repertoire: helpers.testRepertoire.withSingleWhiteLine,
+        });
         const user = userEvent.setup();
-        render(<TrainerPage lines={helpers.lines.singleMove.w} />);
+        render(<TrainerPage />);
 
         const d2Square = screen.getByRole('button', { name: 'd2 square' });
         const d3Square = screen.getByRole('button', { name: 'd3 square' });
@@ -196,8 +230,11 @@ describe('Success feedback', () => {
     });
 
     it('Renders congratulatory message when line is completed', async () => {
+        vi.mocked(useOutletContext).mockReturnValue({
+            repertoire: helpers.testRepertoire.withManyMixedLines,
+        });
         const user = userEvent.setup();
-        render(<TrainerPage lines={helpers.lines.multiMove.w} />);
+        render(<TrainerPage />);
 
         const congratulatoryMessage = /well done/i;
 
@@ -221,11 +258,19 @@ describe('Success feedback', () => {
 
 describe('Progress', () => {
     it('Increments progress counter when "next line" button clicked', async () => {
+        const testRepertoire = helpers.testRepertoire.withManyMixedLines;
+        vi.mocked(useOutletContext).mockReturnValue({
+            repertoire: testRepertoire,
+        });
         const user = userEvent.setup();
-        render(<TrainerPage lines={helpers.lines.multiLines.twoLines} />);
+        render(<TrainerPage />);
 
         const nextButton = screen.getByRole('button', { name: /next line/i });
         await user.click(nextButton);
-        expect(screen.getByText(/2\/2/)).toBeInTheDocument();
+        expect(
+            screen.getByText(
+                new RegExp(`2/${Object.values(testRepertoire).length}`, '')
+            )
+        ).toBeInTheDocument();
     });
 });

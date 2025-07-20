@@ -1,11 +1,11 @@
 import { useState } from 'react';
 import { Chessboard } from '@/components/chessboard/Chessboard';
 import { useTrainerChessboard } from '@/hooks/useTrainerChessboard';
-import type { Line } from '@/types/chessboard';
+import type { RepertoireLine } from '@/types/repertoire';
 import styles from './trainer.module.css';
 import boardStyles from '@/components/chessboard/chessboard.module.css';
 
-type TrainerProps = { line: Line };
+type TrainerProps = { line: RepertoireLine };
 
 export function Trainer({ line }: TrainerProps) {
     const { position, playMove, getLegalMoves, moveSuccess, lineSuccess } =

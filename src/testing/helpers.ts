@@ -1,7 +1,6 @@
 import { renderHook, screen } from '@testing-library/react';
 import { useRepertoire } from '@/hooks/useRepertoire';
 import type { UUID } from '@/types/utility';
-import type { Line } from '@/types/chessboard';
 import type { Repertoire } from '@/types/repertoire';
 import { STANDARD_STARTING_FEN } from '@/util/constants';
 
@@ -223,20 +222,81 @@ const repertoire = {
     },
 };
 
-const lines = {
-    get singleMove(): Record<string, Line[]> {
+const testRepertoire = {
+    get withSingleWhiteLine(): Repertoire {
         return {
-            w: [{ pgn: '1. d4', player: 'w' }],
-            b: [{ pgn: '1. e4 e5', player: 'b' }],
+            folders: {
+                w: {
+                    name: 'White',
+                    contains: 'lines',
+                    children: [UUIDS.lines[0]],
+                },
+                b: { name: 'Black', contains: 'either', children: [] },
+            },
+            lines: {
+                [UUIDS.lines[0]]: {
+                    player: 'w',
+                    startingFEN: STANDARD_STARTING_FEN,
+                    PGN: '1. d4',
+                    notes: ['', ''],
+                },
+            },
         };
     },
-    get multiMove(): Record<string, Line[]> {
-        return { w: [{ pgn: '1. d4 d5 2. c4', player: 'w' }] };
-    },
-    get multiLines(): Record<string, Line[]> {
+    get withSingleBlackLine(): Repertoire {
         return {
-            twoLines: Array(2).fill({ pgn: '1. d4', player: 'w' }),
-            tenLines: Array(10).fill({ pgn: '1. d4', player: 'w' }),
+            folders: {
+                w: { name: 'White', contains: 'either', children: [] },
+                b: {
+                    name: 'Black',
+                    contains: 'lines',
+                    children: [UUIDS.lines[0]],
+                },
+            },
+            lines: {
+                [UUIDS.lines[0]]: {
+                    player: 'b',
+                    startingFEN: STANDARD_STARTING_FEN,
+                    PGN: '1. d4 d5',
+                    notes: ['', '', ''],
+                },
+            },
+        };
+    },
+    get withManyMixedLines(): Repertoire {
+        return {
+            folders: {
+                w: {
+                    name: 'White',
+                    contains: 'lines',
+                    children: [UUIDS.lines[0], UUIDS.lines[2]],
+                },
+                b: {
+                    name: 'Black',
+                    contains: 'lines',
+                    children: [UUIDS.lines[1]],
+                },
+            },
+            lines: {
+                [UUIDS.lines[0]]: {
+                    player: 'w',
+                    startingFEN: STANDARD_STARTING_FEN,
+                    PGN: '1. d4 d5 2. c4',
+                    notes: ['', '', '', ''],
+                },
+                [UUIDS.lines[1]]: {
+                    player: 'b',
+                    startingFEN: STANDARD_STARTING_FEN,
+                    PGN: '1. d4 d5',
+                    notes: ['', '', ''],
+                },
+                [UUIDS.lines[1]]: {
+                    player: 'w',
+                    startingFEN: STANDARD_STARTING_FEN,
+                    PGN: '1. d4',
+                    notes: ['', ''],
+                },
+            },
         };
     },
 };
@@ -269,4 +329,9 @@ function serialiseCurrentBoard() {
         });
 }
 
-export const helpers = { repertoire, lines, hooks, serialiseCurrentBoard };
+export const helpers = {
+    repertoire,
+    testRepertoire,
+    hooks,
+    serialiseCurrentBoard,
+};

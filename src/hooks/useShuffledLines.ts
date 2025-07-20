@@ -1,8 +1,8 @@
 import { useState } from 'react';
 import { toShuffled } from '@/util/util';
-import type { Line } from '@/types/chessboard';
+import type { RepertoireLine } from '@/types/repertoire';
 
-export function useShuffledLines(lines: Line[]) {
+export function useShuffledLines(lines: RepertoireLine[]) {
     const [shuffledLines, setShuffledLines] = useState(toShuffled(lines));
     const [currentLine, setCurrentLine] = useState(shuffledLines[0]);
     return {

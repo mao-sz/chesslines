@@ -118,7 +118,8 @@
 
     & > ol {
         flex: 1;
-        overflow: scroll;
+        overflow-y: scroll;
+        scrollbar-color: var(--bg-mid-dark) var(--bg-light);
 
         @media (--small-viewport) {
             max-height: 600px;

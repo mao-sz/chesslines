@@ -1,11 +1,12 @@
 import { Chess } from '@maoshizhong/chess';
 import { useRef, useState } from 'react';
 import { getPosition } from '@/util/util';
-import type { Line, MoveInfo } from '@/types/chessboard';
+import type { MoveInfo } from '@/types/chessboard';
+import type { RepertoireLine } from '@/types/repertoire';
 
-export function useTrainerChessboard({ pgn, player }: Line) {
+export function useTrainerChessboard({ PGN, player }: RepertoireLine) {
     const isNewChess = useRef(true);
-    const comparison = useRef(new Chess(pgn, { isPGN: true }));
+    const comparison = useRef(new Chess(PGN, { isPGN: true }));
     const finalPosition = useRef(comparison.current.toFEN());
 
     // Set the comparison board to first userBoarded position - only want to run on component mount, not every call

@@ -19,5 +19,4 @@ export type MoveInfo = {
     to: string;
     promoteTo?: PromotionPieceLetter;
 };
-export type Line = { pgn: string; player: Colour };
 export type PixelCoordinates = { x: number; y: number };

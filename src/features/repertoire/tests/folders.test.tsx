@@ -341,9 +341,7 @@ describe('Renaming folder', () => {
             repertoire: helpers.repertoire.withFolderInWhite,
         });
         const user = userEvent.setup();
-        render(
-            <RepertoirePage repertoire={helpers.repertoire.withFolderInWhite} />
-        );
+        render(<RepertoirePage />);
 
         const renamableFolder = screen.getByRole('generic', {
             name: /closed folder$/i,
