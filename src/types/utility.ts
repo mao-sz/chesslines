@@ -18,7 +18,8 @@ type FontAwesomeIconName =
     | 'backward-fast'
     | 'plus'
     | 'caret-down'
-    | 'caret-right';
+    | 'caret-right'
+    | 'arrow-up-right-from-square';
 export type FontAwesomeIcon = `fa-solid fa-${FontAwesomeIconName}`;
 
 export type OutletContext = { repertoire: Repertoire };

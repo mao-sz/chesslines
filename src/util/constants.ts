@@ -13,6 +13,7 @@ export const ICONS = {
     END: 'fa-solid fa-forward-fast',
     PREVIOUS: 'fa-solid fa-backward-step',
     START: 'fa-solid fa-backward-fast',
+    NEW_TAB: 'fa-solid fa-arrow-up-right-from-square',
 } as const satisfies Record<string, FontAwesomeIcon>;
 
 export const STANDARD_STARTING_FEN =

@@ -75,7 +75,19 @@
     }
 }
 
-.side {
+.left {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+
+    & > a {
+        align-self: flex-end;
+        background-color: var(--bg-light);
+        padding: 8px 10px;
+    }
+}
+
+.right {
     --gap: 24px;
 
     align-self: stretch;

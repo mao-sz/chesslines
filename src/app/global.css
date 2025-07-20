@@ -52,3 +52,10 @@
         box-shadow: 0 0 0 0px var(--bg-mid-dark);
     }
 }
+
+.lichessLink {
+    color: inherit;
+    text-decoration: none;
+    display: flex;
+    gap: 0.5rem;
+}
