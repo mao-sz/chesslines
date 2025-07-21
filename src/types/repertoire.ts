@@ -8,6 +8,7 @@ export type RepertoireLine = {
     PGN: string;
     notes: LineNotes;
 };
+export type TestLine = [string, RepertoireLine];
 type RepertoireLines = Record<UUID, RepertoireLine>;
 
 type Folder = { name: string };

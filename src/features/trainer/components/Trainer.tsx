@@ -1,17 +1,34 @@
 import { useState } from 'react';
+import { SidePanel } from './SidePanel';
 import { Chessboard } from '@/components/chessboard/Chessboard';
 import { useTrainerChessboard } from '@/hooks/useTrainerChessboard';
-import type { RepertoireLine } from '@/types/repertoire';
+import type { TestLine } from '@/types/repertoire';
 import styles from './trainer.module.css';
 
-type TrainerProps = { line: RepertoireLine };
+type TrainerProps = {
+    progress: number;
+    linesToTrain: TestLine[];
+    testLine: TestLine;
+    toNextLine: () => void;
+};
 
-export function Trainer({ line }: TrainerProps) {
-    const { position, playMove, getLegalMoves, moveSuccess, lineSuccess } =
-        useTrainerChessboard(line);
+export function Trainer({
+    progress,
+    linesToTrain,
+    testLine,
+    toNextLine,
+}: TrainerProps) {
+    const [lineID, line] = testLine;
+    const {
+        position,
+        currentMoveIndex,
+        playMove,
+        getLegalMoves,
+        moveSuccess,
+        lineSuccess,
+    } = useTrainerChessboard(line);
     const [shouldShowFeedback, setShouldShowFeedback] = useState(false);
 
-    // TODO: Style me!
     return (
         <>
             <Chessboard
@@ -23,11 +40,14 @@ export function Trainer({ line }: TrainerProps) {
                 getLegalMoves={getLegalMoves}
                 setShouldShowFeedback={setShouldShowFeedback}
             />
-
-            {!moveSuccess && shouldShowFeedback && (
-                <p className={styles.incorrect}>Incorrect</p>
-            )}
-            {lineSuccess && <p>Well done!</p>}
+            <SidePanel
+                key={currentMoveIndex}
+                progress={progress}
+                linesToTrain={linesToTrain}
+                lineID={lineID}
+                noteHint={line.notes[currentMoveIndex]}
+                toNextLine={toNextLine}
+            />
         </>
     );
 }

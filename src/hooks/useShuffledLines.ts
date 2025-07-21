@@ -2,16 +2,16 @@ import { useState } from 'react';
 import { toShuffled } from '@/util/util';
 import type { RepertoireLine } from '@/types/repertoire';
 
-export function useShuffledLines(lines: RepertoireLine[]) {
-    const [shuffledLines, setShuffledLines] = useState(toShuffled(lines));
-    const [currentLine, setCurrentLine] = useState(shuffledLines[0]);
+export function useShuffledLines(lines: [string, RepertoireLine][]) {
+    const [remainingLines, setRemainingLines] = useState(toShuffled(lines));
+    const [currentLine, setCurrentLine] = useState(remainingLines[0]);
     return {
         currentLine: currentLine,
-        progress: lines.length - shuffledLines.length + 1,
+        progress: lines.length - remainingLines.length + 1,
         toNextLine() {
-            const remainingLines = shuffledLines.slice(1);
-            setShuffledLines(remainingLines);
-            setCurrentLine(remainingLines[0]);
+            const newRemainingLines = remainingLines.slice(1);
+            setRemainingLines(newRemainingLines);
+            setCurrentLine(newRemainingLines[0]);
         },
     };
 }

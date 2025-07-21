@@ -2,7 +2,77 @@
     --board-size: min(90vw, 700px);
 }
 
-.incorrect {
-    color: var(--text-error);
+.feedback {
+    color: var(--text-normal);
+    font-size: x-large;
+    font-weight: bold;
     text-align: center;
+    padding: 8px;
+    border-radius: 4px;
+
+    &.incorrect {
+        background-color: color-mix(in hsl, var(--text-error), black);
+    }
+
+    &.correct {
+        background-color: #245921;
+    }
+}
+
+.side {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    min-width: clamp(250px, 20vw, 300px);
+
+    & > :not(p) {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+    & > :last-child {
+        margin-block-start: auto;
+    }
+
+    & :is(button, a) {
+        background-color: var(--bg-light);
+        border-radius: 4px;
+        padding: 6px 10px;
+        transition: 120ms;
+
+        &:hover {
+            background-color: var(--bg-mid-light);
+        }
+    }
+
+    @media (--medium-viewport) {
+        min-width: unset;
+        align-self: stretch;
+    }
+}
+
+.progress {
+    font-size: large;
+    font-weight: bold;
+}
+
+.hints {
+    @media (--medium-viewport) {
+        justify-content: flex-start;
+        gap: 16px;
+    }
+}
+
+.notes {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+}
+
+.lineLink {
+    color: var(--text-normal);
+    text-decoration: none;
+    margin-inline-start: auto;
 }

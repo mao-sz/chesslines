@@ -290,7 +290,43 @@ const testRepertoire = {
                     PGN: '1. d4 d5',
                     notes: ['', '', ''],
                 },
+                [UUIDS.lines[2]]: {
+                    player: 'w',
+                    startingFEN: STANDARD_STARTING_FEN,
+                    PGN: '1. d4',
+                    notes: ['', ''],
+                },
+            },
+        };
+    },
+    get withLinesWithNotes(): Repertoire {
+        return {
+            folders: {
+                w: {
+                    name: 'White',
+                    contains: 'lines',
+                    children: [UUIDS.lines[0], UUIDS.lines[2]],
+                },
+                b: {
+                    name: 'Black',
+                    contains: 'lines',
+                    children: [UUIDS.lines[1]],
+                },
+            },
+            lines: {
+                [UUIDS.lines[0]]: {
+                    player: 'w',
+                    startingFEN: STANDARD_STARTING_FEN,
+                    PGN: '1. d4 d5 2. c4',
+                    notes: ['', 'No e4 shenanigans', '', "Queen's gambit"],
+                },
                 [UUIDS.lines[1]]: {
+                    player: 'b',
+                    startingFEN: STANDARD_STARTING_FEN,
+                    PGN: '1. d4 d5',
+                    notes: ['', '', ''],
+                },
+                [UUIDS.lines[2]]: {
                     player: 'w',
                     startingFEN: STANDARD_STARTING_FEN,
                     PGN: '1. d4',

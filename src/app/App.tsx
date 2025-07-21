@@ -5,7 +5,7 @@ import type { OutletContext } from '@/types/utility';
 
 export function App() {
     // TODO: Use external persistent storage!
-    const repertoire = helpers.repertoire.manyFoldersAndLines;
+    const repertoire = helpers.testRepertoire.withLinesWithNotes;
 
     return (
         <>

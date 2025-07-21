@@ -269,7 +269,10 @@ describe('Progress', () => {
         await user.click(nextButton);
         expect(
             screen.getByText(
-                new RegExp(`2/${Object.values(testRepertoire).length}`, '')
+                new RegExp(
+                    `2/${Object.values(testRepertoire.lines).length}`,
+                    'i'
+                )
             )
         ).toBeInTheDocument();
     });

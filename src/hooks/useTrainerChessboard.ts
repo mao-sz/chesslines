@@ -18,6 +18,9 @@ export function useTrainerChessboard({ PGN, player }: RepertoireLine) {
 
     const [lineSuccess, setLineSuccess] = useState(false);
     const [moveSuccess, setMoveSuccess] = useState(true);
+    const [currentMoveIndex, setCurrentMoveIndex] = useState(
+        comparison.current.activePlayer.colour === 'w' ? 1 : 2
+    );
     const [position, setPosition] = useState(
         getPosition(comparison.current.toFEN())
     );
@@ -43,6 +46,8 @@ export function useTrainerChessboard({ PGN, player }: RepertoireLine) {
                 getPosition(comparison.current.toNextPosition().toFEN())
             );
             setMoveSuccess(true);
+            // +2 to skip over opponent's move
+            setCurrentMoveIndex(currentMoveIndex + 2);
         } else {
             comparison.current.toPreviousPosition();
             setMoveSuccess(false);
@@ -55,5 +60,12 @@ export function useTrainerChessboard({ PGN, player }: RepertoireLine) {
         return comparison.current.getLegalMoves(square);
     }
 
-    return { position, playMove, getLegalMoves, moveSuccess, lineSuccess };
+    return {
+        position,
+        currentMoveIndex,
+        playMove,
+        getLegalMoves,
+        moveSuccess,
+        lineSuccess,
+    };
 }
