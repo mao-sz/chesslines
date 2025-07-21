@@ -1,4 +1,8 @@
+.boardSize {
+    --board-size: min(90vw, 700px);
+}
+
 .incorrect {
-    color: red;
+    color: var(--text-error);
     text-align: center;
 }

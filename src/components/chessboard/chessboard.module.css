@@ -143,7 +143,11 @@
 }
 
 .coordinate {
-    --offset: 2px;
+    --offset: 4px;
+
+    @media (--small-viewport) {
+        --offset: 2px;
+    }
 
     font-size: small;
     position: absolute;

@@ -3,7 +3,6 @@ import { Chessboard } from '@/components/chessboard/Chessboard';
 import { useTrainerChessboard } from '@/hooks/useTrainerChessboard';
 import type { RepertoireLine } from '@/types/repertoire';
 import styles from './trainer.module.css';
-import boardStyles from '@/components/chessboard/chessboard.module.css';
 
 type TrainerProps = { line: RepertoireLine };
 
@@ -16,7 +15,7 @@ export function Trainer({ line }: TrainerProps) {
     return (
         <>
             <Chessboard
-                boardSizeClass={boardStyles.boardSize}
+                boardSizeClass={styles.boardSize}
                 position={position}
                 playerColour={line.player}
                 orientation={line.player}
