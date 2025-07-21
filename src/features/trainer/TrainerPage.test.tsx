@@ -210,7 +210,7 @@ describe('Success feedback', () => {
 
         await user.click(d2Square);
         await user.click(d3Square);
-        expect(screen.getByText(/incorrect/i)).toBeInTheDocument();
+        expect(screen.getByText(/try again/i)).toBeInTheDocument();
     });
 
     it('Removes incorrect move message when board is clicked', async () => {

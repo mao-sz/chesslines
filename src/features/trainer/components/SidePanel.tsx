@@ -6,24 +6,35 @@ import type { TestLine } from '@/types/repertoire';
 import styles from './trainer.module.css';
 
 type SidePanelProps = {
+    successFeedback: boolean;
+    errorFeedback: boolean;
     progress: number;
     linesToTrain: TestLine[];
     lineID: string;
     noteHint: string;
-    currentMoveIndex: number;
     toNextLine: () => void;
 };
 
 export function SidePanel({
+    successFeedback,
+    errorFeedback,
     progress,
     linesToTrain,
     lineID,
-    notes,
     noteHint,
     toNextLine,
 }: SidePanelProps) {
     const [showingNotes, setShowingNotes] = useState(false);
     const hasLinesLeft = progress < linesToTrain.length;
+    const feedback =
+        successFeedback || errorFeedback
+            ? {
+                  className: successFeedback
+                      ? styles.correct
+                      : styles.incorrect,
+                  text: successFeedback ? 'Well done!' : 'Try again',
+              }
+            : null;
 
     return (
         <div className={styles.side}>
@@ -41,6 +52,15 @@ export function SidePanel({
                     />
                 )}
             </div>
+
+            {feedback && (
+                <p
+                    className={[styles.feedback, feedback.className].join(' ')}
+                    aria-live="assertive"
+                >
+                    {feedback.text}
+                </p>
+            )}
 
             <div className={styles.hints}>
                 {/* TODO: Implement "highlight piece" hint */}

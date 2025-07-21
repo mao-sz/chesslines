@@ -42,6 +42,8 @@ export function Trainer({
             />
             <SidePanel
                 key={currentMoveIndex}
+                successFeedback={lineSuccess}
+                errorFeedback={!moveSuccess && shouldShowFeedback}
                 progress={progress}
                 linesToTrain={linesToTrain}
                 lineID={lineID}
