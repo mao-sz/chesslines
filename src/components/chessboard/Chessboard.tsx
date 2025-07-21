@@ -133,25 +133,29 @@ export function Chessboard({
                     play={play}
                 />
             )}
-            {displayPosition
-                .split('/')
-                .map((row, rank) =>
-                    expandEmptySquares(row).map((square, file) => (
+            {displayPosition.split('/').map((row, rank) =>
+                expandEmptySquares(row).map((square, file) => {
+                    const algebraicRank =
+                        orientation === 'w' ? RANK[rank] : rank + 1;
+                    const bottomRank = orientation === 'w' ? 1 : 8;
+                    const algebraicFile =
+                        orientation === 'w' ? FILE[file] : reverse(FILE)[file];
+                    const leftmostFile = orientation === 'w' ? 'a' : 'h';
+                    return (
                         <Square
                             key={`${file}${rank}`}
                             selectedSquare={selectedSquare}
                             player={playerColour}
                             legalMovesShown={legalMovesShown}
                             contains={square}
-                            rank={orientation === 'w' ? RANK[rank] : rank + 1}
-                            file={
-                                orientation === 'w'
-                                    ? FILE[file]
-                                    : reverse(FILE)[file]
-                            }
+                            rank={algebraicRank}
+                            file={algebraicFile}
+                            showsRankCoordinate={algebraicFile === leftmostFile}
+                            showsFileCoordinate={algebraicRank === bottomRank}
                         />
-                    ))
-                )}
+                    );
+                })
+            )}
         </div>
     );
 }

@@ -1,14 +1,14 @@
 .main {
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
     justify-content: space-between;
     gap: 36px;
-    width: 90vw;
+    width: 99vw;
     max-width: 1600px;
     padding: 36px;
 
-    @media (min-width: 560px) {
-        flex-direction: row;
+    @media (--small-viewport) {
+        flex-direction: column;
     }
 
     & > * {

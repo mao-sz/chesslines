@@ -133,6 +133,9 @@ export function BoardInterface({
                     <button
                         className={styles.highlighted}
                         onClick={() => dialogRef.current?.close()}
+                        ref={(button) =>
+                            button?.setAttribute('autofocus', 'true')
+                        }
                     >
                         Cancel
                     </button>

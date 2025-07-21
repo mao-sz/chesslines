@@ -84,3 +84,14 @@ export const convert = {
         return id.slice(3);
     },
 };
+
+export function conditionallyPush<T>(
+    arr: T[],
+    conditionalPushes: [unknown, T][]
+): void {
+    for (const [condition, item] of conditionalPushes) {
+        if (condition) {
+            arr.push(item);
+        }
+    }
+}

@@ -1,6 +1,6 @@
 import { type MouseEvent as ReactMouseEvent, useState } from 'react';
 import { Piece } from './Piece';
-import { isSameColour } from '@/util/util';
+import { isSameColour, conditionallyPush } from '@/util/util';
 import type { Colour } from '@/types/chessboard';
 import styles from './chessboard.module.css';
 
@@ -11,6 +11,8 @@ type SquareProps = {
     contains: string | null;
     rank: number;
     file: string;
+    showsRankCoordinate: boolean;
+    showsFileCoordinate: boolean;
     isPromotionOption?: boolean;
 };
 
@@ -28,6 +30,8 @@ export function Square({
     rank,
     file,
     selectedSquare,
+    showsRankCoordinate,
+    showsFileCoordinate,
     isPromotionOption = false,
 }: SquareProps) {
     const isEvenRank = rank % 2 === 0;
@@ -41,12 +45,10 @@ export function Square({
     const coordinate = `${file}${rank}`;
 
     const classNames = [styles.square, styles[shade]];
-    if (coordinate === selectedSquare) {
-        classNames.push(styles.selected);
-    }
-    if (legalMovesShown?.includes(coordinate)) {
-        classNames.push(styles.legal);
-    }
+    conditionallyPush(classNames, [
+        [coordinate === selectedSquare, styles.selected],
+        [legalMovesShown?.includes(coordinate), styles.legal],
+    ]);
 
     const [isDragging, setIsDragging] = useState(false);
     const [mouseCoords, setMouseCoords] = useState({ x: 0, y: 0 });
@@ -101,6 +103,22 @@ export function Square({
                 isBeingDragged={isDragging}
                 mouseCoords={mouseCoords}
             />
+            {showsRankCoordinate && (
+                <span
+                    className={[styles.coordinate, styles.rank].join(' ')}
+                    aria-hidden
+                >
+                    {rank}
+                </span>
+            )}
+            {showsFileCoordinate && (
+                <span
+                    className={[styles.coordinate, styles.file].join(' ')}
+                    aria-hidden
+                >
+                    {file}
+                </span>
+            )}
         </button>
     );
 }

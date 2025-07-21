@@ -133,3 +133,28 @@
         background-color: var(--dark-square);
     }
 }
+
+.dark .coordinate {
+    color: var(--light-square);
+}
+
+.light .coordinate {
+    color: var(--dark-square);
+}
+
+.coordinate {
+    --offset: 2px;
+
+    font-size: small;
+    position: absolute;
+
+    &.rank {
+        top: var(--offset);
+        left: var(--offset);
+    }
+
+    &.file {
+        bottom: var(--offset);
+        right: var(--offset);
+    }
+}
