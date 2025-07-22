@@ -1,25 +1,26 @@
-import { useOutletContext } from 'react-router';
+import {
+    createMemoryRouter,
+    useOutletContext,
+    RouterProvider,
+} from 'react-router';
 import { describe, it, expect, afterEach, vi } from 'vitest';
 import { render, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { RepertoirePage } from '../RepertoirePage';
+import { routes } from '@/app/router';
 import { helpers } from '@/testing/helpers';
 import { STANDARD_STARTING_FEN } from '@/util/constants';
 import type { Repertoire } from '@/types/repertoire';
 
-afterEach(vi.restoreAllMocks);
-vi.mock('react-router', async (importOriginal) => ({
-    ...(await importOriginal()),
-    // most tests won't use the line query param
-    useSearchParams: vi.fn(() => [{ get: () => null }]),
-    useOutletContext: vi.fn(),
-}));
+afterEach(vi.resetAllMocks);
+vi.mock('react-router', { spy: true });
+
+const testRouter = createMemoryRouter(routes);
 
 async function openLineFolderInPanel(
     repertoire: Repertoire = helpers.repertoire.withLineInWhite
 ) {
     vi.mocked(useOutletContext).mockReturnValue({ repertoire });
-    render(<RepertoirePage />);
+    render(<RouterProvider router={testRouter} />);
 
     const user = userEvent.setup();
     const whiteFolder = screen.getByRole('generic', { name: /white.*folder/i })

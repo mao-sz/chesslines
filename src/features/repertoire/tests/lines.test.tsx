@@ -1,17 +1,18 @@
-import { useOutletContext } from 'react-router';
+import {
+    createMemoryRouter,
+    useOutletContext,
+    RouterProvider,
+} from 'react-router';
 import { describe, it, expect, afterEach, vi } from 'vitest';
 import { render, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { RepertoirePage } from '../RepertoirePage';
+import { routes } from '@/app/router';
 import { helpers, UUIDS } from '@/testing/helpers';
 
-afterEach(vi.restoreAllMocks);
-vi.mock('react-router', async (importOriginal) => ({
-    ...(await importOriginal()),
-    // most tests won't use the line query param
-    useSearchParams: vi.fn(() => [{ get: () => null }]),
-    useOutletContext: vi.fn(),
-}));
+afterEach(vi.resetAllMocks);
+vi.mock('react-router', { spy: true });
+
+const testRouter = createMemoryRouter(routes);
 
 describe('Lines panel', () => {
     it('Opens lines folder in line panel when clicked on', async () => {
@@ -19,7 +20,7 @@ describe('Lines panel', () => {
             repertoire: helpers.repertoire.withLineInWhite,
         });
         const user = userEvent.setup();
-        render(<RepertoirePage />);
+        render(<RouterProvider router={testRouter} />);
 
         const whiteFolder = screen.getByRole('generic', {
             name: /white.*folder/i,
@@ -38,7 +39,7 @@ describe('Lines panel', () => {
             repertoire: helpers.repertoire.withLineInWhite,
         });
         const user = userEvent.setup();
-        render(<RepertoirePage />);
+        render(<RouterProvider router={testRouter} />);
 
         const whiteFolder = screen.getByRole('generic', {
             name: /white.*folder/i,
@@ -57,7 +58,7 @@ describe('Lines panel', () => {
             repertoire: helpers.repertoire.withLineInWhite,
         });
         const user = userEvent.setup();
-        render(<RepertoirePage />);
+        render(<RouterProvider router={testRouter} />);
 
         const whiteFolder = screen.getByRole('generic', {
             name: /white.*folder/i,
@@ -72,7 +73,7 @@ describe('Lines panel', () => {
             repertoire: helpers.repertoire.withNonstandardLineInWhite,
         });
         const user = userEvent.setup();
-        render(<RepertoirePage />);
+        render(<RouterProvider router={testRouter} />);
 
         const whiteFolder = screen.getByRole('generic', {
             name: /white.*folder/i,
@@ -91,7 +92,7 @@ describe('Lines panel', () => {
             repertoire: helpers.repertoire.empty,
         });
         const user = userEvent.setup();
-        render(<RepertoirePage />);
+        render(<RouterProvider router={testRouter} />);
 
         // open White folder in panel (opens because it could contain lines)
         const whiteFolder = screen.getByRole('generic', {

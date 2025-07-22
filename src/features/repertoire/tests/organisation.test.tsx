@@ -1,25 +1,26 @@
-import { useOutletContext } from 'react-router';
+import {
+    createMemoryRouter,
+    useOutletContext,
+    RouterProvider,
+} from 'react-router';
 import { describe, it, expect, afterEach, vi } from 'vitest';
 import { fireEvent, render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { RepertoirePage } from '../RepertoirePage';
 import { helpers } from '@/testing/helpers';
 import { convert } from '@/util/util';
+import { routes } from '@/app/router';
 
-afterEach(vi.restoreAllMocks);
-vi.mock('react-router', async (importOriginal) => ({
-    ...(await importOriginal()),
-    // most tests won't use the line query param
-    useSearchParams: vi.fn(() => [{ get: () => null }]),
-    useOutletContext: vi.fn(),
-}));
+afterEach(vi.resetAllMocks);
+vi.mock('react-router', { spy: true });
+
+const testRouter = createMemoryRouter(routes);
 
 describe('Moving folders', () => {
     it('Moves folder inside another folder when dropped on it', async () => {
         vi.mocked(useOutletContext).mockReturnValue({
             repertoire: helpers.repertoire.manyFoldersAndLines,
         });
-        render(<RepertoirePage />);
+        render(<RouterProvider router={testRouter} />);
 
         const lineFolder = screen.getByRole('generic', {
             name: /^line folder/i,
@@ -44,7 +45,7 @@ describe('Moving folders', () => {
         vi.mocked(useOutletContext).mockReturnValue({
             repertoire: helpers.repertoire.manyFoldersAndLines,
         });
-        const { container } = render(<RepertoirePage />);
+        const { container } = render(<RouterProvider router={testRouter} />);
 
         const lineFolder = screen.getByRole('generic', {
             name: /^line folder/i,
@@ -69,7 +70,7 @@ describe('Moving folders', () => {
         vi.mocked(useOutletContext).mockReturnValue({
             repertoire: helpers.repertoire.manyFoldersAndLines,
         });
-        const { container } = render(<RepertoirePage />);
+        const { container } = render(<RouterProvider router={testRouter} />);
 
         const lineFolder = screen.getByRole('generic', {
             name: /^line folder/i,
@@ -97,7 +98,7 @@ describe('Moving folders', () => {
         vi.mocked(useOutletContext).mockReturnValue({
             repertoire: helpers.repertoire.manyFoldersAndLines,
         });
-        const { container } = render(<RepertoirePage />);
+        const { container } = render(<RouterProvider router={testRouter} />);
 
         const lineFolder = screen.getByRole('generic', {
             name: /^line folder/i,
@@ -123,7 +124,7 @@ describe('Moving folders', () => {
         vi.mocked(useOutletContext).mockReturnValue({
             repertoire: helpers.repertoire.manyFoldersAndLines,
         });
-        const { container } = render(<RepertoirePage />);
+        const { container } = render(<RouterProvider router={testRouter} />);
 
         const folderFolder = screen.getByRole('generic', {
             name: /folder folder/i,
@@ -149,7 +150,7 @@ describe('Moving folders', () => {
         vi.mocked(useOutletContext).mockReturnValue({
             repertoire: helpers.repertoire.manyFoldersAndLines,
         });
-        const { container } = render(<RepertoirePage />);
+        const { container } = render(<RouterProvider router={testRouter} />);
 
         const folderFolder = screen.getByRole('generic', {
             name: /folder folder/i,
@@ -177,7 +178,7 @@ describe('Moving lines', () => {
             repertoire: helpers.repertoire.manyFoldersAndLines,
         });
         const user = userEvent.setup();
-        const { container } = render(<RepertoirePage />);
+        const { container } = render(<RouterProvider router={testRouter} />);
         const lineFolder = screen.getByRole('generic', {
             name: /^line folder/i,
         }).firstElementChild as HTMLElement;

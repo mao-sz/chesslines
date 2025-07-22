@@ -5,7 +5,7 @@ import userEvent from '@testing-library/user-event';
 import { TrainerPage } from '../TrainerPage';
 import { helpers } from '@/testing/helpers';
 
-afterEach(vi.restoreAllMocks);
+afterEach(vi.resetAllMocks);
 vi.mock('react-router');
 vi.mock('@/util/util.ts', async (importActual) => ({
     ...(await importActual()),

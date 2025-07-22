@@ -1,17 +1,18 @@
-import { useOutletContext } from 'react-router';
+import {
+    createMemoryRouter,
+    RouterProvider,
+    useOutletContext,
+} from 'react-router';
 import { describe, it, expect, afterEach, vi } from 'vitest';
 import { render, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { RepertoirePage } from '../RepertoirePage';
 import { helpers } from '@/testing/helpers';
+import { routes } from '@/app/router';
 
-afterEach(vi.restoreAllMocks);
-vi.mock('react-router', async (importOriginal) => ({
-    ...(await importOriginal()),
-    // most tests won't use the line query param
-    useSearchParams: vi.fn(() => [{ get: () => null }]),
-    useOutletContext: vi.fn(),
-}));
+afterEach(vi.resetAllMocks);
+vi.mock('react-router', { spy: true });
+
+const testRouter = createMemoryRouter(routes);
 
 describe('Switching repertoire tabs', () => {
     it('Switches from white to black repertoire panels via tab buttons', async () => {
@@ -19,7 +20,7 @@ describe('Switching repertoire tabs', () => {
             repertoire: helpers.repertoire.empty,
         });
         const user = userEvent.setup();
-        render(<RepertoirePage />);
+        render(<RouterProvider router={testRouter} />);
 
         const whiteTabButton = screen.getByRole('tab', {
             name: /white repertoire/i,
@@ -47,7 +48,7 @@ describe('New folder button', () => {
         vi.mocked(useOutletContext).mockReturnValue({
             repertoire: helpers.repertoire.empty,
         });
-        render(<RepertoirePage />);
+        render(<RouterProvider router={testRouter} />);
 
         expect(
             screen.getByRole('button', { name: /new folder/i })
@@ -58,7 +59,7 @@ describe('New folder button', () => {
         vi.mocked(useOutletContext).mockReturnValue({
             repertoire: helpers.repertoire.withFolderInWhite,
         });
-        render(<RepertoirePage />);
+        render(<RouterProvider router={testRouter} />);
 
         const whiteFolder = screen.getByRole('generic', {
             name: /white open folder/i,
@@ -76,7 +77,7 @@ describe('New folder button', () => {
         vi.mocked(useOutletContext).mockReturnValue({
             repertoire: helpers.repertoire.withLineInWhite,
         });
-        render(<RepertoirePage />);
+        render(<RouterProvider router={testRouter} />);
 
         const whiteFolder = screen.getByRole('generic', {
             name: /white.+folder/i,
@@ -91,7 +92,7 @@ describe('New folder button', () => {
         vi.mocked(useOutletContext).mockReturnValue({
             repertoire: helpers.repertoire.empty,
         });
-        render(<RepertoirePage />);
+        render(<RouterProvider router={testRouter} />);
 
         expect(
             screen.queryByRole('form', { name: /^new/i })
@@ -103,7 +104,7 @@ describe('New folder button', () => {
             repertoire: helpers.repertoire.empty,
         });
         const user = userEvent.setup();
-        render(<RepertoirePage />);
+        render(<RouterProvider router={testRouter} />);
 
         const newFolderButton = screen.getByRole('button', {
             name: /new folder/i,
@@ -124,7 +125,7 @@ describe('New folder button', () => {
             repertoire: helpers.repertoire.withNestedFolders,
         });
         const user = userEvent.setup();
-        render(<RepertoirePage />);
+        render(<RouterProvider router={testRouter} />);
 
         const closableFolder = screen.getByRole('generic', {
             name: /child closed folder$/i,
@@ -146,7 +147,7 @@ describe('New folder button', () => {
             repertoire: helpers.repertoire.empty,
         });
         const user = userEvent.setup();
-        render(<RepertoirePage />);
+        render(<RouterProvider router={testRouter} />);
 
         const newFolderButton = screen.getByRole('button', {
             name: /new folder/i,
@@ -168,7 +169,7 @@ describe('New folder button', () => {
             repertoire: helpers.repertoire.empty,
         });
         const user = userEvent.setup();
-        render(<RepertoirePage />);
+        render(<RouterProvider router={testRouter} />);
 
         const whiteFolder = screen.getByRole('generic', {
             name: /white.*folder/i,
@@ -196,7 +197,7 @@ describe('New folder button', () => {
             repertoire: helpers.repertoire.empty,
         });
         const user = userEvent.setup();
-        render(<RepertoirePage />);
+        render(<RouterProvider router={testRouter} />);
 
         const displayedFolderCount = screen.queryAllByRole('generic', {
             name: /folder$/i,
@@ -224,7 +225,7 @@ describe('New folder button', () => {
             repertoire: helpers.repertoire.withFolderInWhite,
         });
         const user = userEvent.setup();
-        render(<RepertoirePage />);
+        render(<RouterProvider router={testRouter} />);
 
         const closedFolder = screen.getByRole('generic', {
             name: /closed folder$/i,
@@ -247,7 +248,7 @@ describe('Renaming folder', () => {
         vi.mocked(useOutletContext).mockReturnValue({
             repertoire: helpers.repertoire.withNestedFolders,
         });
-        render(<RepertoirePage />);
+        render(<RouterProvider router={testRouter} />);
 
         expect(
             screen.queryByRole('form', { name: /rename folder/i })
@@ -259,7 +260,7 @@ describe('Renaming folder', () => {
             repertoire: helpers.repertoire.empty,
         });
         const user = userEvent.setup();
-        render(<RepertoirePage />);
+        render(<RouterProvider router={testRouter} />);
 
         const renameButton = screen.getByRole('button', {
             name: /rename folder/i,
@@ -276,7 +277,7 @@ describe('Renaming folder', () => {
             repertoire: helpers.repertoire.empty,
         });
         const user = userEvent.setup();
-        render(<RepertoirePage />);
+        render(<RouterProvider router={testRouter} />);
 
         const oldFolderName = helpers.repertoire.empty.folders.w;
         const renameButton = screen.getByRole('button', {
@@ -303,7 +304,7 @@ describe('Renaming folder', () => {
             repertoire: helpers.repertoire.withFolderInWhite,
         });
         const user = userEvent.setup();
-        render(<RepertoirePage />);
+        render(<RouterProvider router={testRouter} />);
 
         const closableFolder = screen.getByRole('generic', {
             name: /white open folder$/i,
@@ -323,7 +324,7 @@ describe('Renaming folder', () => {
             repertoire: helpers.repertoire.withFolderInWhite,
         });
         const user = userEvent.setup();
-        render(<RepertoirePage />);
+        render(<RouterProvider router={testRouter} />);
 
         const renamableFolder = screen.getByRole('generic', {
             name: /closed folder$/i,
@@ -346,7 +347,7 @@ describe('Renaming folder', () => {
             repertoire: helpers.repertoire.withFolderInWhite,
         });
         const user = userEvent.setup();
-        render(<RepertoirePage />);
+        render(<RouterProvider router={testRouter} />);
 
         const renamableFolder = screen.getByRole('generic', {
             name: /closed folder$/i,

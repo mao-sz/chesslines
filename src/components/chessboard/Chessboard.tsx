@@ -5,6 +5,7 @@ import {
     useState,
 } from 'react';
 import { Square } from './Square';
+import { PromotionOptions } from './PromotionOptions';
 import {
     expandEmptySquares,
     isPawnPromoting,
@@ -14,7 +15,6 @@ import {
 import type { StateSetter } from '@/types/utility';
 import type { Colour, MoveInfo } from '@/types/chessboard';
 import styles from './chessboard.module.css';
-import { PromotionOptions } from './PromotionOptions';
 
 type ChessboardProps = {
     boardSizeClass?: string;

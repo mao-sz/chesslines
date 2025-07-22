@@ -1,9 +1,8 @@
-import { createBrowserRouter } from 'react-router';
 import { App } from './App';
 import { RepertoirePage } from '@/features/repertoire/RepertoirePage';
 import { TrainerPage } from '@/features/trainer/TrainerPage';
 
-export const router = createBrowserRouter([
+export const routes = [
     {
         path: '/',
         element: <App />,
@@ -12,4 +11,4 @@ export const router = createBrowserRouter([
             { path: 'trainer', element: <TrainerPage /> },
         ],
     },
-]);
+];
