@@ -8,7 +8,7 @@ import { fireEvent, render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { helpers } from '@/testing/helpers';
 import { convert } from '@/util/util';
-import { routes } from '@/app/router';
+import { routes } from '@/app/routes';
 
 afterEach(vi.resetAllMocks);
 vi.mock('react-router', { spy: true });

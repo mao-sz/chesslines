@@ -6,7 +6,7 @@ import {
 import { describe, it, expect, afterEach, vi } from 'vitest';
 import { render, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { routes } from '@/app/router';
+import { routes } from '@/app/routes';
 import { helpers } from '@/testing/helpers';
 import { STANDARD_STARTING_FEN } from '@/util/constants';
 import type { Repertoire } from '@/types/repertoire';

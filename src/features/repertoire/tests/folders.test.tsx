@@ -7,7 +7,7 @@ import { describe, it, expect, afterEach, vi } from 'vitest';
 import { render, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { helpers } from '@/testing/helpers';
-import { routes } from '@/app/router';
+import { routes } from '@/app/routes';
 
 afterEach(vi.resetAllMocks);
 vi.mock('react-router', { spy: true });
