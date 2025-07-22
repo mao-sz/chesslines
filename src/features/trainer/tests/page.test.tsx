@@ -2,7 +2,7 @@ import { useOutletContext } from 'react-router';
 import { describe, it, expect, afterEach, vi } from 'vitest';
 import { render, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { TrainerPage } from './TrainerPage';
+import { TrainerPage } from '../TrainerPage';
 import { helpers } from '@/testing/helpers';
 
 afterEach(vi.restoreAllMocks);

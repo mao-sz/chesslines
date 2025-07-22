@@ -2,8 +2,8 @@ import { useOutletContext } from 'react-router';
 import { Trainer } from './components/Trainer';
 import { useShuffledLines } from '@/hooks/useShuffledLines';
 import type { OutletContext } from '@/types/utility';
-import styles from './trainer-page.module.css';
-import { TestLine } from '@/types/repertoire';
+import type { TestLine } from '@/types/repertoire';
+import styles from './page.module.css';
 
 export function TrainerPage() {
     document.title = 'Chesslines | Trainer';
