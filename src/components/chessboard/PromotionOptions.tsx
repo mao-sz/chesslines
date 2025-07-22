@@ -73,6 +73,8 @@ export function PromotionOptions({
                         contains={colour === 'w' ? piece : piece.toLowerCase()}
                         rank={Number(rank)}
                         file={file}
+                        showsRankCoordinate={false}
+                        showsFileCoordinate={false}
                         selectedSquare={null}
                         isPromotionOption={true}
                     />

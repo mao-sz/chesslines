@@ -4,8 +4,13 @@ import { render, screen } from '@testing-library/react';
 import { RepertoirePage } from '../RepertoirePage';
 import { helpers } from '@/testing/helpers';
 
-afterEach(vi.restoreAllMocks);
-vi.mock('react-router');
+afterEach(vi.resetAllMocks);
+vi.mock('react-router', async (importOriginal) => ({
+    ...(await importOriginal()),
+    // most tests won't use the line query param
+    useSearchParams: vi.fn(() => [{ get: () => null }]),
+    useOutletContext: vi.fn(),
+}));
 
 describe('Initial elements', () => {
     it('Renders a button for each of white and black repertoires', () => {

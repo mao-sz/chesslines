@@ -8,7 +8,12 @@ import { STANDARD_STARTING_FEN } from '@/util/constants';
 import type { Repertoire } from '@/types/repertoire';
 
 afterEach(vi.restoreAllMocks);
-vi.mock('react-router');
+vi.mock('react-router', async (importOriginal) => ({
+    ...(await importOriginal()),
+    // most tests won't use the line query param
+    useSearchParams: vi.fn(() => [{ get: () => null }]),
+    useOutletContext: vi.fn(),
+}));
 
 async function openLineFolderInPanel(
     repertoire: Repertoire = helpers.repertoire.withLineInWhite

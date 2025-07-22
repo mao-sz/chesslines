@@ -7,7 +7,12 @@ import { helpers } from '@/testing/helpers';
 import { convert } from '@/util/util';
 
 afterEach(vi.restoreAllMocks);
-vi.mock('react-router');
+vi.mock('react-router', async (importOriginal) => ({
+    ...(await importOriginal()),
+    // most tests won't use the line query param
+    useSearchParams: vi.fn(() => [{ get: () => null }]),
+    useOutletContext: vi.fn(),
+}));
 
 describe('Moving folders', () => {
     it('Moves folder inside another folder when dropped on it', async () => {

@@ -1,8 +1,8 @@
 import { renderHook, screen } from '@testing-library/react';
 import { useRepertoire } from '@/hooks/useRepertoire';
+import { STANDARD_STARTING_FEN } from '@/util/constants';
 import type { UUID } from '@/types/utility';
 import type { Repertoire } from '@/types/repertoire';
-import { STANDARD_STARTING_FEN } from '@/util/constants';
 
 export const UUIDS: Record<'folders' | 'lines', UUID[]> = {
     lines: [

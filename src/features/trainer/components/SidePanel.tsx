@@ -81,7 +81,7 @@ export function SidePanel({
                 {/* TODO: Use location state to transfer line ID to open that line straight away */}
                 <Link
                     className={styles.lineLink}
-                    to="/repertoire"
+                    to={{ pathname: '/repertoire', search: `?line=${lineID}` }}
                     target="_blank"
                     rel="noopener"
                     aria-label="open line in new tab"

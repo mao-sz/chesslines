@@ -6,7 +6,12 @@ import { RepertoirePage } from '../RepertoirePage';
 import { helpers, UUIDS } from '@/testing/helpers';
 
 afterEach(vi.restoreAllMocks);
-vi.mock('react-router');
+vi.mock('react-router', async (importOriginal) => ({
+    ...(await importOriginal()),
+    // most tests won't use the line query param
+    useSearchParams: vi.fn(() => [{ get: () => null }]),
+    useOutletContext: vi.fn(),
+}));
 
 describe('Lines panel', () => {
     it('Opens lines folder in line panel when clicked on', async () => {

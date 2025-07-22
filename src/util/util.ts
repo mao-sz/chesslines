@@ -1,4 +1,6 @@
 import type { Colour } from '@/types/chessboard';
+import type { Repertoire } from '@/types/repertoire';
+import { UUID } from '@/types/utility';
 
 export function reverse(str: string): string {
     return str.split('').reverse().join('');
@@ -94,4 +96,20 @@ export function conditionallyPush<T>(
             arr.push(item);
         }
     }
+}
+
+export function findParentFolder(
+    lineID: UUID | null,
+    repertoire: Repertoire
+): UUID | null {
+    if (!lineID) {
+        return null;
+    }
+
+    for (const [folderID, folder] of Object.entries(repertoire.folders)) {
+        if (folder.contains === 'lines' && folder.children.includes(lineID)) {
+            return folderID as UUID;
+        }
+    }
+    return null;
 }

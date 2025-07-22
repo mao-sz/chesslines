@@ -1,6 +1,7 @@
 import { useState } from 'react';
-import { useOutletContext } from 'react-router';
+import { useOutletContext, useSearchParams } from 'react-router';
 import { useRepertoire } from '@/hooks/useRepertoire';
+import { findParentFolder } from '@/util/util';
 import { FolderPanel } from './components/folders/FolderPanel';
 import { LinePanel } from './components/lines/LinePanel';
 import { LineEditor } from './components/lines/LineEditor';
@@ -13,13 +14,22 @@ export function RepertoirePage() {
     document.title = 'Chesslines | Repertoire';
 
     const { repertoire } = useOutletContext<OutletContext>();
+    const [searchParams] = useSearchParams();
+
+    const searchParamLineID = (searchParams.get('line') as UUID) || null;
+    const searchParamLineParentFolder = findParentFolder(
+        searchParamLineID,
+        repertoire
+    );
 
     const { folders, lines } = useRepertoire(repertoire);
-    const [currentTab, setCurrentTab] = useState<Colour>('w');
+    const [currentTab, setCurrentTab] = useState<Colour>(
+        lines[searchParamLineID]?.player || 'w'
+    );
     const [currentLinesFolder, setCurrentLinesFolder] =
-        useState<RepertoireFolderID | null>(null);
+        useState<RepertoireFolderID | null>(searchParamLineParentFolder);
     const [currentOpenLine, setCurrentOpenLine] = useState<UUID | 'new' | null>(
-        null
+        searchParamLineID
     );
 
     return (
