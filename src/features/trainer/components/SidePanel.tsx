@@ -3,6 +3,7 @@ import { Link } from 'react-router';
 import { IconButton } from '@/components/util/IconButton';
 import { ICONS } from '@/util/constants';
 import type { TestLine } from '@/types/repertoire';
+import type { PieceName } from '@/types/chessboard';
 import styles from './trainer.module.css';
 
 type SidePanelProps = {
@@ -11,6 +12,7 @@ type SidePanelProps = {
     progress: number;
     linesToTrain: TestLine[];
     lineID: string;
+    pieceHint: PieceName | '';
     noteHint: string;
     toNextLine: () => void;
 };
@@ -21,10 +23,13 @@ export function SidePanel({
     progress,
     linesToTrain,
     lineID,
+    pieceHint,
     noteHint,
     toNextLine,
 }: SidePanelProps) {
     const [showingNotes, setShowingNotes] = useState(false);
+    const [showingHint, setShowingHint] = useState(false);
+
     const hasLinesLeft = progress < linesToTrain.length;
     const feedback =
         successFeedback || errorFeedback
@@ -64,11 +69,13 @@ export function SidePanel({
 
             <div className={styles.hints}>
                 {/* TODO: Implement "highlight piece" hint */}
-                <button>Highlight piece</button>
+                <button onClick={() => setShowingHint(true)}>Hint</button>
                 <button onClick={() => setShowingNotes(!showingNotes)}>
                     {showingNotes ? 'Hide' : 'Show'} notes
                 </button>
             </div>
+
+            {showingHint && <p>{pieceHint} move</p>}
 
             {showingNotes && (
                 <div className={styles.notes}>

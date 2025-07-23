@@ -1,4 +1,4 @@
-import type { Colour } from '@/types/chessboard';
+import type { Colour, PieceName } from '@/types/chessboard';
 import type { Repertoire } from '@/types/repertoire';
 import { UUID } from '@/types/utility';
 
@@ -86,6 +86,29 @@ export const convert = {
         return id.slice(3);
     },
 };
+
+export function toPieceName(move?: string): PieceName | '' {
+    // e.g. line completed, no more moves - the "next move" is undefined
+    if (!move) {
+        return '';
+    }
+
+    const firstLetter = move[0];
+    switch (firstLetter) {
+        case 'R':
+            return 'Rook';
+        case 'N':
+            return 'Knight';
+        case 'B':
+            return 'Bishop';
+        case 'Q':
+            return 'Queen';
+        case 'K':
+            return 'King';
+        default:
+            return 'Pawn';
+    }
+}
 
 export function conditionallyPush<T>(
     arr: T[],

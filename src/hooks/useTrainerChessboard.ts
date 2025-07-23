@@ -1,6 +1,6 @@
 import { Chess } from '@maoshizhong/chess';
 import { useRef, useState } from 'react';
-import { getPosition } from '@/util/util';
+import { getMoves, getPosition, toPieceName } from '@/util/util';
 import type { MoveInfo } from '@/types/chessboard';
 import type { RepertoireLine } from '@/types/repertoire';
 
@@ -65,6 +65,9 @@ export function useTrainerChessboard({ PGN, player }: RepertoireLine) {
         currentMoveIndex,
         playMove,
         getLegalMoves,
+        hint: toPieceName(
+            getMoves(comparison.current.toPGN())[currentMoveIndex - 1]
+        ),
         moveSuccess,
         lineSuccess,
     };

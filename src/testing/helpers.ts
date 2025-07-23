@@ -263,6 +263,32 @@ const testRepertoire = {
             },
         };
     },
+    get forHintsTesting(): Repertoire {
+        return {
+            folders: {
+                w: { name: 'White', contains: 'either', children: [] },
+                b: {
+                    name: 'Black',
+                    contains: 'lines',
+                    children: [UUIDS.lines[0], UUIDS.lines[1]],
+                },
+            },
+            lines: {
+                [UUIDS.lines[0]]: {
+                    player: 'b',
+                    startingFEN: STANDARD_STARTING_FEN,
+                    PGN: '1. d4 d5',
+                    notes: ['', '', 'Symmetrical'],
+                },
+                [UUIDS.lines[1]]: {
+                    player: 'b',
+                    startingFEN: STANDARD_STARTING_FEN,
+                    PGN: '1. d4 Nf6',
+                    notes: ['', '', 'Indian defense'],
+                },
+            },
+        };
+    },
     get withManyMixedLines(): Repertoire {
         return {
             folders: {

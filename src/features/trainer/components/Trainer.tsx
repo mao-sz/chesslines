@@ -24,6 +24,7 @@ export function Trainer({
         currentMoveIndex,
         playMove,
         getLegalMoves,
+        hint,
         moveSuccess,
         lineSuccess,
     } = useTrainerChessboard(line);
@@ -47,6 +48,7 @@ export function Trainer({
                 progress={progress}
                 linesToTrain={linesToTrain}
                 lineID={lineID}
+                pieceHint={hint}
                 noteHint={line.notes[currentMoveIndex]}
                 toNextLine={toNextLine}
             />

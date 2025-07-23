@@ -14,6 +14,13 @@ export type PieceLetter =
     | 'q'
     | 'k';
 export type PromotionPieceLetter = Exclude<PieceLetter, 'P' | 'p' | 'K' | 'k'>;
+export type PieceName =
+    | 'Pawn'
+    | 'Rook'
+    | 'Knight'
+    | 'Bishop'
+    | 'Queen'
+    | 'King';
 export type MoveInfo = {
     from: string;
     to: string;
