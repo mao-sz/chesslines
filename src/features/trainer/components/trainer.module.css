@@ -64,8 +64,7 @@
     }
 }
 
-.notes {
-    display: flex;
+div.notes {
     flex-direction: column;
     align-items: flex-start;
     gap: 1rem;

@@ -14,7 +14,7 @@ export function LineNote({ notes, setNotes, currentMoveIndex }: LineNoteProps) {
         const textArea = e.target as HTMLTextAreaElement;
         setNotes((oldNotes) => {
             const newNotes: LineNotes = [...oldNotes];
-            newNotes[currentMoveIndex] = textArea.value;
+            newNotes[currentMoveIndex] = textArea.value.trim();
             return newNotes;
         });
     }

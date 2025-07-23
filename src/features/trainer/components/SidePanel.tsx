@@ -13,7 +13,7 @@ type SidePanelProps = {
     linesToTrain: TestLine[];
     lineID: string;
     pieceHint: PieceName | '';
-    noteHint: string;
+    noteHint?: string;
     toNextLine: () => void;
 };
 
@@ -68,11 +68,14 @@ export function SidePanel({
             )}
 
             <div className={styles.hints}>
-                {/* TODO: Implement "highlight piece" hint */}
-                <button onClick={() => setShowingHint(true)}>Hint</button>
-                <button onClick={() => setShowingNotes(!showingNotes)}>
-                    {showingNotes ? 'Hide' : 'Show'} notes
-                </button>
+                {pieceHint && (
+                    <button onClick={() => setShowingHint(true)}>Hint</button>
+                )}
+                {noteHint?.trim() && (
+                    <button onClick={() => setShowingNotes(!showingNotes)}>
+                        {showingNotes ? 'Hide' : 'Show'} notes
+                    </button>
+                )}
             </div>
 
             {showingHint && <p>{pieceHint} move</p>}
