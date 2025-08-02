@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { LOCAL_STORAGE } from '@/util/localStorage';
 import type {
     Repertoire,
     RepertoireWithMethods,
@@ -13,6 +14,8 @@ export function useRepertoire(repertoire: Repertoire) {
         repertoire.folders
     );
     const [lines, setLines] = useState<Repertoire['lines']>(repertoire.lines);
+
+    LOCAL_STORAGE.repertoire.set({ folders, lines });
 
     const folderMethods = {
         create(name: string, parent: RepertoireFolderID): void {

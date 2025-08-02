@@ -1,3 +1,4 @@
+import type { Repertoire } from '@/types/repertoire';
 import type { FontAwesomeIcon } from '@/types/utility';
 
 export const ICONS = {
@@ -18,3 +19,11 @@ export const ICONS = {
 
 export const STANDARD_STARTING_FEN =
     'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1';
+
+export const EMPTY_REPERTOIRE: Repertoire = {
+    folders: {
+        w: { name: 'White', contains: 'either', children: [] },
+        b: { name: 'Black', contains: 'either', children: [] },
+    },
+    lines: {},
+};

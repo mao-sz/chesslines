@@ -1,11 +1,11 @@
 import { Outlet } from 'react-router';
 import { Header } from './Header';
-import { helpers } from '@/testing/helpers';
+import { LOCAL_STORAGE } from '@/util/localStorage';
+import { EMPTY_REPERTOIRE } from '@/util/constants';
 import type { OutletContext } from '@/types/utility';
 
 export function App() {
-    // TODO: Use external persistent storage!
-    const repertoire = helpers.testRepertoire.withLinesWithNotes;
+    const repertoire = LOCAL_STORAGE.repertoire.get() ?? EMPTY_REPERTOIRE;
 
     return (
         <>
