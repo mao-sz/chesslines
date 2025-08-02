@@ -18,11 +18,7 @@ type NonEmptyFolder = Folder & {
     children: NonEmptyArray<UUID>;
 };
 export type RepertoireFolder = EmptyFolder | NonEmptyFolder;
-type RepertoireFolders = {
-    w: RepertoireFolder & { name: 'White' };
-    b: RepertoireFolder & { name: 'Black' };
-    [key: UUID]: RepertoireFolder;
-};
+type RepertoireFolders = Record<Colour | UUID, RepertoireFolder>;
 
 export type RepertoireFolderID = keyof RepertoireFolders;
 
