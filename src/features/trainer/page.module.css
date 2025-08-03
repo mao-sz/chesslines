@@ -12,3 +12,25 @@
         width: min(700px, 90vw);
     }
 }
+
+.noLines {
+    flex: 1;
+    flex-direction: column;
+    align-items: center;
+
+    & p {
+        font-size: x-large;
+        font-weight: bold;
+    }
+
+    & a {
+        background-color: var(--bg-light);
+        border-radius: 4px;
+        padding: 4px 8px;
+        text-decoration: none;
+
+        &:hover {
+            background-color: var(--bg-mid-dark);
+        }
+    }
+}

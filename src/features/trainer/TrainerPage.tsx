@@ -1,4 +1,4 @@
-import { useOutletContext } from 'react-router';
+import { Link, useOutletContext } from 'react-router';
 import { Trainer } from './components/Trainer';
 import { useShuffledLines } from '@/hooks/useShuffledLines';
 import type { OutletContext } from '@/types/utility';
@@ -15,15 +15,29 @@ export function TrainerPage() {
     const { currentLine, toNextLine, progress } =
         useShuffledLines(linesToTrain);
 
+    const classNames = [styles.main];
+    if (!linesToTrain.length) {
+        classNames.push(styles.noLines);
+    }
+
     return (
-        <main className={styles.main}>
-            <Trainer
-                key={progress}
-                progress={progress}
-                linesToTrain={linesToTrain}
-                testLine={currentLine}
-                toNextLine={toNextLine}
-            />
+        <main className={classNames.join(' ')}>
+            {linesToTrain.length ? (
+                <Trainer
+                    key={progress}
+                    progress={progress}
+                    linesToTrain={linesToTrain}
+                    testLine={currentLine}
+                    toNextLine={toNextLine}
+                />
+            ) : (
+                <>
+                    <p>No lines to train!</p>
+                    <Link to="/repertoire">
+                        Set lines to train from your repertoire
+                    </Link>
+                </>
+            )}
         </main>
     );
 }

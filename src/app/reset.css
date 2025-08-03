@@ -46,7 +46,7 @@ main {
     margin: 0;
 }
 
-:is(button, input, textarea) {
+:is(a, button, input, textarea) {
     color: inherit;
     font-family: inherit;
     font-size: inherit;

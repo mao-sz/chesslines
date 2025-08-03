@@ -1,12 +1,13 @@
-import { useOutletContext } from 'react-router';
+import { MemoryRouter, useOutletContext } from 'react-router';
 import { describe, it, expect, afterEach, vi } from 'vitest';
 import { render, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { TrainerPage } from '../TrainerPage';
 import { helpers } from '@/testing/helpers';
+import { EMPTY_REPERTOIRE } from '@/util/constants';
 
 afterEach(vi.resetAllMocks);
-vi.mock('react-router');
+vi.mock('react-router', { spy: true });
 vi.mock('@/util/util.ts', async (importActual) => ({
     ...(await importActual()),
     toShuffled: vi.fn((lines) => lines),
@@ -17,7 +18,13 @@ describe('Initial elements', () => {
         vi.mocked(useOutletContext).mockReturnValue({
             repertoire: helpers.testRepertoire.withSingleWhiteLine,
         });
-        render(<TrainerPage />);
+        // quick and dirty memory router to provide context for Link component
+        // Link not used in tests so no need to set up a proper router and mock local storage
+        render(
+            <MemoryRouter>
+                <TrainerPage />
+            </MemoryRouter>
+        );
 
         expect(
             screen.getAllByRole('button', { name: /square$/i })
@@ -38,7 +45,11 @@ describe('Initial elements', () => {
         vi.mocked(useOutletContext).mockReturnValue({
             repertoire: helpers.testRepertoire.withSingleBlackLine,
         });
-        render(<TrainerPage />);
+        render(
+            <MemoryRouter>
+                <TrainerPage />
+            </MemoryRouter>
+        );
 
         const squares = screen.getAllByRole('button', { name: /square$/i });
         expect(squares.at(0)?.ariaLabel).toBe('h1 square');
@@ -52,7 +63,11 @@ describe('Initial elements', () => {
         vi.mocked(useOutletContext).mockReturnValue({
             repertoire: helpers.testRepertoire.withManyMixedLines,
         });
-        render(<TrainerPage />);
+        render(
+            <MemoryRouter>
+                <TrainerPage />
+            </MemoryRouter>
+        );
 
         expect(
             screen.getByRole('button', { name: /next line/i })
@@ -63,7 +78,11 @@ describe('Initial elements', () => {
         vi.mocked(useOutletContext).mockReturnValue({
             repertoire: helpers.testRepertoire.withSingleWhiteLine,
         });
-        render(<TrainerPage />);
+        render(
+            <MemoryRouter>
+                <TrainerPage />
+            </MemoryRouter>
+        );
 
         expect(
             screen.queryByRole('button', { name: /next line/i })
@@ -75,7 +94,11 @@ describe('Initial elements', () => {
         vi.mocked(useOutletContext).mockReturnValue({
             repertoire: testRepertoire,
         });
-        render(<TrainerPage />);
+        render(
+            <MemoryRouter>
+                <TrainerPage />
+            </MemoryRouter>
+        );
         expect(
             screen.getByText(
                 new RegExp(
@@ -84,6 +107,29 @@ describe('Initial elements', () => {
                 )
             )
         ).toBeInTheDocument();
+    });
+
+    it('Renders "No lines" message if no test lines loaded', () => {
+        vi.mocked(useOutletContext).mockReturnValue({
+            repertoire: EMPTY_REPERTOIRE,
+        });
+        render(
+            <MemoryRouter>
+                <TrainerPage />
+            </MemoryRouter>
+        );
+
+        const backToRepertoireButton = screen.getByRole('link', {
+            name: /set lines to train from your repertoire/i,
+        });
+
+        // should not render a chessboard!
+        expect(
+            screen.queryAllByRole('button', { name: /square$/i })
+        ).toHaveLength(0);
+        expect(screen.getByText(/no lines to train/i)).toBeInTheDocument();
+        expect(backToRepertoireButton).toBeInTheDocument();
+        expect(backToRepertoireButton).toHaveAttribute('href', '/repertoire');
     });
 });
 
@@ -94,7 +140,11 @@ describe('Position after moves', () => {
                 repertoire: helpers.testRepertoire.withSingleWhiteLine,
             });
             const user = userEvent.setup();
-            render(<TrainerPage />);
+            render(
+                <MemoryRouter>
+                    <TrainerPage />
+                </MemoryRouter>
+            );
 
             const d2Square = screen.getByRole('button', { name: 'd2 square' });
             const d4Square = screen.getByRole('button', { name: 'd4 square' });
@@ -122,7 +172,11 @@ describe('Position after moves', () => {
                 repertoire: helpers.testRepertoire.withSingleWhiteLine,
             });
             const user = userEvent.setup();
-            render(<TrainerPage />);
+            render(
+                <MemoryRouter>
+                    <TrainerPage />
+                </MemoryRouter>
+            );
 
             const d2Square = screen.getByRole('button', { name: 'd2 square' });
             const d3Square = screen.getByRole('button', { name: 'd3 square' });
@@ -145,7 +199,11 @@ describe('Position after moves', () => {
                 repertoire: helpers.testRepertoire.withSingleWhiteLine,
             });
             const user = userEvent.setup();
-            render(<TrainerPage />);
+            render(
+                <MemoryRouter>
+                    <TrainerPage />
+                </MemoryRouter>
+            );
 
             const d2Square = screen.getByRole('button', { name: 'd2 square' });
             const d4Square = screen.getByRole('button', { name: 'd4 square' });
@@ -176,7 +234,11 @@ describe('Position after moves', () => {
                 repertoire: helpers.testRepertoire.withSingleWhiteLine,
             });
             const user = userEvent.setup();
-            render(<TrainerPage />);
+            render(
+                <MemoryRouter>
+                    <TrainerPage />
+                </MemoryRouter>
+            );
 
             const d2Square = screen.getByRole('button', { name: 'd2 square' });
             const d6Square = screen.getByRole('button', { name: 'd6 square' });
@@ -203,7 +265,11 @@ describe('Success feedback', () => {
             repertoire: helpers.testRepertoire.withSingleWhiteLine,
         });
         const user = userEvent.setup();
-        render(<TrainerPage />);
+        render(
+            <MemoryRouter>
+                <TrainerPage />
+            </MemoryRouter>
+        );
 
         const d2Square = screen.getByRole('button', { name: 'd2 square' });
         const d3Square = screen.getByRole('button', { name: 'd3 square' });
@@ -218,7 +284,11 @@ describe('Success feedback', () => {
             repertoire: helpers.testRepertoire.withSingleWhiteLine,
         });
         const user = userEvent.setup();
-        render(<TrainerPage />);
+        render(
+            <MemoryRouter>
+                <TrainerPage />
+            </MemoryRouter>
+        );
 
         const d2Square = screen.getByRole('button', { name: 'd2 square' });
         const d3Square = screen.getByRole('button', { name: 'd3 square' });
@@ -234,7 +304,11 @@ describe('Success feedback', () => {
             repertoire: helpers.testRepertoire.withManyMixedLines,
         });
         const user = userEvent.setup();
-        render(<TrainerPage />);
+        render(
+            <MemoryRouter>
+                <TrainerPage />
+            </MemoryRouter>
+        );
 
         const congratulatoryMessage = /well done/i;
 
@@ -263,7 +337,11 @@ describe('Progress', () => {
             repertoire: testRepertoire,
         });
         const user = userEvent.setup();
-        render(<TrainerPage />);
+        render(
+            <MemoryRouter>
+                <TrainerPage />
+            </MemoryRouter>
+        );
 
         const nextButton = screen.getByRole('button', { name: /next line/i });
         await user.click(nextButton);
