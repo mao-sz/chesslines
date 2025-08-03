@@ -34,6 +34,22 @@ export function RepertoireErrorPage({
         window.location.reload();
     }
 
+    function downloadRepertoireDataAsFile(): void {
+        const file = new Blob([invalidRepertoireString], {
+            type: 'text/plain',
+        });
+        const anchor = document.createElement('a');
+        anchor.href = URL.createObjectURL(file);
+        anchor.download = 'repertoire.txt';
+
+        // do the download
+        anchor.click();
+
+        // must manually release object URL else they will not be garbage collected
+        // https://developer.mozilla.org/en-US/docs/Web/URI/Reference/Schemes/blob#memory_management
+        URL.revokeObjectURL(anchor.href);
+    }
+
     return (
         <main className={styles.main}>
             <h1>Error retrieving repertoire data</h1>
@@ -59,7 +75,12 @@ export function RepertoireErrorPage({
                     }}
                 ></textarea>
                 <div className={styles.formButtons}>
-                    <button type="button">Export repertoire data</button>
+                    <button
+                        type="button"
+                        onClick={downloadRepertoireDataAsFile}
+                    >
+                        Export repertoire data
+                    </button>
                     <button type="submit">Save</button>
                 </div>
             </form>
