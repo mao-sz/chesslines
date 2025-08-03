@@ -1,4 +1,5 @@
-import { FormEvent } from 'react';
+import { useLayoutEffect, useRef, type FormEvent } from 'react';
+import styles from './page.module.css';
 
 type RepertoireErrorPageProps = {
     errorReason: string;
@@ -10,6 +11,14 @@ export function RepertoireErrorPage({
     invalidRepertoireString,
 }: RepertoireErrorPageProps) {
     const id = 'broken-string';
+    const textAreaRef = useRef<HTMLTextAreaElement>(null);
+
+    // initial textarea height to fit content
+    useLayoutEffect(() => {
+        if (textAreaRef.current) {
+            textAreaRef.current.style.height = `${textAreaRef.current.scrollHeight}px`;
+        }
+    }, []);
 
     function reloadWithNewRepertoireData(e: FormEvent): void {
         e.preventDefault();
@@ -26,24 +35,43 @@ export function RepertoireErrorPage({
     }
 
     return (
-        <main>
+        <main className={styles.main}>
             <h1>Error retrieving repertoire data</h1>
-            <h2>Reason:</h2>
-            <p>{errorReason}</p>
+            <h2 className={styles.smallHeading}>Reason:</h2>
+            <p className={styles.reason}>{errorReason}</p>
             <form
+                className={styles.form}
                 aria-label="invalid repertoire data"
                 onSubmit={reloadWithNewRepertoireData}
             >
-                <label htmlFor={id}>Invalid repertoire data:</label>
+                <label htmlFor={id} className={styles.smallHeading}>
+                    Invalid repertoire data:
+                </label>
                 <textarea
+                    ref={textAreaRef}
                     id={id}
+                    className={styles.data}
                     defaultValue={invalidRepertoireString}
+                    onInput={(e: FormEvent) => {
+                        // ensure textarea height grows with text input to fit content
+                        const textArea = e.currentTarget as HTMLTextAreaElement;
+                        textArea.style.height = `${textArea.scrollHeight}px`;
+                    }}
                 ></textarea>
-                <button type="submit">Save</button>
+                <div className={styles.formButtons}>
+                    <button type="button">Export repertoire data</button>
+                    <button type="submit">Save</button>
+                </div>
             </form>
-            <button type="button" onClick={discardStoredRepertoire}>
-                Discard repertoire
-            </button>
+            <div className={styles.discard}>
+                <button type="button" onClick={discardStoredRepertoire}>
+                    Discard repertoire
+                </button>
+                <p>
+                    This resets the stored repertoire data to its default empty
+                    state and cannot be undone!
+                </p>
+            </div>
         </main>
     );
 }
