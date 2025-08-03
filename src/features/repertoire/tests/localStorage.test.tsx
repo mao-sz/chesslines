@@ -31,7 +31,10 @@ describe('App start', () => {
     it('Sets empty repertoire if no repertoire in local storage', () => {
         render(<RouterProvider router={testRouter} />);
 
-        expect(repertoireGetSpy).toHaveReturnedWith(null);
+        expect(repertoireGetSpy).toHaveReturnedWith({
+            validationError: null,
+            repertoire: null,
+        });
         expect(vi.mocked(useOutletContext)).toHaveReturnedWith({
             repertoire: EMPTY_REPERTOIRE,
         });
@@ -46,11 +49,56 @@ describe('App start', () => {
 
         render(<RouterProvider router={testRouter} />);
 
-        expect(repertoireGetSpy).toHaveReturnedWith(TEST_REPERTOIRE);
+        expect(repertoireGetSpy).toHaveReturnedWith({
+            validationError: null,
+            repertoire: TEST_REPERTOIRE,
+        });
         expect(vi.mocked(useOutletContext)).toHaveReturnedWith({
             repertoire: TEST_REPERTOIRE,
         });
     });
+
+    it.each([
+        [
+            'obviously not repertoire string',
+            '"foobar"',
+            '✖ Invalid input: expected object, received string',
+        ],
+        [
+            'missing "b" folder',
+            '{"folders":{"w":{"name":"White","contains":"either","children":[]}},"lines":{}}',
+            '✖ Invalid input: expected object, received undefined\n  → at folders.b',
+        ],
+        [
+            'syntax error',
+            '{"folders":{"w":{"name":"White","contains":"either","children":[]},"b":{"name":"Black","contains":"either","children":[]}},"lines":{}',
+            'There was a syntax error in the stored repertoire data',
+        ],
+    ])(
+        'Renders repertoire error page if local storage repertoire string is not valid (%s)',
+        (_, repertoireString, errorMessage) => {
+            window.localStorage.setItem('repertoire', repertoireString);
+
+            render(<RouterProvider router={testRouter} />);
+
+            expect(repertoireGetSpy).toHaveReturnedWith({
+                validationError: errorMessage,
+                repertoire: repertoireString,
+            });
+            expect(vi.mocked(useOutletContext)).not.toHaveBeenCalled();
+            expect(
+                screen.getByRole('form', { name: /invalid repertoire data/i })
+            ).toBeInTheDocument();
+            expect(
+                screen.getByText(errorMessage, { collapseWhitespace: false })
+            ).toBeInTheDocument();
+            expect(
+                screen.getByText(repertoireString, {
+                    collapseWhitespace: false,
+                })
+            ).toBeInTheDocument();
+        }
+    );
 });
 
 describe('Editing repertoire', () => {
