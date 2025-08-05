@@ -34,14 +34,22 @@ export function FolderPanel({
                     currentTab === 'w' ? styles.whiteTab : styles.blackTab
                 }
             >
-                <Folder
-                    // key prevents sharing stale isOpen state when switching tabs
-                    key={currentTab}
-                    id={currentTab}
-                    repertoire={repertoire}
-                    currentLinesFolder={currentLinesFolder}
-                    setCurrentLinesFolder={setCurrentLinesFolder}
-                />
+                {/* https://developer.mozilla.org/en-US/docs/Web/CSS/list-style#accessibility
+                list-style: none removes list accessibility role in Safari */}
+                <ul
+                    className={styles.contents}
+                    role="list"
+                    aria-label="folders"
+                >
+                    <Folder
+                        // key prevents sharing stale isOpen state when switching tabs
+                        key={currentTab}
+                        id={currentTab}
+                        repertoire={repertoire}
+                        currentLinesFolder={currentLinesFolder}
+                        setCurrentLinesFolder={setCurrentLinesFolder}
+                    />
+                </ul>
             </div>
         </div>
     );

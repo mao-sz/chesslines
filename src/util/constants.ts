@@ -6,6 +6,7 @@ export const ICONS = {
     CROSS: 'fa-solid fa-xmark',
     BIN: 'fa-solid fa-trash',
     PENCIL: 'fa-solid fa-pencil',
+    DRAG: 'fa-solid fa-grip-lines-vertical',
     OPENED: 'fa-solid fa-caret-down',
     CLOSED: 'fa-solid fa-caret-right',
     PLUS: 'fa-solid fa-plus',

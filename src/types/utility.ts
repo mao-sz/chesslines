@@ -9,6 +9,7 @@ type FontAwesomeIconName =
     | 'trash'
     | 'pencil'
     | 'folder-plus'
+    | 'grip-lines-vertical'
     | 'check'
     | 'xmark'
     | 'plus'

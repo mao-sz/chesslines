@@ -52,10 +52,6 @@ main {
     font-size: inherit;
 }
 
-ul {
-    margin-block: 6px;
-}
-
 button {
     background-color: transparent;
     border: none;

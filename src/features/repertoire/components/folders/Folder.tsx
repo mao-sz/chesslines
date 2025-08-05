@@ -132,7 +132,7 @@ export function Folder({
     }
 
     return (
-        <div
+        <li
             id={convert.uuidToId(id)}
             className={styles.folder}
             aria-label={`${folder.name} ${isOpen || id === currentLinesFolder ? 'open' : 'closed'} folder`}
@@ -144,40 +144,52 @@ export function Folder({
             onDrop={appendDraggedItem}
         >
             <div
-                className={`${styles.heading} ${isBaseFolder ? styles.base : ''}`}
-                onClick={handleClickOnFolder}
+                className={styles.controls}
                 onDragEnter={highlightWhenDraggedOver('add')}
                 onDragExit={highlightWhenDraggedOver('remove')}
                 onDrop={highlightWhenDraggedOver('remove')}
             >
-                {folder.contains === 'folders' && (
-                    <i className={isOpen ? ICONS.OPENED : ICONS.CLOSED}></i>
+                {!isBaseFolder && (
+                    <div className={styles.dragHandle} aria-label="drag handle">
+                        <i className={ICONS.DRAG}></i>
+                    </div>
                 )}
+                <div
+                    className={`${styles.heading} ${isBaseFolder ? '' : styles.notBase}`}
+                >
+                    {/* absolutely-positioned clickable background to open/close folder */}
+                    <button
+                        className={styles.openToggle}
+                        aria-label={`${isOpen ? 'close' : 'open'} ${folder.name} folder ${folder.contains !== 'folders' ? 'in lines panel' : ''}`}
+                        onClick={handleClickOnFolder}
+                    ></button>
 
-                <FolderName
-                    name={folder.name}
-                    isRenaming={isRenaming}
-                    setIsRenaming={setIsRenaming}
-                    updateFolderName={updateFolderName}
-                />
-
-                {showingNewFolderButton && (
-                    <IconButton
-                        type="button"
-                        icon={ICONS.NEW_FOLDER}
-                        ariaLabel="new folder"
-                        onClick={showNewFolderForm}
+                    {folder.contains === 'folders' && !isRenaming && (
+                        <i className={isOpen ? ICONS.OPENED : ICONS.CLOSED}></i>
+                    )}
+                    <FolderName
+                        name={folder.name}
+                        isRenaming={isRenaming}
+                        setIsRenaming={setIsRenaming}
+                        updateFolderName={updateFolderName}
                     />
-                )}
-
-                {showingDeleteButton && (
-                    <IconButton
-                        type="button"
-                        icon={ICONS.BIN}
-                        ariaLabel="delete folder"
-                        onClick={deleteFolder}
-                    />
-                )}
+                    {showingNewFolderButton && (
+                        <IconButton
+                            type="button"
+                            icon={ICONS.NEW_FOLDER}
+                            ariaLabel="new folder"
+                            onClick={showNewFolderForm}
+                        />
+                    )}
+                    {showingDeleteButton && (
+                        <IconButton
+                            type="button"
+                            icon={ICONS.BIN}
+                            ariaLabel="delete folder"
+                            onClick={deleteFolder}
+                        />
+                    )}
+                </div>
             </div>
 
             {isCreatingNewFolder && (
@@ -201,17 +213,16 @@ export function Folder({
                     aria-label={`folders within ${folder.name} folder`}
                 >
                     {folder.children.map((childId) => (
-                        <li key={childId}>
-                            <Folder
-                                id={childId}
-                                repertoire={repertoire}
-                                currentLinesFolder={currentLinesFolder}
-                                setCurrentLinesFolder={setCurrentLinesFolder}
-                            />
-                        </li>
+                        <Folder
+                            key={childId}
+                            id={childId}
+                            repertoire={repertoire}
+                            currentLinesFolder={currentLinesFolder}
+                            setCurrentLinesFolder={setCurrentLinesFolder}
+                        />
                     ))}
                 </ul>
             )}
-        </div>
+        </li>
     );
 }
