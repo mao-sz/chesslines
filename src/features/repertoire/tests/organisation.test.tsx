@@ -4,7 +4,7 @@ import {
     RouterProvider,
 } from 'react-router';
 import { describe, it, expect, afterEach, vi } from 'vitest';
-import { fireEvent, render, screen } from '@testing-library/react';
+import { fireEvent, render, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { helpers } from '@/testing/helpers';
 import { convert } from '@/util/util';
@@ -22,10 +22,10 @@ describe('Moving folders', () => {
         });
         render(<RouterProvider router={testRouter} />);
 
-        const lineFolder = screen.getByRole('generic', {
+        const lineFolder = screen.getByRole('listitem', {
             name: /^line folder/i,
         });
-        const folderFolder = screen.getByRole('generic', {
+        const folderFolder = screen.getByRole('listitem', {
             name: /folder folder/i,
         });
         expect(folderFolder).not.toContainElement(lineFolder);
@@ -37,7 +37,7 @@ describe('Moving folders', () => {
             },
         });
         expect(folderFolder).toContainElement(
-            screen.getByRole('generic', { name: /^line folder/i })
+            screen.getByRole('listitem', { name: /^line folder/i })
         );
     });
 
@@ -47,7 +47,7 @@ describe('Moving folders', () => {
         });
         const { container } = render(<RouterProvider router={testRouter} />);
 
-        const lineFolder = screen.getByRole('generic', {
+        const lineFolder = screen.getByRole('listitem', {
             name: /^line folder/i,
         });
         await expect(container).toMatchFileSnapshot(
@@ -72,10 +72,10 @@ describe('Moving folders', () => {
         });
         const { container } = render(<RouterProvider router={testRouter} />);
 
-        const lineFolder = screen.getByRole('generic', {
+        const lineFolder = screen.getByRole('listitem', {
             name: /^line folder/i,
         });
-        const folderFolder = screen.getByRole('generic', {
+        const folderFolder = screen.getByRole('listitem', {
             name: /folder folder/i,
         });
         await expect(container).toMatchFileSnapshot(
@@ -100,10 +100,10 @@ describe('Moving folders', () => {
         });
         const { container } = render(<RouterProvider router={testRouter} />);
 
-        const lineFolder = screen.getByRole('generic', {
+        const lineFolder = screen.getByRole('listitem', {
             name: /^line folder/i,
         });
-        const whiteFolder = screen.getByRole('generic', { name: /white/i });
+        const whiteFolder = screen.getByRole('listitem', { name: /white/i });
         await expect(container).toMatchFileSnapshot(
             './__snapshots__/organisationOriginalFolderState.html'
         );
@@ -126,10 +126,10 @@ describe('Moving folders', () => {
         });
         const { container } = render(<RouterProvider router={testRouter} />);
 
-        const folderFolder = screen.getByRole('generic', {
+        const folderFolder = screen.getByRole('listitem', {
             name: /folder folder/i,
         });
-        const whiteFolder = screen.getByRole('generic', { name: /white/i });
+        const whiteFolder = screen.getByRole('listitem', { name: /white/i });
         await expect(container).toMatchFileSnapshot(
             './__snapshots__/organisationOriginalFolderState.html'
         );
@@ -152,7 +152,7 @@ describe('Moving folders', () => {
         });
         const { container } = render(<RouterProvider router={testRouter} />);
 
-        const folderFolder = screen.getByRole('generic', {
+        const folderFolder = screen.getByRole('listitem', {
             name: /folder folder/i,
         });
         await expect(container).toMatchFileSnapshot(
@@ -179,12 +179,12 @@ describe('Moving lines', () => {
         });
         const user = userEvent.setup();
         const { container } = render(<RouterProvider router={testRouter} />);
-        const lineFolder = screen.getByRole('generic', {
-            name: /^line folder/i,
-        }).firstElementChild as HTMLElement;
-        const folderFolder = screen.getByRole('generic', {
-            name: /folder folder/i,
-        }).firstElementChild as HTMLElement;
+        const lineFolder = screen.getByRole('button', {
+            name: /open line folder folder in lines panel/i,
+        });
+        const folderFolder = screen.getByRole('button', {
+            name: /open folder folder/i,
+        });
         await user.click(lineFolder);
         await user.click(folderFolder);
 
@@ -195,10 +195,10 @@ describe('Moving lines', () => {
         const { user } = await openLineFolder();
 
         const linesPanel = screen.getByRole('list', { name: /lines/i });
-        const lineToDrag = linesPanel.firstElementChild as HTMLElement;
-        const targetLineFolder = screen.getByRole('generic', {
+        const lineToDrag = linesPanel.firstElementChild as HTMLLIElement;
+        const targetLineFolder = screen.getByRole('listitem', {
             name: /^another line folder/i,
-        }).firstElementChild as HTMLElement;
+        });
 
         fireEvent.drag(lineToDrag);
         fireEvent.drop(targetLineFolder, {
@@ -210,7 +210,11 @@ describe('Moving lines', () => {
             screen.queryByText(/1\. e4 e5 2\. d4 d5 3\. f4 f5/i)
         ).not.toBeInTheDocument();
 
-        await user.click(targetLineFolder);
+        const targetLineFolderOpenButton = within(targetLineFolder).getByRole(
+            'button',
+            { name: /open/i }
+        );
+        await user.click(targetLineFolderOpenButton);
         expect(
             screen.getByText(/1\. e4 e5 2\. d4 d5 3\. f4 f5/i)
         ).toBeInTheDocument();
@@ -221,9 +225,9 @@ describe('Moving lines', () => {
 
         const linesPanel = screen.getByRole('list', { name: /lines/i });
         const lineToDrag = linesPanel.firstElementChild as HTMLElement;
-        const targetEmptyFolder = screen.getByRole('generic', {
+        const targetEmptyFolder = screen.getByRole('listitem', {
             name: /^empty folder/i,
-        }).firstElementChild as HTMLElement;
+        });
 
         fireEvent.drag(lineToDrag);
         fireEvent.drop(targetEmptyFolder, {
@@ -235,7 +239,11 @@ describe('Moving lines', () => {
             screen.queryByText(/1\. e4 e5 2\. d4 d5 3\. f4 f5/i)
         ).not.toBeInTheDocument();
 
-        await user.click(targetEmptyFolder);
+        const targetEmptyFolderOpenButton = within(targetEmptyFolder).getByRole(
+            'button',
+            { name: /open/i }
+        );
+        await user.click(targetEmptyFolderOpenButton);
         expect(
             screen.getByText(/1\. e4 e5 2\. d4 d5 3\. f4 f5/i)
         ).toBeInTheDocument();
@@ -268,7 +276,7 @@ describe('Moving lines', () => {
 
         const linesPanel = screen.getByRole('list', { name: /lines/i });
         const lineToDrag = linesPanel.firstElementChild as HTMLElement;
-        const targetFolderFolder = screen.getByRole('generic', {
+        const targetFolderFolder = screen.getByRole('listitem', {
             name: /^folder folder/i,
         });
 
@@ -293,7 +301,7 @@ describe('Moving lines', () => {
 
         const linesPanel = screen.getByRole('list', { name: /lines/i });
         const lineToDrag = linesPanel.firstElementChild as HTMLElement;
-        const originalParentFolder = screen.getByRole('generic', {
+        const originalParentFolder = screen.getByRole('listitem', {
             name: /^line folder/i,
         });
 
