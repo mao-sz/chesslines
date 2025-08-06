@@ -23,8 +23,9 @@ async function openLineFolderInPanel(
     render(<RouterProvider router={testRouter} />);
 
     const user = userEvent.setup();
-    const whiteFolder = screen.getByRole('generic', { name: /white.*folder/i })
-        .firstElementChild as HTMLElement;
+    const whiteFolder = screen.getByRole('button', {
+        name: /open white folder in lines panel/i,
+    });
     await user.click(whiteFolder);
     return user;
 }
@@ -164,8 +165,9 @@ describe('Validation', () => {
         const newPGN = '1. d4 d5 2. c4';
 
         const user = await openLineFolderInPanel();
+        const linesPanel = screen.getByRole('region', { name: /white/i });
 
-        expect(screen.getAllByRole('listitem')).toHaveLength(1);
+        expect(within(linesPanel).getAllByRole('listitem')).toHaveLength(1);
         expect(screen.queryByText(`PGN: ${newPGN}`)).not.toBeInTheDocument();
 
         const newLineButton = screen.getByRole('button', { name: /new line/i });
@@ -196,7 +198,7 @@ describe('Validation', () => {
         const saveButton = screen.getByRole('button', { name: /save/i });
         await user.click(saveButton);
 
-        expect(screen.getAllByRole('listitem')).toHaveLength(2);
+        expect(within(linesPanel).getAllByRole('listitem')).toHaveLength(2);
         expect(screen.getByText(`PGN: ${newPGN}`)).toBeInTheDocument();
     });
 

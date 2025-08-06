@@ -193,9 +193,9 @@ describe('Editing repertoire', () => {
         const user = userEvent.setup();
         render(<RouterProvider router={testRouter} />);
 
-        const whiteFolder = screen.getByRole('generic', {
-            name: /white.*folder/i,
-        }).firstElementChild as HTMLElement;
+        const whiteFolder = screen.getByRole('button', {
+            name: /open white folder in lines panel/i,
+        });
         await user.click(whiteFolder);
 
         const newLineButton = screen.getByRole('button', { name: /new line/i });
@@ -237,9 +237,9 @@ describe('Editing repertoire', () => {
         const user = userEvent.setup();
         render(<RouterProvider router={testRouter} />);
 
-        const whiteFolder = screen.getByRole('generic', {
-            name: /white.*folder/i,
-        }).firstElementChild as HTMLElement;
+        const whiteFolder = screen.getByRole('button', {
+            name: /open white folder in lines panel/i,
+        });
         await user.click(whiteFolder);
 
         const newLineButton = screen.getByRole('button', { name: /new line/i });
@@ -293,9 +293,9 @@ describe('Editing repertoire', () => {
         const user = userEvent.setup();
         render(<RouterProvider router={testRouter} />);
 
-        const whiteFolder = screen.getByRole('generic', {
-            name: /white.*folder/i,
-        }).firstElementChild as HTMLElement;
+        const whiteFolder = screen.getByRole('button', {
+            name: /open white folder in lines panel/i,
+        });
         await user.click(whiteFolder);
 
         const newLineButton = screen.getByRole('button', { name: /new line/i });

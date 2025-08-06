@@ -22,9 +22,9 @@ describe('Lines panel', () => {
         const user = userEvent.setup();
         render(<RouterProvider router={testRouter} />);
 
-        const whiteFolder = screen.getByRole('generic', {
-            name: /white.*folder/i,
-        }).firstElementChild as HTMLElement;
+        const whiteFolder = screen.getByRole('button', {
+            name: /open white folder in lines panel/i,
+        });
         await user.click(whiteFolder);
 
         expect(
@@ -41,9 +41,9 @@ describe('Lines panel', () => {
         const user = userEvent.setup();
         render(<RouterProvider router={testRouter} />);
 
-        const whiteFolder = screen.getByRole('generic', {
-            name: /white.*folder/i,
-        }).firstElementChild as HTMLElement;
+        const whiteFolder = screen.getByRole('button', {
+            name: /open white folder in lines panel/i,
+        });
         await user.click(whiteFolder);
 
         const line = helpers.repertoire.withLineInWhite.lines[UUIDS.lines[0]];
@@ -60,9 +60,9 @@ describe('Lines panel', () => {
         const user = userEvent.setup();
         render(<RouterProvider router={testRouter} />);
 
-        const whiteFolder = screen.getByRole('generic', {
-            name: /white.*folder/i,
-        }).firstElementChild as HTMLElement;
+        const whiteFolder = screen.getByRole('button', {
+            name: /open white folder in lines panel/i,
+        });
         await user.click(whiteFolder);
 
         expect(screen.getByText(/standard/i)).toBeInTheDocument();
@@ -75,9 +75,9 @@ describe('Lines panel', () => {
         const user = userEvent.setup();
         render(<RouterProvider router={testRouter} />);
 
-        const whiteFolder = screen.getByRole('generic', {
-            name: /white.*folder/i,
-        }).firstElementChild as HTMLElement;
+        const whiteFolder = screen.getByRole('button', {
+            name: /open white folder in lines panel/i,
+        });
         await user.click(whiteFolder);
 
         const line =
@@ -94,11 +94,15 @@ describe('Lines panel', () => {
         const user = userEvent.setup();
         render(<RouterProvider router={testRouter} />);
 
-        // open White folder in panel (opens because it could contain lines)
-        const whiteFolder = screen.getByRole('generic', {
+        const whiteFolder = screen.getByRole('listitem', {
             name: /white.*folder/i,
-        }).firstElementChild as HTMLElement;
-        await user.click(whiteFolder);
+        });
+
+        // open White folder in panel (opens because it could contain lines)
+        const whiteFolderOpenButton = within(whiteFolder).getByRole('button', {
+            name: /open white folder in lines panel/i,
+        });
+        await user.click(whiteFolderOpenButton);
 
         expect(
             screen.getByRole('button', { name: /new line/i })

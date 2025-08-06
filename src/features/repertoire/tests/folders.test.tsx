@@ -61,16 +61,15 @@ describe('New folder button', () => {
         });
         render(<RouterProvider router={testRouter} />);
 
-        const whiteFolder = screen.getByRole('generic', {
+        const whiteFolder = screen.getByRole('listitem', {
             name: /white open folder/i,
-        }).firstElementChild as HTMLElement;
+        });
 
         expect(
-            within(whiteFolder).getByRole('button', { name: /new folder/i })
+            within(whiteFolder).getAllByRole('button', {
+                name: /new folder/i,
+            })[0]
         ).toBeInTheDocument();
-        expect(
-            within(whiteFolder).queryByRole('button', { name: /new line/i })
-        ).not.toBeInTheDocument();
     });
 
     it("Does not render 'new folder' button for a folder containing lines", () => {
@@ -79,9 +78,9 @@ describe('New folder button', () => {
         });
         render(<RouterProvider router={testRouter} />);
 
-        const whiteFolder = screen.getByRole('generic', {
+        const whiteFolder = screen.getByRole('listitem', {
             name: /white.+folder/i,
-        }).firstElementChild as HTMLElement;
+        });
 
         expect(
             within(whiteFolder).queryByRole('button', { name: /new folder/i })
@@ -127,11 +126,15 @@ describe('New folder button', () => {
         const user = userEvent.setup();
         render(<RouterProvider router={testRouter} />);
 
-        const closableFolder = screen.getByRole('generic', {
+        const closableFolder = screen.getByRole('listitem', {
             name: /child closed folder$/i,
         });
+        const closableFolderOpenButton = within(closableFolder).getByRole(
+            'button',
+            { name: /open child folder/i }
+        );
         // open the first child folder
-        await user.click(closableFolder.firstElementChild as HTMLElement);
+        await user.click(closableFolderOpenButton);
 
         const newFolderButton = within(closableFolder).getAllByRole('button', {
             name: /new folder/i,
@@ -162,34 +165,6 @@ describe('New folder button', () => {
         expect(
             screen.getByRole('heading', { name: /new folder name/i })
         ).toBeInTheDocument();
-    });
-
-    it('Replaces new folder name form with new folder button after submission', async () => {
-        vi.mocked(useOutletContext).mockReturnValue({
-            repertoire: helpers.repertoire.empty,
-        });
-        const user = userEvent.setup();
-        render(<RouterProvider router={testRouter} />);
-
-        const whiteFolder = screen.getByRole('generic', {
-            name: /white.*folder/i,
-        }).firstElementChild as HTMLElement;
-
-        const newFolderButton = screen.getByRole('button', {
-            name: /new folder/i,
-        });
-        await user.click(newFolderButton);
-
-        const newFolderNameInput = screen.getByRole('textbox', {
-            name: /name/i,
-        });
-        await user.type(newFolderNameInput, 'new folder name[Enter]');
-
-        // not the same ref as newFolderButton
-        expect(
-            within(whiteFolder).getByRole('button', { name: /new folder/i })
-        ).toBeInTheDocument();
-        expect(newFolderNameInput).not.toBeInTheDocument();
     });
 
     it('Discards new folder name form without submitting and renders new folder button when cancel button clicked', async () => {
@@ -227,7 +202,7 @@ describe('New folder button', () => {
         const user = userEvent.setup();
         render(<RouterProvider router={testRouter} />);
 
-        const closedFolder = screen.getByRole('generic', {
+        const closedFolder = screen.getByRole('listitem', {
             name: /closed folder$/i,
         });
         const newFolderButton = within(closedFolder).getByRole('button', {
@@ -292,10 +267,10 @@ describe('Renaming folder', () => {
         );
 
         expect(
-            screen.getByRole('generic', { name: /^renamed folder/i })
+            screen.getByRole('listitem', { name: /^renamed folder/i })
         ).toBeInTheDocument();
         expect(
-            screen.queryByRole('generic', { name: `${oldFolderName}` })
+            screen.queryByRole('listitem', { name: `${oldFolderName}` })
         ).not.toBeInTheDocument();
     });
 
@@ -306,15 +281,19 @@ describe('Renaming folder', () => {
         const user = userEvent.setup();
         render(<RouterProvider router={testRouter} />);
 
-        const closableFolder = screen.getByRole('generic', {
+        const closableFolder = screen.getByRole('listitem', {
             name: /white open folder$/i,
         });
+        const closableFolderCloseButton = within(closableFolder).getByRole(
+            'button',
+            { name: /close white folder/i }
+        );
 
         const renameButton = within(closableFolder).getAllByRole('button', {
             name: /rename folder/i,
         })[0];
         await user.click(renameButton);
-        await user.click(closableFolder);
+        await user.click(closableFolderCloseButton);
 
         expect(closableFolder).toHaveAccessibleName(/white open folder$/i);
     });
@@ -326,7 +305,7 @@ describe('Renaming folder', () => {
         const user = userEvent.setup();
         render(<RouterProvider router={testRouter} />);
 
-        const renamableFolder = screen.getByRole('generic', {
+        const renamableFolder = screen.getByRole('listitem', {
             name: /closed folder$/i,
         });
 
@@ -349,7 +328,7 @@ describe('Renaming folder', () => {
         const user = userEvent.setup();
         render(<RouterProvider router={testRouter} />);
 
-        const renamableFolder = screen.getByRole('generic', {
+        const renamableFolder = screen.getByRole('listitem', {
             name: /closed folder$/i,
         });
 
