@@ -82,6 +82,10 @@
     & :is(h2, i) {
         pointer-events: none;
     }
+
+    &:hover label {
+        background-color: var(--bg-mid-light);
+    }
 }
 
 .openToggle {

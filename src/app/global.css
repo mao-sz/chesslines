@@ -8,10 +8,6 @@
     &:hover {
         background-color: var(--bg-mid-light);
         cursor: pointer;
-
-        & label {
-            background-color: var(--bg-mid-light);
-        }
     }
 }
 
