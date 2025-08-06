@@ -85,10 +85,14 @@ export function RepertoireErrorPage({
                 </div>
             </form>
             <div className={styles.discard}>
-                <button type="button" onClick={discardStoredRepertoire}>
+                <button
+                    type="button"
+                    aria-describedby="discard-desc"
+                    onClick={discardStoredRepertoire}
+                >
                     Discard repertoire
                 </button>
-                <p>
+                <p id="discard-desc">
                     This resets the stored repertoire data to its default empty
                     state and cannot be undone!
                 </p>
