@@ -35,9 +35,14 @@ export function LinePanel({
 
     return currentFolder?.contains === 'lines' ? (
         <section className={styles.panel} aria-labelledby="lines-folder-name">
-            <div className={styles.heading}>
+            <div className={styles.top}>
                 <h2 id="lines-folder-name">{currentFolder.name}</h2>
                 {newLineButton}
+            </div>
+
+            <div className={styles.select}>
+                <button>Select all</button>
+                <p>Selected lines will be loaded in the trainer</p>
             </div>
 
             <ul className={styles.lines} aria-label="lines">
@@ -57,7 +62,7 @@ export function LinePanel({
             aria-label="empty line panel"
         >
             {currentFolder && (
-                <div className={styles.heading}>
+                <div className={styles.top}>
                     <h2 id="lines-folder-name">{currentFolder.name}</h2>
                     {currentFolder?.contains === 'either' && newLineButton}
                 </div>

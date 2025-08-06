@@ -15,15 +15,9 @@ type LineProps = {
 export function Line({ id, lines, openLine }: LineProps) {
     const { startingFEN, PGN } = lines[id];
 
-    const displayFEN =
-        startingFEN === STANDARD_STARTING_FEN ? 'Standard' : startingFEN;
-
-    function editLine(e: MouseEvent) {
-        if ((e.target as HTMLElement).tagName === 'BUTTON') {
-            return;
-        }
-        openLine();
-    }
+    const isStandardStartingFEN = startingFEN === STANDARD_STARTING_FEN;
+    const listItemID = convert.uuidToId(id);
+    const checkboxID = `${listItemID}-input`;
 
     function deleteLine(e: MouseEvent) {
         e.stopPropagation();
@@ -40,24 +34,52 @@ export function Line({ id, lines, openLine }: LineProps) {
 
     return (
         <li
-            id={convert.uuidToId(id)}
+            id={listItemID}
             className={styles.line}
-            onClick={editLine}
             draggable={true}
             onDragStart={startDrag}
             data-type="line"
         >
-            <div>
-                <p>Starting FEN: {displayFEN}</p>
-                <p>PGN: {PGN}</p>
+            <input
+                id={checkboxID}
+                className={styles.checkbox}
+                name={checkboxID}
+                type="checkbox"
+            />
+            <div className={styles.contents}>
+                {/* Absolutely positioned to allow clicking on "card" to check checkbox */}
+                <label
+                    className={styles.label}
+                    htmlFor={checkboxID}
+                    aria-label={`load line in trainer ${PGN}`}
+                ></label>
+
+                <p>{PGN || 'No moves set'}</p>
+                {!isStandardStartingFEN && (
+                    <p className={styles.fen}>
+                        <span className={styles.bold}>
+                            Custom starting FEN:
+                        </span>
+                        <br />
+                        {startingFEN}
+                    </p>
+                )}
             </div>
 
-            <IconButton
-                type="button"
-                icon={ICONS.BIN}
-                ariaLabel="delete line"
-                onClick={deleteLine}
-            />
+            <div className={styles.buttons}>
+                <IconButton
+                    type="button"
+                    icon={ICONS.BIN}
+                    ariaLabel="delete line"
+                    onClick={deleteLine}
+                />
+                <IconButton
+                    type="button"
+                    icon={ICONS.PENCIL}
+                    ariaLabel="edit line"
+                    onClick={openLine}
+                />
+            </div>
         </li>
     );
 }

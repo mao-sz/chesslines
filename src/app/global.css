@@ -1,7 +1,9 @@
 .listItem {
+    --base-listItem-padding: 12px;
+
     border-radius: 4px;
     background-color: var(--bg-mid-dark);
-    padding: 12px;
+    padding: var(--base-listItem-padding);
     position: relative;
     transition: 120ms;
 

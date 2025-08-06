@@ -2,6 +2,10 @@
     flex: 5;
     background-color: var(--bg-light);
     padding: 24px;
+
+    @media (--small-viewport) {
+        padding: 12px;
+    }
 }
 
 .empty {
@@ -15,10 +19,27 @@
     }
 }
 
-.heading {
+.top {
     display: flex;
     justify-content: space-between;
     align-items: center;
+}
+
+.select {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-block: 1rem;
+
+    & button {
+        background-color: var(--bg-mid-dark);
+        border-radius: 4px;
+        padding: 4px 8px;
+
+        &:hover {
+            background-color: var(--bg-mid-light);
+        }
+    }
 }
 
 .lines {
@@ -26,17 +47,66 @@
     list-style: none;
     display: flex;
     flex-direction: column-reverse;
+    gap: 12px;
 }
 
 .line {
-    composes: listItem from global;
+    background-color: transparent;
     display: flex;
+    gap: 6px;
+}
 
-    & > :first-child {
-        flex: 1;
-    }
+.checkbox:hover {
+    cursor: pointer;
 
-    & > button {
-        align-self: flex-start;
+    & + .contents {
+        background-color: var(--bg-mid-light);
     }
+}
+
+.checkbox:checked + .contents {
+    --checked-border-width: 2px;
+
+    border: var(--checked-border-width) solid var(--text-faint);
+    /* Prevents box size shift or content shift depending on box-sizing */
+    padding: calc(var(--base-listItem-padding) - var(--checked-border-width));
+}
+
+.contents {
+    composes: listItem from global;
+
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    transition:
+        border 0ms,
+        padding 0ms;
+}
+
+.label {
+    height: 100%;
+    width: 100%;
+    position: absolute;
+    inset: 0;
+
+    &:hover {
+        cursor: pointer;
+    }
+}
+
+.buttons {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    gap: 16px;
+}
+
+.fen {
+    font-size: smaller;
+    color: var(--text-faint);
+}
+
+.bold {
+    font-weight: bold;
 }
