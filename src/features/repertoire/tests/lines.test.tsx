@@ -44,6 +44,19 @@ describe('Lines panel', () => {
         expect(screen.getByText(new RegExp(line.PGN))).toBeInTheDocument();
     });
 
+    it('Displays special text for lines with empty PGNs', async () => {
+        helpers.setUpTestRepertoire(helpers.repertoire.withBlankLineInWhite);
+        const user = userEvent.setup();
+        render(<RouterProvider router={testRouter} />);
+
+        const whiteFolder = screen.getByRole('button', {
+            name: /open white folder in lines panel/i,
+        });
+        await user.click(whiteFolder);
+
+        expect(screen.getByText(/no moves set/i)).toBeInTheDocument();
+    });
+
     it('Does not show starting FEN if standard starting position', async () => {
         helpers.setUpTestRepertoire(helpers.repertoire.withLineInWhite);
         const user = userEvent.setup();

@@ -1,8 +1,10 @@
 import { type FormEvent, useEffect, useRef, useState } from 'react';
+import { useOutletContext } from 'react-router';
 import { FENPGNInterface } from './FENPGNInterface';
 import { BoardInterface } from './BoardInterface';
 import { useRepertoireChessboard } from '@/hooks/useRepertoireChessboard';
-import type { UUID } from '@/types/utility';
+import { STANDARD_STARTING_FEN } from '@/util/constants';
+import type { OutletContext, UUID } from '@/types/utility';
 import type {
     LineNotes,
     RepertoireFolderID,
@@ -10,7 +12,6 @@ import type {
 } from '@/types/repertoire';
 import type { Colour, MoveInfo } from '@/types/chessboard';
 import styles from './editor.module.css';
-import { STANDARD_STARTING_FEN } from '@/util/constants';
 
 type LineEditorProps = {
     id: UUID | 'new';
@@ -30,6 +31,7 @@ export function LineEditor({
     const dialogRef = useRef<HTMLDialogElement>(null);
     const line = id === 'new' ? null : lines[id];
 
+    const { setLineIDsToTrain } = useOutletContext<OutletContext>();
     const [editorInterface, setEditorInterface] = useState<'board' | 'FEN/PGN'>(
         line ? 'board' : 'FEN/PGN'
     );
@@ -69,6 +71,14 @@ export function LineEditor({
                 PGN: moves.string,
                 notes: notes,
             });
+
+            // ensure if line is selected for training then edited to reset to blank PGN,
+            // then it gets de-selected
+            if (moves.string.length === 0) {
+                setLineIDsToTrain((prev) =>
+                    prev.filter((selectedID) => id !== selectedID)
+                );
+            }
         }
         closeEditor();
     }

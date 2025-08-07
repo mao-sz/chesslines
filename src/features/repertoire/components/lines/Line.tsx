@@ -42,6 +42,11 @@ export function Line({
     }
 
     function toggleSelected(e: ChangeEvent) {
+        // Prevent selecting lines that do not have moves set
+        if (!PGN) {
+            return;
+        }
+
         const checkbox = e.currentTarget as HTMLInputElement;
         if (checkbox.checked) {
             setLineIDsToTrain([...lineIDsToTrain, id]);
@@ -71,6 +76,7 @@ export function Line({
                 type="checkbox"
                 checked={lineIDsToTrain.includes(id)}
                 onChange={toggleSelected}
+                disabled={!PGN}
             />
             <div className={styles.contents}>
                 {/* Absolutely positioned to allow clicking on "card" to check checkbox */}

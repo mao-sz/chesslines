@@ -67,6 +67,27 @@ const repertoire = {
             },
         };
     },
+    get withBlankLineInWhite(): Repertoire {
+        return {
+            folders: {
+                w: {
+                    name: 'White',
+                    contains: 'lines',
+                    children: [UUIDS.lines[0]],
+                },
+                b: { name: 'Black', contains: 'either', children: [] },
+            },
+            lines: {
+                [UUIDS.lines[0]]: {
+                    player: 'w',
+                    startingFEN:
+                        'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1',
+                    PGN: '',
+                    notes: [''],
+                },
+            },
+        };
+    },
     get withNonstandardLineInWhite(): Repertoire {
         return {
             folders: {
