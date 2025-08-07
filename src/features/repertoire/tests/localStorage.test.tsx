@@ -5,8 +5,8 @@ import {
 } from 'react-router';
 import { describe, it, expect, vi } from 'vitest';
 import userEvent from '@testing-library/user-event';
-import { render, screen } from '@testing-library/react';
-import { helpers } from '@/testing/helpers';
+import { render, screen, within } from '@testing-library/react';
+import { helpers, UUIDS } from '@/testing/helpers';
 import { LOCAL_STORAGE } from '@/util/localStorage';
 import { EMPTY_REPERTOIRE, STANDARD_STARTING_FEN } from '@/util/constants';
 import { routes } from '@/app/routes';
@@ -15,6 +15,8 @@ vi.mock('react-router', { spy: true });
 
 const repertoireGetSpy = vi.spyOn(LOCAL_STORAGE.repertoire, 'get');
 const repertoireSetSpy = vi.spyOn(LOCAL_STORAGE.repertoire, 'set');
+const trainableLineIDsGetSpy = vi.spyOn(LOCAL_STORAGE.lineIDsToTrain, 'get');
+const trainableLineIDsSetSpy = vi.spyOn(LOCAL_STORAGE.lineIDsToTrain, 'set');
 const spyRandomUUID = vi.spyOn(crypto, 'randomUUID');
 function getLatestUUID() {
     return spyRandomUUID.mock.results.at(-1)?.value;
@@ -36,20 +38,18 @@ describe('App start', () => {
     });
 
     it('Sets repertoire parsed from local storage if valid', () => {
-        const TEST_REPERTOIRE = helpers.repertoire.withNestedFolders;
-        window.localStorage.setItem(
-            'repertoire',
-            JSON.stringify(TEST_REPERTOIRE)
+        const testRepertoire = helpers.setUpTestRepertoire(
+            helpers.repertoire.withNestedFolders
         );
 
         render(<RouterProvider router={testRouter} />);
 
         expect(repertoireGetSpy).toHaveReturnedWith({
             validationError: null,
-            repertoire: TEST_REPERTOIRE,
+            repertoire: testRepertoire,
         });
         expect(vi.mocked(useOutletContext)).toHaveReturnedWith(
-            expect.objectContaining({ repertoire: TEST_REPERTOIRE })
+            expect.objectContaining({ repertoire: testRepertoire })
         );
     });
 
@@ -94,6 +94,43 @@ describe('App start', () => {
             ).toBeInTheDocument();
         }
     );
+
+    it('Sets empty array if no trainable line IDs in local storage', () => {
+        render(<RouterProvider router={testRouter} />);
+
+        expect(trainableLineIDsGetSpy).toHaveReturnedWith([]);
+        expect(vi.mocked(useOutletContext)).toHaveReturnedWith(
+            expect.objectContaining({ repertoire: EMPTY_REPERTOIRE })
+        );
+    });
+
+    it('Sets empty array if trainable line IDs in local storage is not an array of UUIDs', () => {
+        window.localStorage.setItem(
+            'line_ids_to_train',
+            JSON.stringify(['foo', 234, {}])
+        );
+
+        render(<RouterProvider router={testRouter} />);
+
+        expect(trainableLineIDsGetSpy).toHaveReturnedWith([]);
+        expect(vi.mocked(useOutletContext)).toHaveReturnedWith(
+            expect.objectContaining({ repertoire: EMPTY_REPERTOIRE })
+        );
+    });
+
+    it('Sets trainable line IDs parsed from local storage if valid', () => {
+        const testLineIDs = helpers.setUpTestTrainableLineIDs([
+            UUIDS.lines[0],
+            UUIDS.lines[1],
+        ]);
+
+        render(<RouterProvider router={testRouter} />);
+
+        expect(trainableLineIDsGetSpy).toHaveReturnedWith(testLineIDs);
+        expect(vi.mocked(useOutletContext)).toHaveReturnedWith(
+            expect.objectContaining({ lineIDsToTrain: testLineIDs })
+        );
+    });
 });
 
 describe('Editing repertoire', () => {
@@ -315,6 +352,100 @@ describe('Editing repertoire', () => {
         expect(repertoireSetSpy).toHaveBeenCalledWith(EMPTY_REPERTOIRE);
         expect(window.localStorage.getItem('repertoire')).toBe(
             JSON.stringify(EMPTY_REPERTOIRE)
+        );
+    });
+});
+
+describe('Selecting lines to train', () => {
+    it('Sets updated trainable line IDs after selecting lines', async () => {
+        const testRepertoire = helpers.setUpTestRepertoire(
+            helpers.testRepertoire.withManyMixedLines
+        );
+
+        const user = userEvent.setup();
+        render(<RouterProvider router={testRouter} />);
+
+        const whiteFolder = screen.getByRole('button', {
+            name: /open white folder in lines panel/i,
+        });
+        await user.click(whiteFolder);
+
+        const lines = within(
+            screen.getByRole('list', { name: /lines/i })
+        ).getAllByRole('checkbox');
+
+        await user.click(lines[0]);
+        expect(trainableLineIDsSetSpy).toHaveBeenCalledWith([
+            testRepertoire.folders.w.children[0],
+        ]);
+
+        await user.click(lines[1]);
+        expect(trainableLineIDsSetSpy).toHaveBeenCalledWith([
+            testRepertoire.folders.w.children[0],
+            testRepertoire.folders.w.children[1],
+        ]);
+
+        expect(window.localStorage.getItem('line_ids_to_train')).toBe(
+            JSON.stringify([
+                testRepertoire.folders.w.children[0],
+                testRepertoire.folders.w.children[1],
+            ])
+        );
+    });
+
+    it('Sets updated trainable line IDs after selecting all lines in a folder at once', async () => {
+        const testRepertoire = helpers.setUpTestRepertoire(
+            helpers.testRepertoire.withManyMixedLines
+        );
+
+        const user = userEvent.setup();
+        render(<RouterProvider router={testRouter} />);
+
+        const whiteFolder = screen.getByRole('button', {
+            name: /open white folder in lines panel/i,
+        });
+        await user.click(whiteFolder);
+
+        const selectAllLinesButton = screen.getByRole('button', {
+            name: /select all/i,
+        });
+        await user.click(selectAllLinesButton);
+
+        expect(trainableLineIDsSetSpy).toHaveBeenCalledWith(
+            testRepertoire.folders.w.children
+        );
+        expect(window.localStorage.getItem('line_ids_to_train')).toBe(
+            JSON.stringify(testRepertoire.folders.w.children)
+        );
+    });
+
+    it('Sets updated trainable line IDs after de-selecting line', async () => {
+        const testRepertoire = helpers.setUpTestRepertoire(
+            helpers.testRepertoire.withManyMixedLines
+        );
+
+        const user = userEvent.setup();
+        render(<RouterProvider router={testRouter} />);
+
+        const whiteFolder = screen.getByRole('button', {
+            name: /open white folder in lines panel/i,
+        });
+        await user.click(whiteFolder);
+
+        const lines = within(
+            screen.getByRole('list', { name: /lines/i })
+        ).getAllByRole('checkbox');
+
+        await user.click(lines[0]);
+        await user.click(lines[1]);
+        await user.click(lines[0]);
+
+        expect(trainableLineIDsSetSpy).toHaveBeenCalledWith([
+            testRepertoire.folders.w.children[1],
+        ]);
+
+        expect(window.localStorage.getItem('line_ids_to_train')).toBe(
+            JSON.stringify([testRepertoire.folders.w.children[1]])
         );
     });
 });

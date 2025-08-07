@@ -396,10 +396,19 @@ function setUpTestRepertoire(repertoire: Repertoire): Repertoire {
     return repertoire;
 }
 
+function setUpTestTrainableLineIDs(lineIDsToTrain: UUID[]): UUID[] {
+    window.localStorage.setItem(
+        'line_ids_to_train',
+        JSON.stringify(lineIDsToTrain)
+    );
+    return lineIDsToTrain;
+}
+
 export const helpers = {
     repertoire,
     testRepertoire,
     hooks,
     serialiseCurrentBoard,
     setUpTestRepertoire,
+    setUpTestTrainableLineIDs,
 };
