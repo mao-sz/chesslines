@@ -6,6 +6,7 @@ type IconButtonProps = {
     icon: FontAwesomeIcon;
     ariaLabel: string;
     onClick?: (e: MouseEvent) => void | (() => void);
+    autoFocus?: boolean;
 };
 
 export function IconButton({
@@ -13,6 +14,7 @@ export function IconButton({
     icon,
     ariaLabel,
     onClick,
+    autoFocus,
 }: IconButtonProps) {
     return (
         <button
@@ -20,6 +22,7 @@ export function IconButton({
             type={type}
             aria-label={ariaLabel}
             onClick={onClick}
+            autoFocus={autoFocus}
         >
             <i className={icon}></i>
         </button>

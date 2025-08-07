@@ -9,6 +9,7 @@
         --bg-mid-dark: #242433;
         --bg-mid-light: #2d2d3f;
         --bg-light: #3c3d50;
+        --bg-success: #246921;
         --bg-error: color-mix(in hsl, var(--text-error), black);
         --text-normal: #cccccc;
         --text-faint: #888888;

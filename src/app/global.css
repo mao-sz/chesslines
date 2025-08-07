@@ -50,6 +50,21 @@
     }
 }
 
+.confirmButtons {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 6px;
+
+    & [aria-label='confirm'] {
+        background-color: var(--bg-success);
+    }
+
+    & [aria-label='cancel'] {
+        background-color: var(--bg-error);
+        color: var(--text-error);
+    }
+}
+
 .lichessLink {
     color: inherit;
     text-decoration: none;

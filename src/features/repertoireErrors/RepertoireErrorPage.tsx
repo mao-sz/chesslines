@@ -1,4 +1,5 @@
 import { useLayoutEffect, useRef, type FormEvent } from 'react';
+import { ConfirmableButton } from '@/components/util/ConfirmableButton';
 import styles from './page.module.css';
 
 type RepertoireErrorPageProps = {
@@ -85,13 +86,11 @@ export function RepertoireErrorPage({
                 </div>
             </form>
             <div className={styles.discard}>
-                <button
-                    type="button"
-                    aria-describedby="discard-desc"
-                    onClick={discardStoredRepertoire}
-                >
-                    Discard repertoire
-                </button>
+                <ConfirmableButton handleConfirm={discardStoredRepertoire}>
+                    <button type="button" aria-describedby="discard-desc">
+                        Discard repertoire
+                    </button>
+                </ConfirmableButton>
                 <p id="discard-desc">
                     This resets the stored repertoire data to its default empty
                     state and cannot be undone!

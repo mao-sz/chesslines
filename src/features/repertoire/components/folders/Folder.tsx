@@ -1,7 +1,9 @@
 import { DragEvent, type FormEvent, MouseEvent, useState } from 'react';
 import { FolderNameForm } from './FolderNameForm';
 import { FolderName } from './FolderName';
+import { ConfirmableButton } from '@/components/util/ConfirmableButton';
 import { IconButton } from '@/components/util/IconButton';
+import { useDeepContainsSelectedLine } from '@/hooks/useDeepContainsSelectedLine';
 import { ICONS } from '@/util/constants';
 import { convert } from '@/util/util';
 import type { StateSetter, UUID } from '@/types/utility';
@@ -10,7 +12,6 @@ import type {
     RepertoireWithMethods,
 } from '@/types/repertoire';
 import styles from './folders.module.css';
-import { useDeepContainsSelectedLine } from '@/hooks/useDeepContainsSelectedLine';
 
 type FolderProps = {
     id: RepertoireFolderID;
@@ -185,12 +186,13 @@ export function Folder({
                         />
                     )}
                     {showingDeleteButton && (
-                        <IconButton
-                            type="button"
-                            icon={ICONS.BIN}
-                            ariaLabel="delete folder"
-                            onClick={deleteFolder}
-                        />
+                        <ConfirmableButton handleConfirm={deleteFolder}>
+                            <IconButton
+                                type="button"
+                                icon={ICONS.BIN}
+                                ariaLabel="delete folder"
+                            />
+                        </ConfirmableButton>
                     )}
                 </div>
             </div>

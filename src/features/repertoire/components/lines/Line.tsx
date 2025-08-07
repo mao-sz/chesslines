@@ -1,4 +1,5 @@
 import { useOutletContext } from 'react-router';
+import { ConfirmableButton } from '@/components/util/ConfirmableButton';
 import { IconButton } from '@/components/util/IconButton';
 import { ICONS, STANDARD_STARTING_FEN } from '@/util/constants';
 import { convert } from '@/util/util';
@@ -102,12 +103,13 @@ export function Line({
             </div>
 
             <div className={styles.buttons}>
-                <IconButton
-                    type="button"
-                    icon={ICONS.BIN}
-                    ariaLabel="delete line"
-                    onClick={deleteLine}
-                />
+                <ConfirmableButton handleConfirm={deleteLine}>
+                    <IconButton
+                        type="button"
+                        icon={ICONS.BIN}
+                        ariaLabel="delete line"
+                    />
+                </ConfirmableButton>
                 <IconButton
                     type="button"
                     icon={ICONS.PENCIL}
