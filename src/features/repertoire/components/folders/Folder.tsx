@@ -3,13 +3,14 @@ import { FolderNameForm } from './FolderNameForm';
 import { FolderName } from './FolderName';
 import { IconButton } from '@/components/util/IconButton';
 import { ICONS } from '@/util/constants';
+import { convert } from '@/util/util';
 import type { StateSetter, UUID } from '@/types/utility';
 import type {
     RepertoireFolderID,
     RepertoireWithMethods,
 } from '@/types/repertoire';
 import styles from './folders.module.css';
-import { convert } from '@/util/util';
+import { useDeepContainsSelectedLine } from '@/hooks/useDeepContainsSelectedLine';
 
 type FolderProps = {
     id: RepertoireFolderID;
@@ -27,6 +28,8 @@ export function Folder({
     const { folders, lines } = repertoire;
     const folder = folders[id];
     const isBaseFolder = id === 'w' || id === 'b';
+
+    const deepContainsSelectedLine = useDeepContainsSelectedLine(folders, id);
 
     const [isOpen, setIsOpen] = useState(
         isBaseFolder && folder.contains === 'folders'
@@ -144,7 +147,7 @@ export function Folder({
             onDrop={appendDraggedItem}
         >
             <div
-                className={styles.controls}
+                className={`${styles.controls} ${deepContainsSelectedLine ? styles.highlighted : ''}`.trim()}
                 onDragEnter={highlightWhenDraggedOver('add')}
                 onDragExit={highlightWhenDraggedOver('remove')}
                 onDrop={highlightWhenDraggedOver('remove')}
