@@ -23,4 +23,8 @@ type FontAwesomeIconName =
     | 'arrow-up-right-from-square';
 export type FontAwesomeIcon = `fa-solid fa-${FontAwesomeIconName}`;
 
-export type OutletContext = { repertoire: Repertoire };
+export type OutletContext = {
+    repertoire: Repertoire;
+    lineIDsToTrain: UUID[];
+    setLineIDsToTrain: StateSetter<UUID[]>;
+};

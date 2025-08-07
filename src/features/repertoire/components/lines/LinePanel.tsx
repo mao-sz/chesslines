@@ -1,12 +1,15 @@
+import { useState } from 'react';
+import { useOutletContext } from 'react-router';
 import { Line } from './Line';
-import type { StateSetter, UUID } from '@/types/utility';
+import { IconButton } from '@/components/util/IconButton';
+import { ICONS } from '@/util/constants';
+import { stripDuplicates } from '@/util/util';
+import type { OutletContext, StateSetter, UUID } from '@/types/utility';
 import type {
     RepertoireFolderID,
     RepertoireWithMethods,
 } from '@/types/repertoire';
 import styles from './lines.module.css';
-import { IconButton } from '@/components/util/IconButton';
-import { ICONS } from '@/util/constants';
 
 type LinePanelProps = {
     currentLinesFolderId: RepertoireFolderID | null;
@@ -14,6 +17,7 @@ type LinePanelProps = {
     lines: RepertoireWithMethods['lines'];
     setCurrentOpenLine: StateSetter<UUID | 'new' | null>;
 };
+
 export function LinePanel({
     currentLinesFolderId,
     folders,
@@ -23,25 +27,55 @@ export function LinePanel({
     const currentFolder = currentLinesFolderId
         ? folders[currentLinesFolderId]
         : null;
+    const folderLines: UUID[] =
+        currentFolder?.contains === 'lines' ? currentFolder.children : [];
 
-    const newLineButton = (
-        <IconButton
-            type="button"
-            icon={ICONS.PLUS}
-            ariaLabel="new line"
-            onClick={() => setCurrentOpenLine('new')}
-        />
+    const { lineIDsToTrain, setLineIDsToTrain } =
+        useOutletContext<OutletContext>();
+    const [selectedFolderLines, setSelectedFolderLines] = useState(
+        folderLines.filter((id) => lineIDsToTrain.includes(id))
     );
+
+    function addAllFolderLineIDsToTrainer() {
+        const updatedIDsToTrain = stripDuplicates([
+            ...lineIDsToTrain,
+            ...folderLines,
+        ]);
+        setLineIDsToTrain(updatedIDsToTrain);
+        setSelectedFolderLines([...folderLines]);
+    }
+
+    function removeAllFolderLineIDsFromTrainer() {
+        setLineIDsToTrain(
+            lineIDsToTrain.filter(
+                (selectedID) => !folderLines.includes(selectedID)
+            )
+        );
+        setSelectedFolderLines([]);
+    }
 
     return currentFolder?.contains === 'lines' ? (
         <section className={styles.panel} aria-labelledby="lines-folder-name">
             <div className={styles.top}>
                 <h2 id="lines-folder-name">{currentFolder.name}</h2>
-                {newLineButton}
+                <IconButton
+                    type="button"
+                    icon={ICONS.PLUS}
+                    ariaLabel="new line"
+                    onClick={() => setCurrentOpenLine('new')}
+                />
             </div>
 
             <div className={styles.select}>
-                <button>Select all</button>
+                {selectedFolderLines.length > 0 ? (
+                    <button onClick={removeAllFolderLineIDsFromTrainer}>
+                        De-select all
+                    </button>
+                ) : (
+                    <button onClick={addAllFolderLineIDsToTrainer}>
+                        Select all
+                    </button>
+                )}
                 <p>Selected lines will be loaded in the trainer</p>
             </div>
 
@@ -52,6 +86,7 @@ export function LinePanel({
                         id={id}
                         lines={lines}
                         openLine={() => setCurrentOpenLine(id)}
+                        setSelectedFolderLines={setSelectedFolderLines}
                     />
                 ))}
             </ul>
@@ -64,7 +99,14 @@ export function LinePanel({
             {currentFolder && (
                 <div className={styles.top}>
                     <h2 id="lines-folder-name">{currentFolder.name}</h2>
-                    {currentFolder?.contains === 'either' && newLineButton}
+                    {currentFolder?.contains === 'either' && (
+                        <IconButton
+                            type="button"
+                            icon={ICONS.PLUS}
+                            ariaLabel="new line"
+                            onClick={() => setCurrentOpenLine('new')}
+                        />
+                    )}
                 </div>
             )}
 

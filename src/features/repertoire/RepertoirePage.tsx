@@ -41,7 +41,9 @@ export function RepertoirePage() {
                 currentTab={currentTab}
                 setCurrentTab={setCurrentTab}
             />
+            {/* LinePanel key ensures fresh selected folder lines state when changing folders */}
             <LinePanel
+                key={currentLinesFolder}
                 currentLinesFolderId={currentLinesFolder}
                 folders={folders}
                 lines={lines}

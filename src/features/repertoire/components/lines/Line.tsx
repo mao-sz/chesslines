@@ -1,19 +1,28 @@
+import { useOutletContext } from 'react-router';
 import { IconButton } from '@/components/util/IconButton';
 import { ICONS, STANDARD_STARTING_FEN } from '@/util/constants';
-import type { DragEvent, MouseEvent } from 'react';
-import type { UUID } from '@/types/utility';
+import { convert } from '@/util/util';
+import type { ChangeEvent, DragEvent, MouseEvent } from 'react';
+import type { OutletContext, StateSetter, UUID } from '@/types/utility';
 import type { RepertoireWithMethods } from '@/types/repertoire';
 import styles from './lines.module.css';
-import { convert } from '@/util/util';
 
 type LineProps = {
     id: UUID;
     lines: RepertoireWithMethods['lines'];
     openLine: () => void;
+    setSelectedFolderLines: StateSetter<UUID[]>;
 };
 
-export function Line({ id, lines, openLine }: LineProps) {
+export function Line({
+    id,
+    lines,
+    openLine,
+    setSelectedFolderLines,
+}: LineProps) {
     const { startingFEN, PGN } = lines[id];
+    const { lineIDsToTrain, setLineIDsToTrain } =
+        useOutletContext<OutletContext>();
 
     const isStandardStartingFEN = startingFEN === STANDARD_STARTING_FEN;
     const listItemID = convert.uuidToId(id);
@@ -32,6 +41,21 @@ export function Line({ id, lines, openLine }: LineProps) {
         e.dataTransfer.effectAllowed = 'move';
     }
 
+    function toggleSelected(e: ChangeEvent) {
+        const checkbox = e.currentTarget as HTMLInputElement;
+        if (checkbox.checked) {
+            setLineIDsToTrain([...lineIDsToTrain, id]);
+            setSelectedFolderLines((prev) => [...prev, id]);
+        } else {
+            setLineIDsToTrain(
+                lineIDsToTrain.filter((selectedID) => selectedID !== id)
+            );
+            setSelectedFolderLines((prev) =>
+                prev.filter((selectedID) => selectedID !== id)
+            );
+        }
+    }
+
     return (
         <li
             id={listItemID}
@@ -45,6 +69,8 @@ export function Line({ id, lines, openLine }: LineProps) {
                 className={styles.checkbox}
                 name={checkboxID}
                 type="checkbox"
+                checked={lineIDsToTrain.includes(id)}
+                onChange={toggleSelected}
             />
             <div className={styles.contents}>
                 {/* Absolutely positioned to allow clicking on "card" to check checkbox */}

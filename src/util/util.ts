@@ -6,6 +6,10 @@ export function reverse(str: string): string {
     return str.split('').reverse().join('');
 }
 
+export function stripDuplicates<T>(arr: T[]): T[] {
+    return [...new Set(arr)];
+}
+
 // Fisher-Yates shuffle to reduce less permutation bias
 export function toShuffled<T>(arr: T[]): T[] {
     const arrClone = [...arr];
