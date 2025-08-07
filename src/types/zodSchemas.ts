@@ -63,3 +63,5 @@ export const StoredRepertoire = zod.object({
     folders: zodRepertoireFolders,
     lines: zodRepertoireLines,
 }) satisfies ZodType<Repertoire>;
+
+export const StoredLineIDs = zod.array(zodUUID);

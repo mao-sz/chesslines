@@ -1,9 +1,13 @@
 import zod from 'zod';
-import { StoredRepertoire } from '@/types/zodSchemas';
+import { StoredLineIDs, StoredRepertoire } from '@/types/zodSchemas';
 import type { Repertoire } from '@/types/repertoire';
+import type { UUID } from '@/types/utility';
 
 // in case more local storage keys need adding in the future
-const KEYS = { REPERTOIRE: 'repertoire' } as const;
+const KEYS = {
+    REPERTOIRE: 'repertoire',
+    LINE_IDS_TO_TRAIN: 'line_ids_to_train',
+} as const;
 
 export const LOCAL_STORAGE = {
     repertoire: {
@@ -41,6 +45,31 @@ export const LOCAL_STORAGE = {
             window.localStorage.setItem(
                 KEYS.REPERTOIRE,
                 JSON.stringify(repertoire)
+            );
+        },
+    },
+    lineIDsToTrain: {
+        get(): UUID[] {
+            const lineIDsToTrainString = window.localStorage.getItem(
+                KEYS.LINE_IDS_TO_TRAIN
+            );
+
+            if (!lineIDsToTrainString) {
+                return [];
+            }
+
+            try {
+                const parsedJSON = JSON.parse(lineIDsToTrainString);
+                const lineIDsToTrain = StoredLineIDs.parse(parsedJSON);
+                return lineIDsToTrain;
+            } catch {
+                return [];
+            }
+        },
+        set(lineIDs: UUID[]): void {
+            window.localStorage.setItem(
+                KEYS.LINE_IDS_TO_TRAIN,
+                JSON.stringify(lineIDs)
             );
         },
     },
