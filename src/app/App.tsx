@@ -12,7 +12,7 @@ export function App() {
 
     return (
         <>
-            <Header />
+            <Header selectedLinesCount={lineIDsToTrain.length} />
             {validationError === null ? (
                 <Outlet
                     context={
