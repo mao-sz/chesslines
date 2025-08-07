@@ -31,6 +31,9 @@ export function Line({
     function deleteLine(e: MouseEvent) {
         e.stopPropagation();
         lines.delete(id);
+        setLineIDsToTrain(
+            lineIDsToTrain.filter((selectedID) => selectedID !== id)
+        );
     }
 
     function startDrag(e: DragEvent) {

@@ -448,4 +448,38 @@ describe('Selecting lines to train', () => {
             JSON.stringify([testRepertoire.folders.w.children[1]])
         );
     });
+
+    it('Removes trainable line ID when line is deleted', async () => {
+        const testRepertoire = helpers.setUpTestRepertoire(
+            helpers.testRepertoire.withManyMixedLines
+        );
+
+        const user = userEvent.setup();
+        render(<RouterProvider router={testRouter} />);
+
+        const whiteFolder = screen.getByRole('button', {
+            name: /open white folder in lines panel/i,
+        });
+        await user.click(whiteFolder);
+
+        const lines = within(
+            screen.getByRole('list', { name: /lines/i })
+        ).getAllByRole('checkbox');
+
+        await user.click(lines[0]);
+        await user.click(lines[1]);
+
+        const deleteFirstLineButton = screen.getAllByRole('button', {
+            name: /delete line/i,
+        })[0];
+        await user.click(deleteFirstLineButton);
+
+        expect(trainableLineIDsSetSpy).toHaveBeenCalledWith([
+            testRepertoire.folders.w.children[1],
+        ]);
+
+        expect(window.localStorage.getItem('line_ids_to_train')).toBe(
+            JSON.stringify([testRepertoire.folders.w.children[1]])
+        );
+    });
 });
