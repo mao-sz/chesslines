@@ -53,7 +53,7 @@ describe('Lines panel', () => {
         expect(screen.getByText(new RegExp(line.PGN))).toBeInTheDocument();
     });
 
-    it("Shows starting FEN as 'Standard' if standard starting position", async () => {
+    it('Does not show starting FEN if standard starting position', async () => {
         vi.mocked(useOutletContext).mockReturnValue({
             repertoire: helpers.repertoire.withLineInWhite,
         });
@@ -65,7 +65,9 @@ describe('Lines panel', () => {
         });
         await user.click(whiteFolder);
 
-        expect(screen.getByText(/standard/i)).toBeInTheDocument();
+        expect(
+            screen.queryByText(/custom starting fen:/i)
+        ).not.toBeInTheDocument();
     });
 
     it('Shows non-standard starting FEN in full', async () => {
@@ -82,9 +84,7 @@ describe('Lines panel', () => {
 
         const line =
             helpers.repertoire.withNonstandardLineInWhite.lines[UUIDS.lines[0]];
-        expect(
-            screen.getByText(new RegExp(line.startingFEN))
-        ).toBeInTheDocument();
+        expect(screen.getByText(line.startingFEN)).toBeInTheDocument();
     });
 
     it('Does not render new line button if open folder contains other folders', async () => {

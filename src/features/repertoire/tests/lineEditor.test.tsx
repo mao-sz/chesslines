@@ -34,9 +34,10 @@ async function openLineEditor(
     repertoire: Repertoire = helpers.repertoire.withLineInWhite
 ) {
     const user = await openLineFolderInPanel(repertoire);
-    const lineList = screen.getByRole('list', { name: /lines/i });
-    const firstLine = lineList.firstElementChild as HTMLLIElement;
-    await user.click(firstLine);
+    const editLineButton = screen.getAllByRole('button', {
+        name: /edit line/i,
+    })[0];
+    await user.click(editLineButton);
     return user;
 }
 
@@ -121,7 +122,10 @@ describe('Opening and interaction', () => {
 
         expect(within(lineItem).queryByText(/d4/i)).not.toBeInTheDocument();
 
-        await user.click(lineItem);
+        const editLineButton = within(lineItem).getByRole('button', {
+            name: /edit line/i,
+        });
+        await user.click(editLineButton);
 
         const lineEditor = screen.getByRole('dialog');
         const submitButton = within(lineEditor).getByRole('button', {
@@ -139,11 +143,7 @@ describe('Opening and interaction', () => {
     });
 
     it('Can open a new editor dialog after closing the previous one', async () => {
-        const user = await openLineFolderInPanel();
-
-        const lineList = screen.getByRole('list', { name: /lines/i });
-        const lineItem = lineList.firstElementChild as HTMLLIElement;
-        await user.click(lineItem);
+        const user = await openLineEditor();
 
         const lineEditor = screen.getByRole('dialog');
         const closeEditorButton = within(lineEditor).getByRole('button', {
@@ -153,7 +153,10 @@ describe('Opening and interaction', () => {
 
         expect(lineEditor).not.toBeInTheDocument();
 
-        await user.click(lineItem);
+        const editLineButton = screen.getAllByRole('button', {
+            name: /edit line/i,
+        })[0];
+        await user.click(editLineButton);
         expect(screen.getByRole('dialog')).toBeInTheDocument();
     });
 });
@@ -199,7 +202,7 @@ describe('Validation', () => {
         await user.click(saveButton);
 
         expect(within(linesPanel).getAllByRole('listitem')).toHaveLength(2);
-        expect(screen.getByText(`PGN: ${newPGN}`)).toBeInTheDocument();
+        expect(screen.getByText(newPGN)).toBeInTheDocument();
     });
 
     it.each([

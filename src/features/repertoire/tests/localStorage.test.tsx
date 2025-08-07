@@ -256,9 +256,10 @@ describe('Editing repertoire', () => {
         await user.click(saveButton);
         const newFolderUUID = getLatestUUID();
 
-        const newLine = screen.getByRole('list', { name: /lines/i })
-            .firstElementChild as HTMLElement;
-        await user.click(newLine);
+        const editLineButton = screen.getAllByRole('button', {
+            name: /edit line/i,
+        })[0];
+        await user.click(editLineButton);
 
         const d2Square = screen.getByRole('button', { name: /d2/i });
         const d4Square = screen.getByRole('button', { name: /d4/i });
