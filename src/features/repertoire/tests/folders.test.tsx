@@ -1,24 +1,15 @@
-import {
-    createMemoryRouter,
-    RouterProvider,
-    useOutletContext,
-} from 'react-router';
-import { describe, it, expect, afterEach, vi } from 'vitest';
+import { createMemoryRouter, RouterProvider } from 'react-router';
+import { describe, it, expect } from 'vitest';
 import { render, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { helpers } from '@/testing/helpers';
 import { routes } from '@/app/routes';
 
-afterEach(vi.resetAllMocks);
-vi.mock('react-router', { spy: true });
-
 const testRouter = createMemoryRouter(routes);
 
 describe('Switching repertoire tabs', () => {
     it('Switches from white to black repertoire panels via tab buttons', async () => {
-        vi.mocked(useOutletContext).mockReturnValue({
-            repertoire: helpers.repertoire.empty,
-        });
+        helpers.setUpTestRepertoire(helpers.repertoire.empty);
         const user = userEvent.setup();
         render(<RouterProvider router={testRouter} />);
 
@@ -45,9 +36,7 @@ describe('Switching repertoire tabs', () => {
 
 describe('New folder button', () => {
     it("Renders 'new folder' button when folder is empty", () => {
-        vi.mocked(useOutletContext).mockReturnValue({
-            repertoire: helpers.repertoire.empty,
-        });
+        helpers.setUpTestRepertoire(helpers.repertoire.empty);
         render(<RouterProvider router={testRouter} />);
 
         expect(
@@ -56,9 +45,7 @@ describe('New folder button', () => {
     });
 
     it("Renders 'new folder' button when folder contains folders", () => {
-        vi.mocked(useOutletContext).mockReturnValue({
-            repertoire: helpers.repertoire.withFolderInWhite,
-        });
+        helpers.setUpTestRepertoire(helpers.repertoire.withFolderInWhite);
         render(<RouterProvider router={testRouter} />);
 
         const whiteFolder = screen.getByRole('listitem', {
@@ -73,9 +60,7 @@ describe('New folder button', () => {
     });
 
     it("Does not render 'new folder' button for a folder containing lines", () => {
-        vi.mocked(useOutletContext).mockReturnValue({
-            repertoire: helpers.repertoire.withLineInWhite,
-        });
+        helpers.setUpTestRepertoire(helpers.repertoire.withLineInWhite);
         render(<RouterProvider router={testRouter} />);
 
         const whiteFolder = screen.getByRole('listitem', {
@@ -88,9 +73,7 @@ describe('New folder button', () => {
     });
 
     it("Does not render any form for 'new folder' if button not clicked", () => {
-        vi.mocked(useOutletContext).mockReturnValue({
-            repertoire: helpers.repertoire.empty,
-        });
+        helpers.setUpTestRepertoire(helpers.repertoire.empty);
         render(<RouterProvider router={testRouter} />);
 
         expect(
@@ -99,9 +82,7 @@ describe('New folder button', () => {
     });
 
     it('Removes new folder button when new folder button clicked and form appears', async () => {
-        vi.mocked(useOutletContext).mockReturnValue({
-            repertoire: helpers.repertoire.empty,
-        });
+        helpers.setUpTestRepertoire(helpers.repertoire.empty);
         const user = userEvent.setup();
         render(<RouterProvider router={testRouter} />);
 
@@ -120,9 +101,7 @@ describe('New folder button', () => {
     });
 
     it('Prevents a folder from being closed if new folder name form present', async () => {
-        vi.mocked(useOutletContext).mockReturnValue({
-            repertoire: helpers.repertoire.withNestedFolders,
-        });
+        helpers.setUpTestRepertoire(helpers.repertoire.withNestedFolders);
         const user = userEvent.setup();
         render(<RouterProvider router={testRouter} />);
 
@@ -146,9 +125,7 @@ describe('New folder button', () => {
     });
 
     it('Adds new folder when new folder name submitted', async () => {
-        vi.mocked(useOutletContext).mockReturnValue({
-            repertoire: helpers.repertoire.empty,
-        });
+        helpers.setUpTestRepertoire(helpers.repertoire.empty);
         const user = userEvent.setup();
         render(<RouterProvider router={testRouter} />);
 
@@ -168,9 +145,7 @@ describe('New folder button', () => {
     });
 
     it('Discards new folder name form without submitting and renders new folder button when cancel button clicked', async () => {
-        vi.mocked(useOutletContext).mockReturnValue({
-            repertoire: helpers.repertoire.empty,
-        });
+        helpers.setUpTestRepertoire(helpers.repertoire.empty);
         const user = userEvent.setup();
         render(<RouterProvider router={testRouter} />);
 
@@ -196,9 +171,7 @@ describe('New folder button', () => {
     });
 
     it('Auto-opens closed folder when new folder is added', async () => {
-        vi.mocked(useOutletContext).mockReturnValue({
-            repertoire: helpers.repertoire.withFolderInWhite,
-        });
+        helpers.setUpTestRepertoire(helpers.repertoire.withFolderInWhite);
         const user = userEvent.setup();
         render(<RouterProvider router={testRouter} />);
 
@@ -220,9 +193,7 @@ describe('New folder button', () => {
 
 describe('Renaming folder', () => {
     it('Does not render rename form by default', () => {
-        vi.mocked(useOutletContext).mockReturnValue({
-            repertoire: helpers.repertoire.withNestedFolders,
-        });
+        helpers.setUpTestRepertoire(helpers.repertoire.withNestedFolders);
         render(<RouterProvider router={testRouter} />);
 
         expect(
@@ -231,9 +202,7 @@ describe('Renaming folder', () => {
     });
 
     it('Shows rename form when edit button clicked', async () => {
-        vi.mocked(useOutletContext).mockReturnValue({
-            repertoire: helpers.repertoire.empty,
-        });
+        helpers.setUpTestRepertoire(helpers.repertoire.empty);
         const user = userEvent.setup();
         render(<RouterProvider router={testRouter} />);
 
@@ -248,9 +217,7 @@ describe('Renaming folder', () => {
     });
 
     it('Renames folder when rename form submitted', async () => {
-        vi.mocked(useOutletContext).mockReturnValue({
-            repertoire: helpers.repertoire.empty,
-        });
+        helpers.setUpTestRepertoire(helpers.repertoire.empty);
         const user = userEvent.setup();
         render(<RouterProvider router={testRouter} />);
 
@@ -275,9 +242,7 @@ describe('Renaming folder', () => {
     });
 
     it('Prevents closing folder while rename form present', async () => {
-        vi.mocked(useOutletContext).mockReturnValue({
-            repertoire: helpers.repertoire.withFolderInWhite,
-        });
+        helpers.setUpTestRepertoire(helpers.repertoire.withFolderInWhite);
         const user = userEvent.setup();
         render(<RouterProvider router={testRouter} />);
 
@@ -299,9 +264,7 @@ describe('Renaming folder', () => {
     });
 
     it('Does not render new folder button when rename form present', async () => {
-        vi.mocked(useOutletContext).mockReturnValue({
-            repertoire: helpers.repertoire.withFolderInWhite,
-        });
+        helpers.setUpTestRepertoire(helpers.repertoire.withFolderInWhite);
         const user = userEvent.setup();
         render(<RouterProvider router={testRouter} />);
 
@@ -322,9 +285,7 @@ describe('Renaming folder', () => {
     });
 
     it('Does not render delete folder button when rename form present', async () => {
-        vi.mocked(useOutletContext).mockReturnValue({
-            repertoire: helpers.repertoire.withFolderInWhite,
-        });
+        helpers.setUpTestRepertoire(helpers.repertoire.withFolderInWhite);
         const user = userEvent.setup();
         render(<RouterProvider router={testRouter} />);
 

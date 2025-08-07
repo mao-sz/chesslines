@@ -1,9 +1,5 @@
-import {
-    createMemoryRouter,
-    useOutletContext,
-    RouterProvider,
-} from 'react-router';
-import { describe, it, expect, afterEach, vi } from 'vitest';
+import { createMemoryRouter, RouterProvider } from 'react-router';
+import { describe, it, expect } from 'vitest';
 import { render, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { routes } from '@/app/routes';
@@ -11,15 +7,12 @@ import { helpers } from '@/testing/helpers';
 import { STANDARD_STARTING_FEN } from '@/util/constants';
 import type { Repertoire } from '@/types/repertoire';
 
-afterEach(vi.resetAllMocks);
-vi.mock('react-router', { spy: true });
-
 const testRouter = createMemoryRouter(routes);
 
 async function openLineFolderInPanel(
     repertoire: Repertoire = helpers.repertoire.withLineInWhite
 ) {
-    vi.mocked(useOutletContext).mockReturnValue({ repertoire });
+    helpers.setUpTestRepertoire(repertoire);
     render(<RouterProvider router={testRouter} />);
 
     const user = userEvent.setup();

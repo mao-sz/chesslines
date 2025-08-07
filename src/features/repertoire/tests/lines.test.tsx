@@ -1,24 +1,17 @@
-import {
-    createMemoryRouter,
-    useOutletContext,
-    RouterProvider,
-} from 'react-router';
-import { describe, it, expect, afterEach, vi } from 'vitest';
+import { createMemoryRouter, RouterProvider } from 'react-router';
+import { describe, it, expect } from 'vitest';
 import { render, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { routes } from '@/app/routes';
 import { helpers, UUIDS } from '@/testing/helpers';
 
-afterEach(vi.resetAllMocks);
-vi.mock('react-router', { spy: true });
-
 const testRouter = createMemoryRouter(routes);
 
 describe('Lines panel', () => {
     it('Opens lines folder in line panel when clicked on', async () => {
-        vi.mocked(useOutletContext).mockReturnValue({
-            repertoire: helpers.repertoire.withLineInWhite,
-        });
+        const testRepertoire = helpers.setUpTestRepertoire(
+            helpers.repertoire.withLineInWhite
+        );
         const user = userEvent.setup();
         render(<RouterProvider router={testRouter} />);
 
@@ -28,16 +21,14 @@ describe('Lines panel', () => {
         await user.click(whiteFolder);
 
         expect(
-            screen.getByRole('region', {
-                name: helpers.repertoire.withLineInWhite.folders.w.name,
-            })
+            screen.getByRole('region', { name: testRepertoire.folders.w.name })
         ).toBeInTheDocument();
     });
 
     it("Lists open lines folder's lines in line panel", async () => {
-        vi.mocked(useOutletContext).mockReturnValue({
-            repertoire: helpers.repertoire.withLineInWhite,
-        });
+        const testRepertoire = helpers.setUpTestRepertoire(
+            helpers.repertoire.withLineInWhite
+        );
         const user = userEvent.setup();
         render(<RouterProvider router={testRouter} />);
 
@@ -46,7 +37,7 @@ describe('Lines panel', () => {
         });
         await user.click(whiteFolder);
 
-        const line = helpers.repertoire.withLineInWhite.lines[UUIDS.lines[0]];
+        const line = testRepertoire.lines[UUIDS.lines[0]];
         expect(
             screen.getByRole('list', { name: /lines/i })
         ).toBeInTheDocument();
@@ -54,9 +45,7 @@ describe('Lines panel', () => {
     });
 
     it('Does not show starting FEN if standard starting position', async () => {
-        vi.mocked(useOutletContext).mockReturnValue({
-            repertoire: helpers.repertoire.withLineInWhite,
-        });
+        helpers.setUpTestRepertoire(helpers.repertoire.withLineInWhite);
         const user = userEvent.setup();
         render(<RouterProvider router={testRouter} />);
 
@@ -71,9 +60,9 @@ describe('Lines panel', () => {
     });
 
     it('Shows non-standard starting FEN in full', async () => {
-        vi.mocked(useOutletContext).mockReturnValue({
-            repertoire: helpers.repertoire.withNonstandardLineInWhite,
-        });
+        const testRepertoire = helpers.setUpTestRepertoire(
+            helpers.repertoire.withNonstandardLineInWhite
+        );
         const user = userEvent.setup();
         render(<RouterProvider router={testRouter} />);
 
@@ -82,15 +71,12 @@ describe('Lines panel', () => {
         });
         await user.click(whiteFolder);
 
-        const line =
-            helpers.repertoire.withNonstandardLineInWhite.lines[UUIDS.lines[0]];
+        const line = testRepertoire.lines[UUIDS.lines[0]];
         expect(screen.getByText(line.startingFEN)).toBeInTheDocument();
     });
 
     it('Does not render new line button if open folder contains other folders', async () => {
-        vi.mocked(useOutletContext).mockReturnValue({
-            repertoire: helpers.repertoire.empty,
-        });
+        helpers.setUpTestRepertoire(helpers.repertoire.empty);
         const user = userEvent.setup();
         render(<RouterProvider router={testRouter} />);
 

@@ -1,12 +1,8 @@
-import { describe, it, expect, afterEach, vi } from 'vitest';
+import { describe, it, expect, vi } from 'vitest';
 import userEvent from '@testing-library/user-event';
 import { render, screen } from '@testing-library/react';
 import { RepertoireErrorPage } from '../RepertoireErrorPage';
 
-afterEach(() => {
-    vi.resetAllMocks();
-    window.localStorage.clear();
-});
 // Must stub as cannot create spy for window.location.reload due to read-only nature of window.location
 vi.stubGlobal('location', { reload: vi.fn() });
 // Cannot spy on window.localStorage or its properties directly

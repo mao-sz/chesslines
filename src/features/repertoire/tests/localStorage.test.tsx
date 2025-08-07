@@ -3,7 +3,7 @@ import {
     useOutletContext,
     RouterProvider,
 } from 'react-router';
-import { describe, it, expect, afterEach, vi } from 'vitest';
+import { describe, it, expect, vi } from 'vitest';
 import userEvent from '@testing-library/user-event';
 import { render, screen } from '@testing-library/react';
 import { helpers } from '@/testing/helpers';
@@ -20,11 +20,6 @@ function getLatestUUID() {
     return spyRandomUUID.mock.results.at(-1)?.value;
 }
 
-afterEach(() => {
-    vi.resetAllMocks();
-    window.localStorage.clear();
-});
-
 const testRouter = createMemoryRouter(routes);
 
 describe('App start', () => {
@@ -35,9 +30,9 @@ describe('App start', () => {
             validationError: null,
             repertoire: null,
         });
-        expect(vi.mocked(useOutletContext)).toHaveReturnedWith({
-            repertoire: EMPTY_REPERTOIRE,
-        });
+        expect(vi.mocked(useOutletContext)).toHaveReturnedWith(
+            expect.objectContaining({ repertoire: EMPTY_REPERTOIRE })
+        );
     });
 
     it('Sets repertoire parsed from local storage if valid', () => {
@@ -53,9 +48,9 @@ describe('App start', () => {
             validationError: null,
             repertoire: TEST_REPERTOIRE,
         });
-        expect(vi.mocked(useOutletContext)).toHaveReturnedWith({
-            repertoire: TEST_REPERTOIRE,
-        });
+        expect(vi.mocked(useOutletContext)).toHaveReturnedWith(
+            expect.objectContaining({ repertoire: TEST_REPERTOIRE })
+        );
     });
 
     it.each([

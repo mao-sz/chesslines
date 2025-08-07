@@ -1,25 +1,16 @@
-import {
-    createMemoryRouter,
-    useOutletContext,
-    RouterProvider,
-} from 'react-router';
-import { describe, it, expect, afterEach, vi } from 'vitest';
+import { createMemoryRouter, RouterProvider } from 'react-router';
+import { describe, it, expect } from 'vitest';
 import { fireEvent, render, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { helpers } from '@/testing/helpers';
 import { convert } from '@/util/util';
 import { routes } from '@/app/routes';
 
-afterEach(vi.resetAllMocks);
-vi.mock('react-router', { spy: true });
-
 const testRouter = createMemoryRouter(routes);
 
 describe('Moving folders', () => {
     it('Moves folder inside another folder when dropped on it', async () => {
-        vi.mocked(useOutletContext).mockReturnValue({
-            repertoire: helpers.repertoire.manyFoldersAndLines,
-        });
+        helpers.setUpTestRepertoire(helpers.repertoire.manyFoldersAndLines);
         render(<RouterProvider router={testRouter} />);
 
         const lineFolder = screen.getByRole('listitem', {
@@ -42,9 +33,7 @@ describe('Moving folders', () => {
     });
 
     it('Does nothing if folder is not released on valid drop target', async () => {
-        vi.mocked(useOutletContext).mockReturnValue({
-            repertoire: helpers.repertoire.manyFoldersAndLines,
-        });
+        helpers.setUpTestRepertoire(helpers.repertoire.manyFoldersAndLines);
         const { container } = render(<RouterProvider router={testRouter} />);
 
         const lineFolder = screen.getByRole('listitem', {
@@ -67,9 +56,7 @@ describe('Moving folders', () => {
     });
 
     it('Does nothing if the target folder contains lines', async () => {
-        vi.mocked(useOutletContext).mockReturnValue({
-            repertoire: helpers.repertoire.manyFoldersAndLines,
-        });
+        helpers.setUpTestRepertoire(helpers.repertoire.manyFoldersAndLines);
         const { container } = render(<RouterProvider router={testRouter} />);
 
         const lineFolder = screen.getByRole('listitem', {
@@ -95,9 +82,7 @@ describe('Moving folders', () => {
     });
 
     it('Does nothing if dropped on the current direct parent folder', async () => {
-        vi.mocked(useOutletContext).mockReturnValue({
-            repertoire: helpers.repertoire.manyFoldersAndLines,
-        });
+        helpers.setUpTestRepertoire(helpers.repertoire.manyFoldersAndLines);
         const { container } = render(<RouterProvider router={testRouter} />);
 
         const lineFolder = screen.getByRole('listitem', {
@@ -121,9 +106,7 @@ describe('Moving folders', () => {
     });
 
     it('Prevents dragging base colour folders', async () => {
-        vi.mocked(useOutletContext).mockReturnValue({
-            repertoire: helpers.repertoire.manyFoldersAndLines,
-        });
+        helpers.setUpTestRepertoire(helpers.repertoire.manyFoldersAndLines);
         const { container } = render(<RouterProvider router={testRouter} />);
 
         const folderFolder = screen.getByRole('listitem', {
@@ -147,9 +130,7 @@ describe('Moving folders', () => {
     });
 
     it('Prevents dropping onto self', async () => {
-        vi.mocked(useOutletContext).mockReturnValue({
-            repertoire: helpers.repertoire.manyFoldersAndLines,
-        });
+        helpers.setUpTestRepertoire(helpers.repertoire.manyFoldersAndLines);
         const { container } = render(<RouterProvider router={testRouter} />);
 
         const folderFolder = screen.getByRole('listitem', {
@@ -174,9 +155,7 @@ describe('Moving folders', () => {
 
 describe('Moving lines', () => {
     async function openLineFolder() {
-        vi.mocked(useOutletContext).mockReturnValue({
-            repertoire: helpers.repertoire.manyFoldersAndLines,
-        });
+        helpers.setUpTestRepertoire(helpers.repertoire.manyFoldersAndLines);
         const user = userEvent.setup();
         const { container } = render(<RouterProvider router={testRouter} />);
         const lineFolder = screen.getByRole('button', {

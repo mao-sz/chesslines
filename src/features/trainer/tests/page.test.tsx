@@ -1,12 +1,11 @@
 import { MemoryRouter, useOutletContext } from 'react-router';
-import { describe, it, expect, afterEach, vi } from 'vitest';
+import { describe, it, expect, vi } from 'vitest';
 import { render, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { TrainerPage } from '../TrainerPage';
 import { helpers } from '@/testing/helpers';
 import { EMPTY_REPERTOIRE } from '@/util/constants';
 
-afterEach(vi.resetAllMocks);
 vi.mock('react-router', { spy: true });
 vi.mock('@/util/util.ts', async (importActual) => ({
     ...(await importActual()),

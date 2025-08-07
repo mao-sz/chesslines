@@ -18,4 +18,8 @@ HTMLDialogElement.prototype.close ??= vi.fn(function (this: HTMLDialogElement) {
 });
 
 configure({ reactStrictMode: true });
-afterEach(cleanup);
+afterEach(() => {
+    cleanup();
+    vi.resetAllMocks();
+    window.localStorage.clear();
+});

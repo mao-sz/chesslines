@@ -391,9 +391,15 @@ function serialiseCurrentBoard() {
         });
 }
 
+function setUpTestRepertoire(repertoire: Repertoire): Repertoire {
+    window.localStorage.setItem('repertoire', JSON.stringify(repertoire));
+    return repertoire;
+}
+
 export const helpers = {
     repertoire,
     testRepertoire,
     hooks,
     serialiseCurrentBoard,
+    setUpTestRepertoire,
 };

@@ -1,4 +1,4 @@
-import { describe, it, expect, afterEach, vi } from 'vitest';
+import { describe, it, expect, vi } from 'vitest';
 import { helpers } from '@/testing/helpers';
 
 const { callUseRepertoire } = helpers.hooks;
@@ -7,8 +7,6 @@ const spyRandomUUID = vi.spyOn(crypto, 'randomUUID');
 function getLatestUUID() {
     return spyRandomUUID.mock.results.at(-1)?.value;
 }
-
-afterEach(vi.clearAllMocks);
 
 describe('useRepertoire', () => {
     it('Initialises folders with starting empty white/black folders only', () => {
