@@ -2,7 +2,8 @@ import { renderHook, screen } from '@testing-library/react';
 import { useRepertoire } from '@/hooks/useRepertoire';
 import { STANDARD_STARTING_FEN } from '@/util/constants';
 import type { UUID } from '@/types/utility';
-import type { Repertoire } from '@/types/repertoire';
+import type { Repertoire, RepertoireFolderID } from '@/types/repertoire';
+import { useDeepContainsSelectedLine } from '@/hooks/useDeepContainsSelectedLine';
 
 export const UUIDS: Record<'folders' | 'lines', UUID[]> = {
     lines: [
@@ -394,6 +395,14 @@ const hooks = {
                 },
                 lines: {},
             })
+        );
+    },
+    callUseDeepContainsSelectedLine(
+        folders: Repertoire['folders'],
+        baseFolderID: RepertoireFolderID
+    ) {
+        return renderHook(() =>
+            useDeepContainsSelectedLine(folders, baseFolderID)
         );
     },
 };

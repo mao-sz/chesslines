@@ -1,8 +1,10 @@
 import { describe, it, expect, vi } from 'vitest';
-import { helpers } from '@/testing/helpers';
+import { helpers, UUIDS } from '@/testing/helpers';
+import { useOutletContext } from 'react-router';
 
-const { callUseRepertoire } = helpers.hooks;
+const { callUseDeepContainsSelectedLine, callUseRepertoire } = helpers.hooks;
 
+vi.mock('react-router', { spy: true });
 const spyRandomUUID = vi.spyOn(crypto, 'randomUUID');
 function getLatestUUID() {
     return spyRandomUUID.mock.results.at(-1)?.value;
@@ -260,5 +262,60 @@ describe('useRepertoire', () => {
             contains: 'either',
             children: [],
         });
+    });
+});
+
+describe('useDeepContainsSelectedLine', () => {
+    const { folders } = helpers.repertoire.manyFoldersAndLines;
+    const emptyFolderID = UUIDS.folders[2];
+
+    it('Returns true if lines folder contains a selected line', () => {
+        vi.mocked(useOutletContext).mockReturnValue({
+            lineIDsToTrain: [UUIDS.lines[1]],
+        });
+
+        const { result } = callUseDeepContainsSelectedLine(
+            folders,
+            UUIDS.folders[0]
+        );
+        expect(result.current).toBe(true);
+    });
+
+    it('Returns true if folders folder deeply contains a selected line', () => {
+        vi.mocked(useOutletContext).mockReturnValue({
+            lineIDsToTrain: [UUIDS.lines[1]],
+        });
+
+        const { result } = callUseDeepContainsSelectedLine(folders, 'w');
+        expect(result.current).toBe(true);
+    });
+
+    it('Returns false if lines folder does not contain a selected line', () => {
+        vi.mocked(useOutletContext).mockReturnValue({
+            lineIDsToTrain: [UUIDS.lines[0]],
+        });
+
+        const { result } = callUseDeepContainsSelectedLine(
+            folders,
+            UUIDS.folders[0]
+        );
+        expect(result.current).toBe(false);
+    });
+
+    it('Returns false if folders folder does not deeply contain a selected line', () => {
+        vi.mocked(useOutletContext).mockReturnValue({ lineIDsToTrain: [] });
+
+        const { result } = callUseDeepContainsSelectedLine(folders, 'w');
+        expect(result.current).toBe(false);
+    });
+
+    it('Returns false if folder is empty', () => {
+        vi.mocked(useOutletContext).mockReturnValue({ lineIDsToTrain: [] });
+
+        const { result } = callUseDeepContainsSelectedLine(
+            folders,
+            emptyFolderID
+        );
+        expect(result.current).toBe(false);
     });
 });

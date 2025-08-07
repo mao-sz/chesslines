@@ -1,6 +1,6 @@
 import type { Colour, PieceName } from '@/types/chessboard';
 import type { Repertoire } from '@/types/repertoire';
-import { UUID } from '@/types/utility';
+import type { UUID } from '@/types/utility';
 
 export function reverse(str: string): string {
     return str.split('').reverse().join('');
