@@ -185,6 +185,9 @@ describe('Editing repertoire', () => {
         });
         await user.click(deleteFolderButton);
 
+        const confirmButton = screen.getByRole('button', { name: /confirm/i });
+        await user.click(confirmButton);
+
         expect(repertoireSetSpy).toHaveBeenCalledWith(EMPTY_REPERTOIRE);
         expect(window.localStorage.getItem('repertoire')).toBe(
             JSON.stringify(EMPTY_REPERTOIRE)
@@ -349,6 +352,9 @@ describe('Editing repertoire', () => {
         });
         await user.click(deleteLineButton);
 
+        const confirmButton = screen.getByRole('button', { name: /confirm/i });
+        await user.click(confirmButton);
+
         expect(repertoireSetSpy).toHaveBeenCalledWith(EMPTY_REPERTOIRE);
         expect(window.localStorage.getItem('repertoire')).toBe(
             JSON.stringify(EMPTY_REPERTOIRE)
@@ -473,6 +479,9 @@ describe('Selecting lines to train', () => {
             name: /delete line/i,
         })[0];
         await user.click(deleteFirstLineButton);
+
+        const confirmButton = screen.getByRole('button', { name: /confirm/i });
+        await user.click(confirmButton);
 
         expect(trainableLineIDsSetSpy).toHaveBeenCalledWith([
             testRepertoire.folders.w.children[1],

@@ -77,6 +77,9 @@ describe('Repertoire error page', () => {
         });
         await user.click(discardButton);
 
+        const confirmButton = screen.getByRole('button', { name: /confirm/i });
+        await user.click(confirmButton);
+
         expect(localStorageRemoveSpy).toHaveBeenCalledWith('repertoire');
         expect(window.location.reload).toHaveBeenCalled();
     });
