@@ -9,7 +9,7 @@ const testRouter = createMemoryRouter(routes);
 
 describe('Lines panel', () => {
     it('Opens lines folder in line panel when clicked on', async () => {
-        const testRepertoire = helpers.setUpTestRepertoire(
+        const testRepertoire = helpers.setup.repertoire(
             helpers.repertoire.withLineInWhite
         );
         const user = userEvent.setup();
@@ -26,7 +26,7 @@ describe('Lines panel', () => {
     });
 
     it("Lists open lines folder's lines in line panel", async () => {
-        const testRepertoire = helpers.setUpTestRepertoire(
+        const testRepertoire = helpers.setup.repertoire(
             helpers.repertoire.withLineInWhite
         );
         const user = userEvent.setup();
@@ -45,7 +45,7 @@ describe('Lines panel', () => {
     });
 
     it('Displays special text for lines with empty PGNs', async () => {
-        helpers.setUpTestRepertoire(helpers.repertoire.withBlankLineInWhite);
+        helpers.setup.repertoire(helpers.repertoire.withBlankLineInWhite);
         const user = userEvent.setup();
         render(<RouterProvider router={testRouter} />);
 
@@ -58,7 +58,7 @@ describe('Lines panel', () => {
     });
 
     it('Does not show starting FEN if standard starting position', async () => {
-        helpers.setUpTestRepertoire(helpers.repertoire.withLineInWhite);
+        helpers.setup.repertoire(helpers.repertoire.withLineInWhite);
         const user = userEvent.setup();
         render(<RouterProvider router={testRouter} />);
 
@@ -73,7 +73,7 @@ describe('Lines panel', () => {
     });
 
     it('Shows non-standard starting FEN in full', async () => {
-        const testRepertoire = helpers.setUpTestRepertoire(
+        const testRepertoire = helpers.setup.repertoire(
             helpers.repertoire.withNonstandardLineInWhite
         );
         const user = userEvent.setup();
@@ -89,7 +89,7 @@ describe('Lines panel', () => {
     });
 
     it('Does not render new line button if open folder contains other folders', async () => {
-        helpers.setUpTestRepertoire(helpers.repertoire.empty);
+        helpers.setup.repertoire(helpers.repertoire.empty);
         const user = userEvent.setup();
         render(<RouterProvider router={testRouter} />);
 

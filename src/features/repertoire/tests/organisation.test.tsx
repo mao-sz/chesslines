@@ -10,7 +10,7 @@ const testRouter = createMemoryRouter(routes);
 
 describe('Moving folders', () => {
     it('Moves folder inside another folder when dropped on it', async () => {
-        helpers.setUpTestRepertoire(helpers.repertoire.manyFoldersAndLines);
+        helpers.setup.repertoire(helpers.repertoire.manyFoldersAndLines);
         render(<RouterProvider router={testRouter} />);
 
         const lineFolder = screen.getByRole('listitem', {
@@ -33,7 +33,7 @@ describe('Moving folders', () => {
     });
 
     it('Does nothing if folder is not released on valid drop target', async () => {
-        helpers.setUpTestRepertoire(helpers.repertoire.manyFoldersAndLines);
+        helpers.setup.repertoire(helpers.repertoire.manyFoldersAndLines);
         const { container } = render(<RouterProvider router={testRouter} />);
 
         const lineFolder = screen.getByRole('listitem', {
@@ -56,7 +56,7 @@ describe('Moving folders', () => {
     });
 
     it('Does nothing if the target folder contains lines', async () => {
-        helpers.setUpTestRepertoire(helpers.repertoire.manyFoldersAndLines);
+        helpers.setup.repertoire(helpers.repertoire.manyFoldersAndLines);
         const { container } = render(<RouterProvider router={testRouter} />);
 
         const lineFolder = screen.getByRole('listitem', {
@@ -83,7 +83,7 @@ describe('Moving folders', () => {
     });
 
     it('Does nothing if dropped on the current direct parent folder', async () => {
-        helpers.setUpTestRepertoire(helpers.repertoire.manyFoldersAndLines);
+        helpers.setup.repertoire(helpers.repertoire.manyFoldersAndLines);
         const { container } = render(<RouterProvider router={testRouter} />);
 
         const lineFolder = screen.getByRole('listitem', {
@@ -107,7 +107,7 @@ describe('Moving folders', () => {
     });
 
     it('Prevents dragging base colour folders', async () => {
-        helpers.setUpTestRepertoire(helpers.repertoire.manyFoldersAndLines);
+        helpers.setup.repertoire(helpers.repertoire.manyFoldersAndLines);
         const { container } = render(<RouterProvider router={testRouter} />);
 
         const folderFolder = screen.getByRole('listitem', {
@@ -131,7 +131,7 @@ describe('Moving folders', () => {
     });
 
     it('Prevents dropping onto self', async () => {
-        helpers.setUpTestRepertoire(helpers.repertoire.manyFoldersAndLines);
+        helpers.setup.repertoire(helpers.repertoire.manyFoldersAndLines);
         const { container } = render(<RouterProvider router={testRouter} />);
 
         const folderFolder = screen.getByRole('listitem', {
@@ -157,7 +157,7 @@ describe('Moving folders', () => {
 
 describe('Moving lines', () => {
     async function openLineFolder() {
-        helpers.setUpTestRepertoire(helpers.repertoire.manyFoldersAndLines);
+        helpers.setup.repertoire(helpers.repertoire.manyFoldersAndLines);
         const user = userEvent.setup();
         const { container } = render(<RouterProvider router={testRouter} />);
         const lineFolder = screen.getByRole('button', {

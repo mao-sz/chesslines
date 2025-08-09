@@ -13,7 +13,7 @@ const testRouter = createMemoryRouter(routes, { initialEntries: ['/trainer'] });
 
 describe('"Study line" link', () => {
     it('Renders in trainer page', () => {
-        helpers.setUpTrainer(helpers.testRepertoire.withSingleWhiteLine, [
+        helpers.setup.trainer(helpers.testRepertoire.withSingleWhiteLine, [
             UUIDS.lines[0],
         ]);
 
@@ -25,7 +25,7 @@ describe('"Study line" link', () => {
     });
 
     it('Includes attributes to open specific line ID in a new tab', () => {
-        const [testRepertoire] = helpers.setUpTrainer(
+        const [testRepertoire] = helpers.setup.trainer(
             helpers.testRepertoire.withSingleWhiteLine,
             [UUIDS.lines[0]]
         );
@@ -46,7 +46,7 @@ describe('"Study line" link', () => {
     });
 
     it('"line" query param automatically opens line\'s parent folder in the line panel', async () => {
-        const [testRepertoire] = helpers.setUpTrainer(
+        const [testRepertoire] = helpers.setup.trainer(
             helpers.testRepertoire.withSingleWhiteLine,
             [UUIDS.lines[0]]
         );
@@ -64,7 +64,7 @@ describe('"Study line" link', () => {
     });
 
     it('"line" query param automatically opens line editor with matching line', async () => {
-        const [testRepertoire] = helpers.setUpTrainer(
+        const [testRepertoire] = helpers.setup.trainer(
             helpers.testRepertoire.withSingleWhiteLine,
             [UUIDS.lines[0]]
         );

@@ -421,37 +421,35 @@ function serialiseCurrentBoard() {
         });
 }
 
-function setUpTestRepertoire(repertoire: Repertoire): Repertoire {
-    window.localStorage.setItem('repertoire', JSON.stringify(repertoire));
-    return repertoire;
-}
-
-function setUpTestTrainableLineIDs(lineIDsToTrain: UUID[]): UUID[] {
-    window.localStorage.setItem(
-        'line_ids_to_train',
-        JSON.stringify(lineIDsToTrain)
-    );
-    return lineIDsToTrain;
-}
-
-function setUpTrainer(
-    repertoire: Repertoire,
-    lineIDsToTrain: UUID[]
-): [Repertoire, UUID[]] {
-    window.localStorage.setItem('repertoire', JSON.stringify(repertoire));
-    window.localStorage.setItem(
-        'line_ids_to_train',
-        JSON.stringify(lineIDsToTrain)
-    );
-    return [repertoire, lineIDsToTrain];
-}
+const setup = {
+    repertoire(repertoire: Repertoire): Repertoire {
+        window.localStorage.setItem('repertoire', JSON.stringify(repertoire));
+        return repertoire;
+    },
+    trainableLineIDs(lineIDsToTrain: UUID[]): UUID[] {
+        window.localStorage.setItem(
+            'line_ids_to_train',
+            JSON.stringify(lineIDsToTrain)
+        );
+        return lineIDsToTrain;
+    },
+    trainer(
+        repertoire: Repertoire,
+        lineIDsToTrain: UUID[]
+    ): [Repertoire, UUID[]] {
+        window.localStorage.setItem('repertoire', JSON.stringify(repertoire));
+        window.localStorage.setItem(
+            'line_ids_to_train',
+            JSON.stringify(lineIDsToTrain)
+        );
+        return [repertoire, lineIDsToTrain];
+    },
+};
 
 export const helpers = {
     repertoire,
     testRepertoire,
     hooks,
     serialiseCurrentBoard,
-    setUpTestRepertoire,
-    setUpTestTrainableLineIDs,
-    setUpTrainer,
+    setup,
 };

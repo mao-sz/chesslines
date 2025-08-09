@@ -14,7 +14,7 @@ const testRouter = createMemoryRouter(routes, { initialEntries: ['/trainer'] });
 
 describe('Initial elements', () => {
     it('Renders 8x8 chessboard with pieces', () => {
-        helpers.setUpTrainer(helpers.testRepertoire.withSingleWhiteLine, [
+        helpers.setup.trainer(helpers.testRepertoire.withSingleWhiteLine, [
             UUIDS.lines[0],
         ]);
         render(<RouterProvider router={testRouter} />);
@@ -35,7 +35,7 @@ describe('Initial elements', () => {
     });
 
     it('Renders flipped chessboard if line is played as black', () => {
-        helpers.setUpTrainer(helpers.testRepertoire.withSingleBlackLine, [
+        helpers.setup.trainer(helpers.testRepertoire.withSingleBlackLine, [
             UUIDS.lines[0],
         ]);
         render(<RouterProvider router={testRouter} />);
@@ -49,7 +49,7 @@ describe('Initial elements', () => {
     });
 
     it('Renders button for next line when incomplete lines remain after current line', () => {
-        helpers.setUpTrainer(helpers.testRepertoire.withManyMixedLines, [
+        helpers.setup.trainer(helpers.testRepertoire.withManyMixedLines, [
             UUIDS.lines[0],
             UUIDS.lines[1],
         ]);
@@ -61,7 +61,7 @@ describe('Initial elements', () => {
     });
 
     it('Does not render button for next line when current line is the last incomplete line', () => {
-        helpers.setUpTrainer(helpers.testRepertoire.withSingleWhiteLine, [
+        helpers.setup.trainer(helpers.testRepertoire.withSingleWhiteLine, [
             UUIDS.lines[0],
         ]);
         render(<RouterProvider router={testRouter} />);
@@ -72,7 +72,7 @@ describe('Initial elements', () => {
     });
 
     it('Shows progress out of current loaded lines', () => {
-        const [_, testedLineIDs] = helpers.setUpTrainer(
+        const [_, testedLineIDs] = helpers.setup.trainer(
             helpers.testRepertoire.withManyMixedLines,
             [UUIDS.lines[0], UUIDS.lines[1]]
         );
@@ -83,7 +83,7 @@ describe('Initial elements', () => {
     });
 
     it('Renders "No lines" message if no test lines loaded', () => {
-        helpers.setUpTrainer(helpers.repertoire.empty, []);
+        helpers.setup.trainer(helpers.repertoire.empty, []);
         render(<RouterProvider router={testRouter} />);
 
         const backToRepertoireButton = screen.getByRole('link', {
@@ -104,7 +104,7 @@ describe('Position after moves', () => {
     describe('Click move', () => {
         it('Renders new position after correct move played', async () => {
             const user = userEvent.setup();
-            helpers.setUpTrainer(helpers.testRepertoire.withSingleWhiteLine, [
+            helpers.setup.trainer(helpers.testRepertoire.withSingleWhiteLine, [
                 UUIDS.lines[0],
             ]);
             render(<RouterProvider router={testRouter} />);
@@ -132,7 +132,7 @@ describe('Position after moves', () => {
 
         it('Does not change rendered position if incorrect move played', async () => {
             const user = userEvent.setup();
-            helpers.setUpTrainer(helpers.testRepertoire.withSingleWhiteLine, [
+            helpers.setup.trainer(helpers.testRepertoire.withSingleWhiteLine, [
                 UUIDS.lines[0],
             ]);
             render(<RouterProvider router={testRouter} />);
@@ -155,7 +155,7 @@ describe('Position after moves', () => {
     describe('Drag move', () => {
         it('Renders new position after correct move played', async () => {
             const user = userEvent.setup();
-            helpers.setUpTrainer(helpers.testRepertoire.withSingleWhiteLine, [
+            helpers.setup.trainer(helpers.testRepertoire.withSingleWhiteLine, [
                 UUIDS.lines[0],
             ]);
             render(<RouterProvider router={testRouter} />);
@@ -186,7 +186,7 @@ describe('Position after moves', () => {
 
         it('Does not change rendered position if incorrect move played', async () => {
             const user = userEvent.setup();
-            helpers.setUpTrainer(helpers.testRepertoire.withSingleWhiteLine, [
+            helpers.setup.trainer(helpers.testRepertoire.withSingleWhiteLine, [
                 UUIDS.lines[0],
             ]);
             render(<RouterProvider router={testRouter} />);
@@ -213,7 +213,7 @@ describe('Position after moves', () => {
 describe('Success feedback', () => {
     it('Renders incorrect move message if incorrect move played', async () => {
         const user = userEvent.setup();
-        helpers.setUpTrainer(helpers.testRepertoire.withSingleWhiteLine, [
+        helpers.setup.trainer(helpers.testRepertoire.withSingleWhiteLine, [
             UUIDS.lines[0],
         ]);
         render(<RouterProvider router={testRouter} />);
@@ -228,7 +228,7 @@ describe('Success feedback', () => {
 
     it('Removes incorrect move message when board is clicked', async () => {
         const user = userEvent.setup();
-        helpers.setUpTrainer(helpers.testRepertoire.withSingleWhiteLine, [
+        helpers.setup.trainer(helpers.testRepertoire.withSingleWhiteLine, [
             UUIDS.lines[0],
         ]);
         render(<RouterProvider router={testRouter} />);
@@ -244,7 +244,7 @@ describe('Success feedback', () => {
 
     it('Renders congratulatory message when line is completed', async () => {
         const user = userEvent.setup();
-        helpers.setUpTrainer(helpers.testRepertoire.withManyMixedLines, [
+        helpers.setup.trainer(helpers.testRepertoire.withManyMixedLines, [
             UUIDS.lines[0],
             UUIDS.lines[1],
         ]);
@@ -273,7 +273,7 @@ describe('Success feedback', () => {
 describe('Progress', () => {
     it('Increments progress counter when "next line" button clicked', async () => {
         const user = userEvent.setup();
-        const [_, testedLineIDs] = helpers.setUpTrainer(
+        const [_, testedLineIDs] = helpers.setup.trainer(
             helpers.testRepertoire.withManyMixedLines,
             [UUIDS.lines[0], UUIDS.lines[1]]
         );

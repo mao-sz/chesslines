@@ -12,7 +12,7 @@ const testRouter = createMemoryRouter(routes);
 async function openLineFolderInPanel(
     repertoire: Repertoire = helpers.repertoire.withLineInWhite
 ) {
-    helpers.setUpTestRepertoire(repertoire);
+    helpers.setup.repertoire(repertoire);
     render(<RouterProvider router={testRouter} />);
 
     const user = userEvent.setup();

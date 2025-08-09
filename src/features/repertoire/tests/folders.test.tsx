@@ -9,7 +9,7 @@ const testRouter = createMemoryRouter(routes);
 
 describe('Switching repertoire tabs', () => {
     it('Switches from white to black repertoire panels via tab buttons', async () => {
-        helpers.setUpTestRepertoire(helpers.repertoire.empty);
+        helpers.setup.repertoire(helpers.repertoire.empty);
         const user = userEvent.setup();
         render(<RouterProvider router={testRouter} />);
 
@@ -36,7 +36,7 @@ describe('Switching repertoire tabs', () => {
 
 describe('New folder button', () => {
     it("Renders 'new folder' button when folder is empty", () => {
-        helpers.setUpTestRepertoire(helpers.repertoire.empty);
+        helpers.setup.repertoire(helpers.repertoire.empty);
         render(<RouterProvider router={testRouter} />);
 
         expect(
@@ -45,7 +45,7 @@ describe('New folder button', () => {
     });
 
     it("Renders 'new folder' button when folder contains folders", () => {
-        helpers.setUpTestRepertoire(helpers.repertoire.withFolderInWhite);
+        helpers.setup.repertoire(helpers.repertoire.withFolderInWhite);
         render(<RouterProvider router={testRouter} />);
 
         const whiteFolder = screen.getByRole('listitem', {
@@ -60,7 +60,7 @@ describe('New folder button', () => {
     });
 
     it("Does not render 'new folder' button for a folder containing lines", () => {
-        helpers.setUpTestRepertoire(helpers.repertoire.withLineInWhite);
+        helpers.setup.repertoire(helpers.repertoire.withLineInWhite);
         render(<RouterProvider router={testRouter} />);
 
         const whiteFolder = screen.getByRole('listitem', {
@@ -73,7 +73,7 @@ describe('New folder button', () => {
     });
 
     it("Does not render any form for 'new folder' if button not clicked", () => {
-        helpers.setUpTestRepertoire(helpers.repertoire.empty);
+        helpers.setup.repertoire(helpers.repertoire.empty);
         render(<RouterProvider router={testRouter} />);
 
         expect(
@@ -82,7 +82,7 @@ describe('New folder button', () => {
     });
 
     it('Removes new folder button when new folder button clicked and form appears', async () => {
-        helpers.setUpTestRepertoire(helpers.repertoire.empty);
+        helpers.setup.repertoire(helpers.repertoire.empty);
         const user = userEvent.setup();
         render(<RouterProvider router={testRouter} />);
 
@@ -101,7 +101,7 @@ describe('New folder button', () => {
     });
 
     it('Prevents a folder from being closed if new folder name form present', async () => {
-        helpers.setUpTestRepertoire(helpers.repertoire.withNestedFolders);
+        helpers.setup.repertoire(helpers.repertoire.withNestedFolders);
         const user = userEvent.setup();
         render(<RouterProvider router={testRouter} />);
 
@@ -125,7 +125,7 @@ describe('New folder button', () => {
     });
 
     it('Adds new folder when new folder name submitted', async () => {
-        helpers.setUpTestRepertoire(helpers.repertoire.empty);
+        helpers.setup.repertoire(helpers.repertoire.empty);
         const user = userEvent.setup();
         render(<RouterProvider router={testRouter} />);
 
@@ -145,7 +145,7 @@ describe('New folder button', () => {
     });
 
     it('Discards new folder name form without submitting and renders new folder button when cancel button clicked', async () => {
-        helpers.setUpTestRepertoire(helpers.repertoire.empty);
+        helpers.setup.repertoire(helpers.repertoire.empty);
         const user = userEvent.setup();
         render(<RouterProvider router={testRouter} />);
 
@@ -171,7 +171,7 @@ describe('New folder button', () => {
     });
 
     it('Auto-opens closed folder when new folder is added', async () => {
-        helpers.setUpTestRepertoire(helpers.repertoire.withFolderInWhite);
+        helpers.setup.repertoire(helpers.repertoire.withFolderInWhite);
         const user = userEvent.setup();
         render(<RouterProvider router={testRouter} />);
 
@@ -193,7 +193,7 @@ describe('New folder button', () => {
 
 describe('Renaming folder', () => {
     it('Does not render rename form by default', () => {
-        helpers.setUpTestRepertoire(helpers.repertoire.withNestedFolders);
+        helpers.setup.repertoire(helpers.repertoire.withNestedFolders);
         render(<RouterProvider router={testRouter} />);
 
         expect(
@@ -202,7 +202,7 @@ describe('Renaming folder', () => {
     });
 
     it('Shows rename form when edit button clicked', async () => {
-        helpers.setUpTestRepertoire(helpers.repertoire.empty);
+        helpers.setup.repertoire(helpers.repertoire.empty);
         const user = userEvent.setup();
         render(<RouterProvider router={testRouter} />);
 
@@ -217,7 +217,7 @@ describe('Renaming folder', () => {
     });
 
     it('Renames folder when rename form submitted', async () => {
-        helpers.setUpTestRepertoire(helpers.repertoire.empty);
+        helpers.setup.repertoire(helpers.repertoire.empty);
         const user = userEvent.setup();
         render(<RouterProvider router={testRouter} />);
 
@@ -242,7 +242,7 @@ describe('Renaming folder', () => {
     });
 
     it('Prevents closing folder while rename form present', async () => {
-        helpers.setUpTestRepertoire(helpers.repertoire.withFolderInWhite);
+        helpers.setup.repertoire(helpers.repertoire.withFolderInWhite);
         const user = userEvent.setup();
         render(<RouterProvider router={testRouter} />);
 
@@ -264,7 +264,7 @@ describe('Renaming folder', () => {
     });
 
     it('Does not render new folder button when rename form present', async () => {
-        helpers.setUpTestRepertoire(helpers.repertoire.withFolderInWhite);
+        helpers.setup.repertoire(helpers.repertoire.withFolderInWhite);
         const user = userEvent.setup();
         render(<RouterProvider router={testRouter} />);
 
@@ -285,7 +285,7 @@ describe('Renaming folder', () => {
     });
 
     it('Does not render delete folder button when rename form present', async () => {
-        helpers.setUpTestRepertoire(helpers.repertoire.withFolderInWhite);
+        helpers.setup.repertoire(helpers.repertoire.withFolderInWhite);
         const user = userEvent.setup();
         render(<RouterProvider router={testRouter} />);
 

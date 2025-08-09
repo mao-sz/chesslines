@@ -50,7 +50,7 @@ describe('Initial elements', () => {
     });
 
     it('Renders "(1)" in header trainer page link if 1 line selected', async () => {
-        helpers.setUpTestRepertoire(helpers.testRepertoire.withManyMixedLines);
+        helpers.setup.repertoire(helpers.testRepertoire.withManyMixedLines);
 
         const user = userEvent.setup();
         render(<RouterProvider router={testRouter} />);
@@ -72,7 +72,7 @@ describe('Initial elements', () => {
     });
 
     it('Renders "(2)" in header trainer page link if 2 lines selected', async () => {
-        helpers.setUpTestRepertoire(helpers.testRepertoire.withManyMixedLines);
+        helpers.setup.repertoire(helpers.testRepertoire.withManyMixedLines);
 
         const user = userEvent.setup();
         render(<RouterProvider router={testRouter} />);

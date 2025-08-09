@@ -15,7 +15,7 @@ const testRouter = createMemoryRouter(routes, { initialEntries: ['/trainer'] });
 describe('Piece hint button', () => {
     it('Shows name of piece to move when clicked', async () => {
         const user = userEvent.setup();
-        helpers.setUpTrainer(helpers.testRepertoire.forHintsTesting, [
+        helpers.setup.trainer(helpers.testRepertoire.forHintsTesting, [
             UUIDS.lines[0],
             UUIDS.lines[1],
         ]);
@@ -38,7 +38,7 @@ describe('Piece hint button', () => {
 
     it('Does not render if line is complete', async () => {
         const user = userEvent.setup();
-        helpers.setUpTrainer(helpers.testRepertoire.forHintsTesting, [
+        helpers.setup.trainer(helpers.testRepertoire.forHintsTesting, [
             UUIDS.lines[0],
             UUIDS.lines[1],
         ]);
@@ -59,7 +59,7 @@ describe('Piece hint button', () => {
 describe('Notes button', () => {
     it('Shows notes for current move when clicked', async () => {
         const user = userEvent.setup();
-        helpers.setUpTrainer(helpers.testRepertoire.forHintsTesting, [
+        helpers.setup.trainer(helpers.testRepertoire.forHintsTesting, [
             UUIDS.lines[0],
             UUIDS.lines[1],
         ]);
@@ -81,7 +81,7 @@ describe('Notes button', () => {
     });
 
     it('Does not render if the current move does not have any notes', async () => {
-        helpers.setUpTrainer(helpers.testRepertoire.withSingleWhiteLine, [
+        helpers.setup.trainer(helpers.testRepertoire.withSingleWhiteLine, [
             UUIDS.lines[0],
         ]);
         render(<RouterProvider router={testRouter} />);

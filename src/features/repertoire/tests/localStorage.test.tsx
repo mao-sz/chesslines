@@ -38,7 +38,7 @@ describe('App start', () => {
     });
 
     it('Sets repertoire parsed from local storage if valid', () => {
-        const testRepertoire = helpers.setUpTestRepertoire(
+        const testRepertoire = helpers.setup.repertoire(
             helpers.repertoire.withNestedFolders
         );
 
@@ -119,7 +119,7 @@ describe('App start', () => {
     });
 
     it('Sets trainable line IDs parsed from local storage if valid', () => {
-        const testLineIDs = helpers.setUpTestTrainableLineIDs([
+        const testLineIDs = helpers.setup.trainableLineIDs([
             UUIDS.lines[0],
             UUIDS.lines[1],
         ]);
@@ -364,7 +364,7 @@ describe('Editing repertoire', () => {
 
 describe('Selecting lines to train', () => {
     it('Sets updated trainable line IDs after selecting lines', async () => {
-        const testRepertoire = helpers.setUpTestRepertoire(
+        const testRepertoire = helpers.setup.repertoire(
             helpers.testRepertoire.withManyMixedLines
         );
 
@@ -400,7 +400,7 @@ describe('Selecting lines to train', () => {
     });
 
     it('Sets updated trainable line IDs after selecting all lines in a folder at once', async () => {
-        const testRepertoire = helpers.setUpTestRepertoire(
+        const testRepertoire = helpers.setup.repertoire(
             helpers.testRepertoire.withManyMixedLines
         );
 
@@ -426,7 +426,7 @@ describe('Selecting lines to train', () => {
     });
 
     it('Sets updated trainable line IDs after de-selecting line', async () => {
-        const testRepertoire = helpers.setUpTestRepertoire(
+        const testRepertoire = helpers.setup.repertoire(
             helpers.testRepertoire.withManyMixedLines
         );
 
@@ -456,7 +456,7 @@ describe('Selecting lines to train', () => {
     });
 
     it('Removes trainable line ID when line is deleted', async () => {
-        const testRepertoire = helpers.setUpTestRepertoire(
+        const testRepertoire = helpers.setup.repertoire(
             helpers.testRepertoire.withManyMixedLines
         );
 
