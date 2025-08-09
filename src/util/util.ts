@@ -1,3 +1,4 @@
+import type { MouseEvent } from 'react';
 import type { Colour, PieceName } from '@/types/chessboard';
 import type { Repertoire } from '@/types/repertoire';
 import type { UUID } from '@/types/utility';
@@ -144,4 +145,12 @@ export function findParentFolder(
         }
     }
     return null;
+}
+
+export function onBackdropClick(callback: () => void): (e: MouseEvent) => void {
+    return (e: MouseEvent) => {
+        if (e.target === e.currentTarget) {
+            callback();
+        }
+    };
 }

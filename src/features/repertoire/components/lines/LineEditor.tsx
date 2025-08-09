@@ -1,16 +1,10 @@
-import {
-    type FormEvent,
-    type MouseEvent,
-    useEffect,
-    useRef,
-    useState,
-} from 'react';
+import { type FormEvent, useEffect, useRef, useState } from 'react';
 import { useOutletContext } from 'react-router';
 import { FENPGNInterface } from './FENPGNInterface';
 import { BoardInterface } from './BoardInterface';
 import { useRepertoireChessboard } from '@/hooks/useRepertoireChessboard';
 import { STANDARD_STARTING_FEN } from '@/util/constants';
-import { convert } from '@/util/util';
+import { convert, onBackdropClick } from '@/util/util';
 import type { OutletContext, UUID } from '@/types/utility';
 import type {
     LineNotes,
@@ -143,11 +137,7 @@ export function LineEditor({
         <dialog
             className={styles.dialog}
             ref={dialogRef}
-            onClick={(e: MouseEvent) => {
-                if (e.target === e.currentTarget) {
-                    closeEditor();
-                }
-            }}
+            onClick={onBackdropClick(closeEditor)}
             onClose={closeEditor}
         >
             <div className={styles.editor}>
