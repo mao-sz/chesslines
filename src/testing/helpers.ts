@@ -464,6 +464,12 @@ function serialiseCurrentBoard() {
         });
 }
 
+function escapeSpecialUserEventCharacters(str: string): string {
+    // double `{[` to type literally instead of being read as special chars
+    // https://testing-library.com/docs/user-event/keyboard
+    return str.replaceAll(/[{[]/g, (match) => match.repeat(2));
+}
+
 const setup = {
     repertoire(repertoire: Repertoire): Repertoire {
         window.localStorage.setItem('repertoire', JSON.stringify(repertoire));
@@ -494,5 +500,6 @@ export const helpers = {
     testRepertoire,
     hooks,
     serialiseCurrentBoard,
+    escapeSpecialUserEventCharacters,
     setup,
 };

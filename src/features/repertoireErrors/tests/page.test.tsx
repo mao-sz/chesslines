@@ -2,6 +2,7 @@ import { describe, it, expect, vi } from 'vitest';
 import userEvent from '@testing-library/user-event';
 import { render, screen } from '@testing-library/react';
 import { RepertoireErrorPage } from '../RepertoireErrorPage';
+import { helpers } from '@/testing/helpers';
 
 // Must stub as cannot create spy for window.location.reload due to read-only nature of window.location
 vi.stubGlobal('location', { reload: vi.fn() });
@@ -48,11 +49,7 @@ describe('Repertoire error page', () => {
         await user.clear(textArea);
         await user.type(
             textArea,
-            // double `{[` to type literally instead of being read as special chars
-            // https://testing-library.com/docs/user-event/keyboard
-            repertoireStrings.valid.replaceAll(/[{[]/g, (match) =>
-                match.repeat(2)
-            )
+            helpers.escapeSpecialUserEventCharacters(repertoireStrings.valid)
         );
         await user.click(saveButton);
 
