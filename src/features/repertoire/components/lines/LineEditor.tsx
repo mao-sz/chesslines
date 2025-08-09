@@ -12,6 +12,7 @@ import type {
 } from '@/types/repertoire';
 import type { Colour, MoveInfo } from '@/types/chessboard';
 import styles from './editor.module.css';
+import { convert } from '@/util/util';
 
 type LineEditorProps = {
     id: UUID | 'new';
@@ -48,8 +49,29 @@ export function LineEditor({
     } = useRepertoireChessboard(line?.PGN, line?.startingFEN);
 
     useEffect(() => {
-        dialogRef.current?.showModal();
-    }, []);
+        if (dialogRef.current) {
+            dialogRef.current.showModal();
+
+            // Editing a line opens the board interface automatically.
+            // In this situation, since no button/link/input inside the modal
+            // seems like a clear autofocus target, focus the modal itself.
+            // For a new line modal, the first form input is automatic and sensible.
+            if (id !== 'new') {
+                dialogRef.current.focus();
+            }
+        }
+
+        return () => {
+            // Refocus edit button used to open line editor upon close
+            if (id && id !== 'new') {
+                const correspondingEditButton =
+                    document.querySelector<HTMLButtonElement>(
+                        `#${convert.uuidToHtmlId(id)} button[aria-label="edit line"]`
+                    );
+                correspondingEditButton?.focus();
+            }
+        };
+    }, [id]);
 
     function saveLine(e: FormEvent) {
         e.preventDefault();
