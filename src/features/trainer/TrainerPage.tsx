@@ -8,20 +8,19 @@ import styles from './page.module.css';
 export function TrainerPage() {
     document.title = 'Chesslines | Trainer';
 
-    // TODO: Implement pre-trainer line select page!
-    const { repertoire } = useOutletContext<OutletContext>();
-    const linesToTrain: TestLine[] = Object.entries(repertoire.lines);
+    const { repertoire, lineIDsToTrain } = useOutletContext<OutletContext>();
+    const linesToTrain: TestLine[] = lineIDsToTrain.map((id) => [
+        id,
+        repertoire.lines[id],
+    ]);
 
     const { currentLine, toNextLine, progress } =
         useShuffledLines(linesToTrain);
 
-    const classNames = [styles.main];
-    if (!linesToTrain.length) {
-        classNames.push(styles.noLines);
-    }
-
     return (
-        <main className={classNames.join(' ')}>
+        <main
+            className={`${styles.main} ${linesToTrain.length === 0 ? styles.noLines : ''}`}
+        >
             {linesToTrain.length ? (
                 <Trainer
                     key={progress}

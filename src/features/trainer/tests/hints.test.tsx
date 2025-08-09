@@ -1,23 +1,25 @@
-import { useOutletContext } from 'react-router';
+import { createMemoryRouter, RouterProvider } from 'react-router';
 import { describe, it, expect, vi } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { TrainerPage } from '../TrainerPage';
-import { helpers } from '@/testing/helpers';
+import { helpers, UUIDS } from '@/testing/helpers';
+import { routes } from '@/app/routes';
 
-vi.mock('react-router');
 vi.mock('@/util/util.ts', async (importActual) => ({
     ...(await importActual()),
     toShuffled: vi.fn((lines) => lines),
 }));
 
+const testRouter = createMemoryRouter(routes, { initialEntries: ['/trainer'] });
+
 describe('Piece hint button', () => {
     it('Shows name of piece to move when clicked', async () => {
-        vi.mocked(useOutletContext).mockReturnValue({
-            repertoire: helpers.testRepertoire.forHintsTesting,
-        });
         const user = userEvent.setup();
-        render(<TrainerPage />);
+        helpers.setUpTrainer(helpers.testRepertoire.forHintsTesting, [
+            UUIDS.lines[0],
+            UUIDS.lines[1],
+        ]);
+        render(<RouterProvider router={testRouter} />);
 
         const nextLineButton = screen.getByRole('button', {
             name: /next line/i,
@@ -35,11 +37,12 @@ describe('Piece hint button', () => {
     });
 
     it('Does not render if line is complete', async () => {
-        vi.mocked(useOutletContext).mockReturnValue({
-            repertoire: helpers.testRepertoire.forHintsTesting,
-        });
         const user = userEvent.setup();
-        render(<TrainerPage />);
+        helpers.setUpTrainer(helpers.testRepertoire.forHintsTesting, [
+            UUIDS.lines[0],
+            UUIDS.lines[1],
+        ]);
+        render(<RouterProvider router={testRouter} />);
 
         const d7Square = screen.getByRole('button', { name: /d7/i });
         const d5Square = screen.getByRole('button', { name: /d5/i });
@@ -55,11 +58,12 @@ describe('Piece hint button', () => {
 
 describe('Notes button', () => {
     it('Shows notes for current move when clicked', async () => {
-        vi.mocked(useOutletContext).mockReturnValue({
-            repertoire: helpers.testRepertoire.forHintsTesting,
-        });
         const user = userEvent.setup();
-        render(<TrainerPage />);
+        helpers.setUpTrainer(helpers.testRepertoire.forHintsTesting, [
+            UUIDS.lines[0],
+            UUIDS.lines[1],
+        ]);
+        render(<RouterProvider router={testRouter} />);
 
         const nextLineButton = screen.getByRole('button', {
             name: /next line/i,
@@ -77,10 +81,10 @@ describe('Notes button', () => {
     });
 
     it('Does not render if the current move does not have any notes', async () => {
-        vi.mocked(useOutletContext).mockReturnValue({
-            repertoire: helpers.testRepertoire.withSingleWhiteLine,
-        });
-        render(<TrainerPage />);
+        helpers.setUpTrainer(helpers.testRepertoire.withSingleWhiteLine, [
+            UUIDS.lines[0],
+        ]);
+        render(<RouterProvider router={testRouter} />);
 
         expect(
             screen.queryByRole('button', { name: /notes/i })

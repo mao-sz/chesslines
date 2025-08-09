@@ -1,7 +1,7 @@
 import { createMemoryRouter, RouterProvider } from 'react-router';
 import { describe, it, expect, vi } from 'vitest';
 import { render, screen, within } from '@testing-library/react';
-import { helpers } from '@/testing/helpers';
+import { helpers, UUIDS } from '@/testing/helpers';
 import { routes } from '@/app/routes';
 
 vi.mock('@/util/util.ts', async (importActual) => ({
@@ -13,7 +13,9 @@ const testRouter = createMemoryRouter(routes, { initialEntries: ['/trainer'] });
 
 describe('"Study line" link', () => {
     it('Renders in trainer page', () => {
-        helpers.setUpTestRepertoire(helpers.testRepertoire.withSingleWhiteLine);
+        helpers.setUpTrainer(helpers.testRepertoire.withSingleWhiteLine, [
+            UUIDS.lines[0],
+        ]);
 
         render(<RouterProvider router={testRouter} />);
 
@@ -23,8 +25,9 @@ describe('"Study line" link', () => {
     });
 
     it('Includes attributes to open specific line ID in a new tab', () => {
-        const testRepertoire = helpers.setUpTestRepertoire(
-            helpers.testRepertoire.withSingleWhiteLine
+        const [testRepertoire] = helpers.setUpTrainer(
+            helpers.testRepertoire.withSingleWhiteLine,
+            [UUIDS.lines[0]]
         );
 
         render(<RouterProvider router={testRouter} />);
@@ -43,8 +46,9 @@ describe('"Study line" link', () => {
     });
 
     it('"line" query param automatically opens line\'s parent folder in the line panel', async () => {
-        const testRepertoire = helpers.setUpTestRepertoire(
-            helpers.testRepertoire.withSingleWhiteLine
+        const [testRepertoire] = helpers.setUpTrainer(
+            helpers.testRepertoire.withSingleWhiteLine,
+            [UUIDS.lines[0]]
         );
         const testLineParentFolder = testRepertoire.folders.w;
         const testLineID = Object.keys(testRepertoire.lines)[0];
@@ -60,8 +64,9 @@ describe('"Study line" link', () => {
     });
 
     it('"line" query param automatically opens line editor with matching line', async () => {
-        const testRepertoire = helpers.setUpTestRepertoire(
-            helpers.testRepertoire.withSingleWhiteLine
+        const [testRepertoire] = helpers.setUpTrainer(
+            helpers.testRepertoire.withSingleWhiteLine,
+            [UUIDS.lines[0]]
         );
         const testLineID = Object.keys(testRepertoire.lines)[0];
         const studyLineRouter = createMemoryRouter(routes, {

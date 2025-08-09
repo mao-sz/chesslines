@@ -1,29 +1,23 @@
-import { MemoryRouter, useOutletContext } from 'react-router';
+import { createMemoryRouter, RouterProvider } from 'react-router';
 import { describe, it, expect, vi } from 'vitest';
 import { render, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { TrainerPage } from '../TrainerPage';
-import { helpers } from '@/testing/helpers';
-import { EMPTY_REPERTOIRE } from '@/util/constants';
+import { helpers, UUIDS } from '@/testing/helpers';
+import { routes } from '@/app/routes';
 
-vi.mock('react-router', { spy: true });
 vi.mock('@/util/util.ts', async (importActual) => ({
     ...(await importActual()),
     toShuffled: vi.fn((lines) => lines),
 }));
 
+const testRouter = createMemoryRouter(routes, { initialEntries: ['/trainer'] });
+
 describe('Initial elements', () => {
     it('Renders 8x8 chessboard with pieces', () => {
-        vi.mocked(useOutletContext).mockReturnValue({
-            repertoire: helpers.testRepertoire.withSingleWhiteLine,
-        });
-        // quick and dirty memory router to provide context for Link component
-        // Link not used in tests so no need to set up a proper router and mock local storage
-        render(
-            <MemoryRouter>
-                <TrainerPage />
-            </MemoryRouter>
-        );
+        helpers.setUpTrainer(helpers.testRepertoire.withSingleWhiteLine, [
+            UUIDS.lines[0],
+        ]);
+        render(<RouterProvider router={testRouter} />);
 
         expect(
             screen.getAllByRole('button', { name: /square$/i })
@@ -41,14 +35,10 @@ describe('Initial elements', () => {
     });
 
     it('Renders flipped chessboard if line is played as black', () => {
-        vi.mocked(useOutletContext).mockReturnValue({
-            repertoire: helpers.testRepertoire.withSingleBlackLine,
-        });
-        render(
-            <MemoryRouter>
-                <TrainerPage />
-            </MemoryRouter>
-        );
+        helpers.setUpTrainer(helpers.testRepertoire.withSingleBlackLine, [
+            UUIDS.lines[0],
+        ]);
+        render(<RouterProvider router={testRouter} />);
 
         const squares = screen.getAllByRole('button', { name: /square$/i });
         expect(squares.at(0)?.ariaLabel).toBe('h1 square');
@@ -59,14 +49,11 @@ describe('Initial elements', () => {
     });
 
     it('Renders button for next line when incomplete lines remain after current line', () => {
-        vi.mocked(useOutletContext).mockReturnValue({
-            repertoire: helpers.testRepertoire.withManyMixedLines,
-        });
-        render(
-            <MemoryRouter>
-                <TrainerPage />
-            </MemoryRouter>
-        );
+        helpers.setUpTrainer(helpers.testRepertoire.withManyMixedLines, [
+            UUIDS.lines[0],
+            UUIDS.lines[1],
+        ]);
+        render(<RouterProvider router={testRouter} />);
 
         expect(
             screen.getByRole('button', { name: /next line/i })
@@ -74,14 +61,10 @@ describe('Initial elements', () => {
     });
 
     it('Does not render button for next line when current line is the last incomplete line', () => {
-        vi.mocked(useOutletContext).mockReturnValue({
-            repertoire: helpers.testRepertoire.withSingleWhiteLine,
-        });
-        render(
-            <MemoryRouter>
-                <TrainerPage />
-            </MemoryRouter>
-        );
+        helpers.setUpTrainer(helpers.testRepertoire.withSingleWhiteLine, [
+            UUIDS.lines[0],
+        ]);
+        render(<RouterProvider router={testRouter} />);
 
         expect(
             screen.queryByRole('button', { name: /next line/i })
@@ -89,34 +72,19 @@ describe('Initial elements', () => {
     });
 
     it('Shows progress out of current loaded lines', () => {
-        const testRepertoire = helpers.testRepertoire.withManyMixedLines;
-        vi.mocked(useOutletContext).mockReturnValue({
-            repertoire: testRepertoire,
-        });
-        render(
-            <MemoryRouter>
-                <TrainerPage />
-            </MemoryRouter>
+        const [_, testedLineIDs] = helpers.setUpTrainer(
+            helpers.testRepertoire.withManyMixedLines,
+            [UUIDS.lines[0], UUIDS.lines[1]]
         );
+        render(<RouterProvider router={testRouter} />);
         expect(
-            screen.getByText(
-                new RegExp(
-                    `1/${Object.values(testRepertoire.lines).length}`,
-                    'i'
-                )
-            )
+            screen.getByText(new RegExp(`1/${testedLineIDs.length}`, 'i'))
         ).toBeInTheDocument();
     });
 
     it('Renders "No lines" message if no test lines loaded', () => {
-        vi.mocked(useOutletContext).mockReturnValue({
-            repertoire: EMPTY_REPERTOIRE,
-        });
-        render(
-            <MemoryRouter>
-                <TrainerPage />
-            </MemoryRouter>
-        );
+        helpers.setUpTrainer(helpers.repertoire.empty, []);
+        render(<RouterProvider router={testRouter} />);
 
         const backToRepertoireButton = screen.getByRole('link', {
             name: /set lines to train from your repertoire/i,
@@ -135,15 +103,11 @@ describe('Initial elements', () => {
 describe('Position after moves', () => {
     describe('Click move', () => {
         it('Renders new position after correct move played', async () => {
-            vi.mocked(useOutletContext).mockReturnValue({
-                repertoire: helpers.testRepertoire.withSingleWhiteLine,
-            });
             const user = userEvent.setup();
-            render(
-                <MemoryRouter>
-                    <TrainerPage />
-                </MemoryRouter>
-            );
+            helpers.setUpTrainer(helpers.testRepertoire.withSingleWhiteLine, [
+                UUIDS.lines[0],
+            ]);
+            render(<RouterProvider router={testRouter} />);
 
             const d2Square = screen.getByRole('button', { name: 'd2 square' });
             const d4Square = screen.getByRole('button', { name: 'd4 square' });
@@ -167,15 +131,11 @@ describe('Position after moves', () => {
         });
 
         it('Does not change rendered position if incorrect move played', async () => {
-            vi.mocked(useOutletContext).mockReturnValue({
-                repertoire: helpers.testRepertoire.withSingleWhiteLine,
-            });
             const user = userEvent.setup();
-            render(
-                <MemoryRouter>
-                    <TrainerPage />
-                </MemoryRouter>
-            );
+            helpers.setUpTrainer(helpers.testRepertoire.withSingleWhiteLine, [
+                UUIDS.lines[0],
+            ]);
+            render(<RouterProvider router={testRouter} />);
 
             const d2Square = screen.getByRole('button', { name: 'd2 square' });
             const d3Square = screen.getByRole('button', { name: 'd3 square' });
@@ -194,15 +154,11 @@ describe('Position after moves', () => {
 
     describe('Drag move', () => {
         it('Renders new position after correct move played', async () => {
-            vi.mocked(useOutletContext).mockReturnValue({
-                repertoire: helpers.testRepertoire.withSingleWhiteLine,
-            });
             const user = userEvent.setup();
-            render(
-                <MemoryRouter>
-                    <TrainerPage />
-                </MemoryRouter>
-            );
+            helpers.setUpTrainer(helpers.testRepertoire.withSingleWhiteLine, [
+                UUIDS.lines[0],
+            ]);
+            render(<RouterProvider router={testRouter} />);
 
             const d2Square = screen.getByRole('button', { name: 'd2 square' });
             const d4Square = screen.getByRole('button', { name: 'd4 square' });
@@ -229,15 +185,11 @@ describe('Position after moves', () => {
         });
 
         it('Does not change rendered position if incorrect move played', async () => {
-            vi.mocked(useOutletContext).mockReturnValue({
-                repertoire: helpers.testRepertoire.withSingleWhiteLine,
-            });
             const user = userEvent.setup();
-            render(
-                <MemoryRouter>
-                    <TrainerPage />
-                </MemoryRouter>
-            );
+            helpers.setUpTrainer(helpers.testRepertoire.withSingleWhiteLine, [
+                UUIDS.lines[0],
+            ]);
+            render(<RouterProvider router={testRouter} />);
 
             const d2Square = screen.getByRole('button', { name: 'd2 square' });
             const d6Square = screen.getByRole('button', { name: 'd6 square' });
@@ -260,15 +212,11 @@ describe('Position after moves', () => {
 
 describe('Success feedback', () => {
     it('Renders incorrect move message if incorrect move played', async () => {
-        vi.mocked(useOutletContext).mockReturnValue({
-            repertoire: helpers.testRepertoire.withSingleWhiteLine,
-        });
         const user = userEvent.setup();
-        render(
-            <MemoryRouter>
-                <TrainerPage />
-            </MemoryRouter>
-        );
+        helpers.setUpTrainer(helpers.testRepertoire.withSingleWhiteLine, [
+            UUIDS.lines[0],
+        ]);
+        render(<RouterProvider router={testRouter} />);
 
         const d2Square = screen.getByRole('button', { name: 'd2 square' });
         const d3Square = screen.getByRole('button', { name: 'd3 square' });
@@ -279,15 +227,11 @@ describe('Success feedback', () => {
     });
 
     it('Removes incorrect move message when board is clicked', async () => {
-        vi.mocked(useOutletContext).mockReturnValue({
-            repertoire: helpers.testRepertoire.withSingleWhiteLine,
-        });
         const user = userEvent.setup();
-        render(
-            <MemoryRouter>
-                <TrainerPage />
-            </MemoryRouter>
-        );
+        helpers.setUpTrainer(helpers.testRepertoire.withSingleWhiteLine, [
+            UUIDS.lines[0],
+        ]);
+        render(<RouterProvider router={testRouter} />);
 
         const d2Square = screen.getByRole('button', { name: 'd2 square' });
         const d3Square = screen.getByRole('button', { name: 'd3 square' });
@@ -299,15 +243,12 @@ describe('Success feedback', () => {
     });
 
     it('Renders congratulatory message when line is completed', async () => {
-        vi.mocked(useOutletContext).mockReturnValue({
-            repertoire: helpers.testRepertoire.withManyMixedLines,
-        });
         const user = userEvent.setup();
-        render(
-            <MemoryRouter>
-                <TrainerPage />
-            </MemoryRouter>
-        );
+        helpers.setUpTrainer(helpers.testRepertoire.withManyMixedLines, [
+            UUIDS.lines[0],
+            UUIDS.lines[1],
+        ]);
+        render(<RouterProvider router={testRouter} />);
 
         const congratulatoryMessage = /well done/i;
 
@@ -331,26 +272,17 @@ describe('Success feedback', () => {
 
 describe('Progress', () => {
     it('Increments progress counter when "next line" button clicked', async () => {
-        const testRepertoire = helpers.testRepertoire.withManyMixedLines;
-        vi.mocked(useOutletContext).mockReturnValue({
-            repertoire: testRepertoire,
-        });
         const user = userEvent.setup();
-        render(
-            <MemoryRouter>
-                <TrainerPage />
-            </MemoryRouter>
+        const [_, testedLineIDs] = helpers.setUpTrainer(
+            helpers.testRepertoire.withManyMixedLines,
+            [UUIDS.lines[0], UUIDS.lines[1]]
         );
+        render(<RouterProvider router={testRouter} />);
 
         const nextButton = screen.getByRole('button', { name: /next line/i });
         await user.click(nextButton);
         expect(
-            screen.getByText(
-                new RegExp(
-                    `2/${Object.values(testRepertoire.lines).length}`,
-                    'i'
-                )
-            )
+            screen.getByText(new RegExp(`2/${testedLineIDs.length}`, 'i'))
         ).toBeInTheDocument();
     });
 });
