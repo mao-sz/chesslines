@@ -285,6 +285,49 @@ const testRepertoire = {
             },
         };
     },
+    get withSingleWhiteMidwayLine(): Repertoire {
+        return {
+            folders: {
+                w: {
+                    name: 'White',
+                    contains: 'lines',
+                    children: [UUIDS.lines[0]],
+                },
+                b: { name: 'Black', contains: 'either', children: [] },
+            },
+            lines: {
+                [UUIDS.lines[0]]: {
+                    player: 'w',
+                    startingFEN:
+                        'rnbqkbnr/pp1ppppp/8/2p5/4P3/2N5/PPPP1PPP/R1BQKBNR b KQkq - 1 2',
+                    PGN: '2... Nc6 3. f4',
+                    notes: ['', '', ''],
+                },
+            },
+        };
+    },
+    get withSingleBlackMidwayLine(): Repertoire {
+        return {
+            folders: {
+                w: { name: 'White', contains: 'either', children: [] },
+                b: {
+                    name: 'Black',
+                    contains: 'lines',
+                    children: [UUIDS.lines[0]],
+                },
+            },
+            lines: {
+                [UUIDS.lines[0]]: {
+                    player: 'b',
+                    startingFEN:
+                        'rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b KQkq - 0 1',
+                    PGN: '1... c5',
+                    notes: ['', ''],
+                },
+            },
+        };
+    },
+
     get forHintsTesting(): Repertoire {
         return {
             folders: {

@@ -1,18 +1,36 @@
 import { Chess } from '@maoshizhong/chess';
 import { useRef, useState } from 'react';
-import { getMoves, getPosition, toPieceName } from '@/util/util';
+import {
+    constructFullPGN,
+    getMoves,
+    getPosition,
+    toPieceName,
+} from '@/util/util';
 import type { MoveInfo } from '@/types/chessboard';
 import type { RepertoireLine } from '@/types/repertoire';
 
-export function useTrainerChessboard({ PGN, player }: RepertoireLine) {
+export function useTrainerChessboard({
+    startingFEN,
+    PGN: PGNMoves,
+    player,
+}: RepertoireLine) {
     const isNewChess = useRef(true);
-    const comparison = useRef(new Chess(PGN, { isPGN: true }));
+    const comparison = useRef(
+        new Chess(constructFullPGN(startingFEN, PGNMoves), { isPGN: true })
+    );
     const finalPosition = useRef(comparison.current.toFEN());
 
-    // Set the comparison board to first userBoarded position - only want to run on component mount, not every call
+    // Set the comparison board to first userBoard's position - only want to run on component mount, not every call
     // useEffect not suitable here as this must occur before creating the user chessboard
     if (isNewChess.current) {
-        comparison.current.toNthPosition(player === 'w' ? 0 : 1);
+        // https://regexr.com/8gfbm to test this regex
+        const blackStartRegex = /^\d+\.{3}\s/;
+        const firstRecordedMoveColour = blackStartRegex.test(PGNMoves)
+            ? 'b'
+            : 'w';
+        comparison.current.toNthPosition(
+            player === firstRecordedMoveColour ? 0 : 1
+        );
         isNewChess.current = false;
     }
 

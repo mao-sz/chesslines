@@ -48,6 +48,21 @@ describe('Initial elements', () => {
         ).toBeInTheDocument();
     });
 
+    it("Renders board when line's movelist starts with a black move", () => {
+        helpers.setup.trainer(
+            helpers.testRepertoire.withSingleBlackMidwayLine,
+            [UUIDS.lines[0]]
+        );
+        render(<RouterProvider router={testRouter} />);
+
+        const squares = screen.getAllByRole('button', { name: /square$/i });
+        expect(squares.at(0)?.ariaLabel).toBe('h1 square');
+        expect(squares.at(-1)?.ariaLabel).toBe('a8 square');
+        expect(
+            within(squares.at(-1)!).getByAltText('black rook')
+        ).toBeInTheDocument();
+    });
+
     it('Renders button for next line when incomplete lines remain after current line', () => {
         helpers.setup.trainer(helpers.testRepertoire.withManyMixedLines, [
             UUIDS.lines[0],
@@ -98,6 +113,34 @@ describe('Initial elements', () => {
         expect(backToRepertoireButton).toBeInTheDocument();
         expect(backToRepertoireButton).toHaveAttribute('href', '/repertoire');
     });
+
+    it.each([
+        [
+            helpers.testRepertoire.withSingleWhiteLine,
+            'a8 square r / b8 square n / c8 square b / d8 square q / e8 square k / f8 square b / g8 square n / h8 square r / a7 square p / b7 square p / c7 square p / d7 square p / e7 square p / f7 square p / g7 square p / h7 square p / a6 square null / b6 square null / c6 square null / d6 square null / e6 square null / f6 square null / g6 square null / h6 square null / a5 square null / b5 square null / c5 square null / d5 square null / e5 square null / f5 square null / g5 square null / h5 square null / a4 square null / b4 square null / c4 square null / d4 square null / e4 square null / f4 square null / g4 square null / h4 square null / a3 square null / b3 square null / c3 square null / d3 square null / e3 square null / f3 square null / g3 square null / h3 square null / a2 square P / b2 square P / c2 square P / d2 square P / e2 square P / f2 square P / g2 square P / h2 square P / a1 square R / b1 square N / c1 square B / d1 square Q / e1 square K / f1 square B / g1 square N / h1 square R',
+        ],
+        [
+            helpers.testRepertoire.withSingleBlackLine,
+            'h1 square R / g1 square N / f1 square B / e1 square K / d1 square Q / c1 square B / b1 square N / a1 square R / h2 square P / g2 square P / f2 square P / e2 square P / d2 square null / c2 square P / b2 square P / a2 square P / h3 square null / g3 square null / f3 square null / e3 square null / d3 square null / c3 square null / b3 square null / a3 square null / h4 square null / g4 square null / f4 square null / e4 square null / d4 square P / c4 square null / b4 square null / a4 square null / h5 square null / g5 square null / f5 square null / e5 square null / d5 square null / c5 square null / b5 square null / a5 square null / h6 square null / g6 square null / f6 square null / e6 square null / d6 square null / c6 square null / b6 square null / a6 square null / h7 square p / g7 square p / f7 square p / e7 square p / d7 square p / c7 square p / b7 square p / a7 square p / h8 square r / g8 square n / f8 square b / e8 square k / d8 square q / c8 square b / b8 square n / a8 square r',
+        ],
+        [
+            helpers.testRepertoire.withSingleWhiteMidwayLine,
+            'a8 square r / b8 square null / c8 square b / d8 square q / e8 square k / f8 square b / g8 square n / h8 square r / a7 square p / b7 square p / c7 square null / d7 square p / e7 square p / f7 square p / g7 square p / h7 square p / a6 square null / b6 square null / c6 square n / d6 square null / e6 square null / f6 square null / g6 square null / h6 square null / a5 square null / b5 square null / c5 square p / d5 square null / e5 square null / f5 square null / g5 square null / h5 square null / a4 square null / b4 square null / c4 square null / d4 square null / e4 square P / f4 square null / g4 square null / h4 square null / a3 square null / b3 square null / c3 square N / d3 square null / e3 square null / f3 square null / g3 square null / h3 square null / a2 square P / b2 square P / c2 square P / d2 square P / e2 square null / f2 square P / g2 square P / h2 square P / a1 square R / b1 square null / c1 square B / d1 square Q / e1 square K / f1 square B / g1 square N / h1 square R',
+        ],
+        [
+            helpers.testRepertoire.withSingleBlackMidwayLine,
+            'h1 square R / g1 square N / f1 square B / e1 square K / d1 square Q / c1 square B / b1 square N / a1 square R / h2 square P / g2 square P / f2 square P / e2 square null / d2 square P / c2 square P / b2 square P / a2 square P / h3 square null / g3 square null / f3 square null / e3 square null / d3 square null / c3 square null / b3 square null / a3 square null / h4 square null / g4 square null / f4 square null / e4 square P / d4 square null / c4 square null / b4 square null / a4 square null / h5 square null / g5 square null / f5 square null / e5 square null / d5 square null / c5 square null / b5 square null / a5 square null / h6 square null / g6 square null / f6 square null / e6 square null / d6 square null / c6 square null / b6 square null / a6 square null / h7 square p / g7 square p / f7 square p / e7 square p / d7 square p / c7 square p / b7 square p / a7 square p / h8 square r / g8 square n / f8 square b / e8 square k / d8 square q / c8 square b / b8 square n / a8 square r',
+        ],
+    ])(
+        "Ensures initial loaded position is the position before the player's first move",
+        (repertoire, initialRenderedPosition) => {
+            helpers.setup.trainer(repertoire, [UUIDS.lines[0]]);
+            render(<RouterProvider router={testRouter} />);
+            expect(helpers.serialiseCurrentBoard().join(' / ')).toBe(
+                initialRenderedPosition
+            );
+        }
+    );
 });
 
 describe('Position after moves', () => {
