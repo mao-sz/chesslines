@@ -137,7 +137,7 @@ export function Folder({
 
     return (
         <li
-            id={convert.uuidToId(id)}
+            id={convert.uuidToHtmlId(id)}
             className={styles.folder}
             aria-label={`${folder.name} ${isOpen || id === currentLinesFolder ? 'open' : 'closed'} folder`}
             data-type="folder"

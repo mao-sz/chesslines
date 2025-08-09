@@ -83,11 +83,12 @@ export function constructFullPGN(FEN: string, moves: string): string {
 }
 
 export const convert = {
-    uuidToId(uuid: string): string {
-        return `id-${uuid}`;
+    _HTML_ID_PREFIX: 'id-',
+    uuidToHtmlId(uuid: string): string {
+        return `${this._HTML_ID_PREFIX}${uuid}`;
     },
-    idToUuid(id: string): string {
-        return id.slice(3);
+    htmlIdToUuid(id: string): string {
+        return id.slice(this._HTML_ID_PREFIX.length);
     },
 };
 

@@ -26,7 +26,7 @@ export function Line({
         useOutletContext<OutletContext>();
 
     const isStandardStartingFEN = startingFEN === STANDARD_STARTING_FEN;
-    const listItemID = convert.uuidToId(id);
+    const listItemID = convert.uuidToHtmlId(id);
     const checkboxID = `${listItemID}-input`;
 
     function deleteLine(e: MouseEvent) {

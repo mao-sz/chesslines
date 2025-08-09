@@ -24,7 +24,7 @@ describe('Moving folders', () => {
         fireEvent.drag(lineFolder);
         fireEvent.drop(folderFolder, {
             dataTransfer: {
-                getData: () => `folder ${convert.idToUuid(lineFolder.id)}`,
+                getData: () => `folder ${convert.htmlIdToUuid(lineFolder.id)}`,
             },
         });
         expect(folderFolder).toContainElement(
@@ -47,7 +47,7 @@ describe('Moving folders', () => {
         fireEvent.drag(lineFolder);
         fireEvent.drop(document.body, {
             dataTransfer: {
-                getData: () => `folder ${convert.idToUuid(lineFolder.id)}`,
+                getData: () => `folder ${convert.htmlIdToUuid(lineFolder.id)}`,
             },
         });
         await expect(container).toMatchFileSnapshot(
@@ -73,7 +73,8 @@ describe('Moving folders', () => {
         fireEvent.drag(folderFolder);
         fireEvent.drop(lineFolder, {
             dataTransfer: {
-                getData: () => `folder ${convert.idToUuid(folderFolder.id)}`,
+                getData: () =>
+                    `folder ${convert.htmlIdToUuid(folderFolder.id)}`,
             },
         });
         await expect(container).toMatchFileSnapshot(
@@ -97,7 +98,7 @@ describe('Moving folders', () => {
         fireEvent.drag(lineFolder);
         fireEvent.drop(whiteFolder, {
             dataTransfer: {
-                getData: () => `folder ${convert.idToUuid(lineFolder.id)}`,
+                getData: () => `folder ${convert.htmlIdToUuid(lineFolder.id)}`,
             },
         });
         await expect(container).toMatchFileSnapshot(
@@ -121,7 +122,7 @@ describe('Moving folders', () => {
         fireEvent.drag(whiteFolder);
         fireEvent.drop(folderFolder, {
             dataTransfer: {
-                getData: () => `folder ${convert.idToUuid(whiteFolder.id)}`,
+                getData: () => `folder ${convert.htmlIdToUuid(whiteFolder.id)}`,
             },
         });
         await expect(container).toMatchFileSnapshot(
@@ -144,7 +145,8 @@ describe('Moving folders', () => {
         fireEvent.drag(folderFolder);
         fireEvent.drop(folderFolder, {
             dataTransfer: {
-                getData: () => `folder ${convert.idToUuid(folderFolder.id)}`,
+                getData: () =>
+                    `folder ${convert.htmlIdToUuid(folderFolder.id)}`,
             },
         });
         await expect(container).toMatchFileSnapshot(
@@ -182,7 +184,7 @@ describe('Moving lines', () => {
         fireEvent.drag(lineToDrag);
         fireEvent.drop(targetLineFolder, {
             dataTransfer: {
-                getData: () => `line ${convert.idToUuid(lineToDrag.id)}`,
+                getData: () => `line ${convert.htmlIdToUuid(lineToDrag.id)}`,
             },
         });
         expect(
@@ -211,7 +213,7 @@ describe('Moving lines', () => {
         fireEvent.drag(lineToDrag);
         fireEvent.drop(targetEmptyFolder, {
             dataTransfer: {
-                getData: () => `line ${convert.idToUuid(lineToDrag.id)}`,
+                getData: () => `line ${convert.htmlIdToUuid(lineToDrag.id)}`,
             },
         });
         expect(
@@ -241,7 +243,7 @@ describe('Moving lines', () => {
         fireEvent.drag(lineToDrag);
         fireEvent.drop(document.body, {
             dataTransfer: {
-                getData: () => `line ${convert.idToUuid(lineToDrag.id)}`,
+                getData: () => `line ${convert.htmlIdToUuid(lineToDrag.id)}`,
             },
         });
 
@@ -266,7 +268,7 @@ describe('Moving lines', () => {
         fireEvent.drag(lineToDrag);
         fireEvent.drop(targetFolderFolder, {
             dataTransfer: {
-                getData: () => `line ${convert.idToUuid(lineToDrag.id)}`,
+                getData: () => `line ${convert.htmlIdToUuid(lineToDrag.id)}`,
             },
         });
 
@@ -291,7 +293,7 @@ describe('Moving lines', () => {
         fireEvent.drag(lineToDrag);
         fireEvent.drop(originalParentFolder, {
             dataTransfer: {
-                getData: () => `line ${convert.idToUuid(lineToDrag.id)}`,
+                getData: () => `line ${convert.htmlIdToUuid(lineToDrag.id)}`,
             },
         });
 
