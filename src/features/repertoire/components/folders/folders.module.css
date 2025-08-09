@@ -17,6 +17,10 @@
     border-bottom-left-radius: var(--border-radius);
     border-bottom-right-radius: var(--border-radius);
 
+    & > :first-child {
+        margin: 12px 4px;
+    }
+
     & > .contents {
         margin: 0;
         padding-inline-start: 0;
@@ -60,7 +64,7 @@
 
     display: flex;
     align-items: center;
-    gap: 6px;
+    gap: 8px;
     flex: 1;
 
     &.notBase {

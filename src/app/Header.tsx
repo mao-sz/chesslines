@@ -1,5 +1,6 @@
 import { NavLink } from 'react-router';
 import styles from './header.module.css';
+import { Badge } from '@/components/util/Badge';
 
 type HeaderProps = { selectedLinesCount: number };
 
@@ -24,12 +25,10 @@ export function Header({ selectedLinesCount }: HeaderProps) {
                 <NavLink to="/trainer">
                     Trainer
                     {selectedLinesCount > 0 && (
-                        <span
-                            title={`${selectedLinesCount} ${selectedLinesCount === 1 ? 'line' : 'lines'} selected`}
-                        >
-                            {' '}
-                            ({selectedLinesCount})
-                        </span>
+                        <Badge
+                            contents={`(${selectedLinesCount})`}
+                            tooltipText={`${selectedLinesCount} ${selectedLinesCount === 1 ? 'line' : 'lines'} selected`}
+                        />
                     )}
                 </NavLink>
             </nav>

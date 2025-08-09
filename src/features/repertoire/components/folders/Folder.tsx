@@ -1,6 +1,7 @@
 import { DragEvent, type FormEvent, MouseEvent, useState } from 'react';
 import { FolderNameForm } from './FolderNameForm';
 import { FolderName } from './FolderName';
+import { ContainsSelectedLinesBadge } from './ContainsSelectedLinesBadge';
 import { ConfirmableButton } from '@/components/util/ConfirmableButton';
 import { IconButton } from '@/components/util/IconButton';
 import { useDeepContainsSelectedLine } from '@/hooks/useDeepContainsSelectedLine';
@@ -149,7 +150,7 @@ export function Folder({
             onDrop={appendDraggedItem}
         >
             <div
-                className={`${styles.controls} ${deepContainsSelectedLine ? styles.highlighted : ''}`.trim()}
+                className={styles.controls}
                 onDragEnter={highlightWhenDraggedOver('add')}
                 onDragExit={highlightWhenDraggedOver('remove')}
                 onDrop={highlightWhenDraggedOver('remove')}
@@ -177,6 +178,7 @@ export function Folder({
                     {folder.contains === 'folders' && !isRenaming && (
                         <i className={isOpen ? ICONS.OPENED : ICONS.CLOSED}></i>
                     )}
+                    {deepContainsSelectedLine && <ContainsSelectedLinesBadge />}
                     <FolderName
                         name={folder.name}
                         isRenaming={isRenaming}

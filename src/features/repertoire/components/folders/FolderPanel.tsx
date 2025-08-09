@@ -1,5 +1,6 @@
 import { Tabs } from './Tabs';
 import { Folder } from './Folder';
+import { ContainsSelectedLinesBadge } from './ContainsSelectedLinesBadge';
 import type { StateSetter } from '@/types/utility';
 import type { Colour } from '@/types/chessboard';
 import type {
@@ -34,6 +35,11 @@ export function FolderPanel({
                     currentTab === 'w' ? styles.whiteTab : styles.blackTab
                 }
             >
+                <p>
+                    Folders containing lines selected for training are marked
+                    with <ContainsSelectedLinesBadge />
+                </p>
+
                 {/* https://developer.mozilla.org/en-US/docs/Web/CSS/list-style#accessibility
                 list-style: none removes list accessibility role in Safari */}
                 <ul

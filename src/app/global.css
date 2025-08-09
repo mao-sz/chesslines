@@ -71,3 +71,11 @@
     display: flex;
     gap: 0.5rem;
 }
+
+.badge {
+    display: inline-block;
+    aspect-ratio: 1/1;
+    border-radius: 4px;
+    padding-inline: 2px;
+    align-self: center;
+}
