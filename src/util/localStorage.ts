@@ -41,11 +41,12 @@ export const LOCAL_STORAGE = {
                 }
             }
         },
-        set(repertoire: Repertoire): void {
-            window.localStorage.setItem(
-                KEYS.REPERTOIRE,
-                JSON.stringify(repertoire)
-            );
+        set(repertoire: Repertoire | string): void {
+            const repertoireString =
+                typeof repertoire === 'string'
+                    ? repertoire
+                    : JSON.stringify(repertoire);
+            window.localStorage.setItem(KEYS.REPERTOIRE, repertoireString);
         },
     },
     lineIDsToTrain: {
