@@ -11,7 +11,7 @@ export function Header({ selectedLinesCount }: HeaderProps) {
                 <a
                     href="https://github.com/MaoShizhong/chesslines"
                     target="_black"
-                    rel="noopener noreferrer"
+                    rel="noreferrer"
                 >
                     <i
                         className="fa-brands fa-github"

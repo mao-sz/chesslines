@@ -1,3 +1,4 @@
+import { capitalise } from '@/util/util';
 import type { ButtonHTMLAttributes, MouseEvent } from 'react';
 import type { FontAwesomeIcon } from '@/types/utility';
 
@@ -21,6 +22,7 @@ export function IconButton({
             className="iconButton"
             type={type}
             aria-label={ariaLabel}
+            title={capitalise(ariaLabel)}
             onClick={onClick}
             autoFocus={autoFocus}
         >

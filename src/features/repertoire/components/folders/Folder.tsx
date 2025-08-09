@@ -8,6 +8,7 @@ import { ICONS } from '@/util/constants';
 import { convert } from '@/util/util';
 import type { StateSetter, UUID } from '@/types/utility';
 import type {
+    RepertoireFolder,
     RepertoireFolderID,
     RepertoireWithMethods,
 } from '@/types/repertoire';
@@ -154,12 +155,17 @@ export function Folder({
                 onDrop={highlightWhenDraggedOver('remove')}
             >
                 {!isBaseFolder && (
-                    <div className={styles.dragHandle} aria-label="drag handle">
+                    <div
+                        className={styles.dragHandle}
+                        aria-label="drag handle"
+                        title="Drag to move folder"
+                    >
                         <i className={ICONS.DRAG}></i>
                     </div>
                 )}
                 <div
                     className={`${styles.heading} ${isBaseFolder ? '' : styles.notBase}`}
+                    title={getTooltipText(folder.contains, isOpen)}
                 >
                     {/* absolutely-positioned clickable background to open/close folder */}
                     <button
@@ -230,4 +236,14 @@ export function Folder({
             )}
         </li>
     );
+}
+
+function getTooltipText(
+    folderType: RepertoireFolder['contains'],
+    isOpen: boolean
+): string {
+    if (folderType === 'folders') {
+        return `${isOpen ? 'Collapse' : 'Expand'} folder`;
+    }
+    return 'Open folder in lines panel';
 }

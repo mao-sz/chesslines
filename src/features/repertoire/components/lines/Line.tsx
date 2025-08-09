@@ -28,6 +28,7 @@ export function Line({
     const isStandardStartingFEN = startingFEN === STANDARD_STARTING_FEN;
     const listItemID = convert.uuidToHtmlId(id);
     const checkboxID = `${listItemID}-input`;
+    const isSelected = lineIDsToTrain.includes(id);
 
     function deleteLine(e: MouseEvent) {
         e.stopPropagation();
@@ -82,7 +83,10 @@ export function Line({
                 onChange={toggleSelected}
                 disabled={!PGN}
             />
-            <div className={styles.contents}>
+            <div
+                className={styles.contents}
+                title={`Click to ${isSelected ? 'de-select' : 'select'} line for training`}
+            >
                 {/* Absolutely positioned to allow clicking on "card" to check checkbox */}
                 <label
                     className={styles.label}

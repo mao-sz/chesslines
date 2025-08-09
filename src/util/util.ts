@@ -2,6 +2,10 @@ import type { Colour, PieceName } from '@/types/chessboard';
 import type { Repertoire } from '@/types/repertoire';
 import type { UUID } from '@/types/utility';
 
+export function capitalise(str: string): string {
+    return `${str[0].toUpperCase()}${str.slice(1)}`;
+}
+
 export function reverse(str: string): string {
     return str.split('').reverse().join('');
 }
