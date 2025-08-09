@@ -1,3 +1,4 @@
+import 'blob-polyfill'; // Blob prototype methods not implemented in jsdom
 import { expect, afterEach, vi } from 'vitest';
 import { cleanup, configure } from '@testing-library/react';
 import * as matchers from '@testing-library/jest-dom/matchers';
