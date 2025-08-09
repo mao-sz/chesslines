@@ -93,4 +93,18 @@ describe('Initial elements', () => {
             screen.getByRole('link', { name: /^trainer \(2\)$/i })
         ).toBeInTheDocument();
     });
+
+    it('Renders an "Import repertoire" button', () => {
+        render(<RouterProvider router={testRouter} />);
+        expect(
+            screen.getByRole('button', { name: /import repertoire/i })
+        ).toBeInTheDocument();
+    });
+
+    it('Renders an "Export repertoire" button', () => {
+        render(<RouterProvider router={testRouter} />);
+        expect(
+            screen.getByRole('button', { name: /export repertoire/i })
+        ).toBeInTheDocument();
+    });
 });
