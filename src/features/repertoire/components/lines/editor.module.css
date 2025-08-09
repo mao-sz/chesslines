@@ -1,4 +1,4 @@
-.editor {
+.dialog {
     --editor-width: 95vw;
 
     background-color: var(--bg-mid-light);
@@ -13,7 +13,6 @@
     }
 
     @media (--small-viewport) {
-        padding: 0;
         height: 90svh;
 
         &:has(> .boardEditor) {
@@ -24,6 +23,11 @@
             padding: 12px;
         }
     }
+}
+
+.editor {
+    height: 100%;
+    padding: 1rem;
 }
 
 .editor button:not([aria-label*='square']) {

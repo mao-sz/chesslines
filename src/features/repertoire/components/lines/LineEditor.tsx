@@ -1,9 +1,16 @@
-import { type FormEvent, useEffect, useRef, useState } from 'react';
+import {
+    type FormEvent,
+    type MouseEvent,
+    useEffect,
+    useRef,
+    useState,
+} from 'react';
 import { useOutletContext } from 'react-router';
 import { FENPGNInterface } from './FENPGNInterface';
 import { BoardInterface } from './BoardInterface';
 import { useRepertoireChessboard } from '@/hooks/useRepertoireChessboard';
 import { STANDARD_STARTING_FEN } from '@/util/constants';
+import { convert } from '@/util/util';
 import type { OutletContext, UUID } from '@/types/utility';
 import type {
     LineNotes,
@@ -12,7 +19,6 @@ import type {
 } from '@/types/repertoire';
 import type { Colour, MoveInfo } from '@/types/chessboard';
 import styles from './editor.module.css';
-import { convert } from '@/util/util';
 
 type LineEditorProps = {
     id: UUID | 'new';
@@ -134,35 +140,46 @@ export function LineEditor({
     }
 
     return (
-        <dialog className={styles.editor} ref={dialogRef} onClose={closeEditor}>
-            {editorInterface === 'FEN/PGN' ? (
-                <FENPGNInterface
-                    startingFEN={startingFEN}
-                    moveListString={moves.string}
-                    submitNewPosition={submitNewPosition}
-                    initialisationError={initialisationError}
-                    clearErrors={() => setInitialisationError(false)}
-                    switchInterface={() => {
-                        setEditorInterface('board');
-                        setInitialisationError(false);
-                    }}
-                />
-            ) : (
-                <BoardInterface
-                    initialisationError={initialisationError}
-                    dialogRef={dialogRef}
-                    startingFen={startingFEN}
-                    position={position}
-                    switchInterface={() => setEditorInterface('FEN/PGN')}
-                    activeColour={activeColour}
-                    currentTab={currentTab}
-                    moveListString={moves.string}
-                    moves={{ ...moves, play: playMove }}
-                    saveLine={saveLine}
-                    notes={notes}
-                    setNotes={setNotes}
-                />
-            )}
+        <dialog
+            className={styles.dialog}
+            ref={dialogRef}
+            onClick={(e: MouseEvent) => {
+                if (e.target === e.currentTarget) {
+                    closeEditor();
+                }
+            }}
+            onClose={closeEditor}
+        >
+            <div className={styles.editor}>
+                {editorInterface === 'FEN/PGN' ? (
+                    <FENPGNInterface
+                        startingFEN={startingFEN}
+                        moveListString={moves.string}
+                        submitNewPosition={submitNewPosition}
+                        initialisationError={initialisationError}
+                        clearErrors={() => setInitialisationError(false)}
+                        switchInterface={() => {
+                            setEditorInterface('board');
+                            setInitialisationError(false);
+                        }}
+                    />
+                ) : (
+                    <BoardInterface
+                        initialisationError={initialisationError}
+                        dialogRef={dialogRef}
+                        startingFen={startingFEN}
+                        position={position}
+                        switchInterface={() => setEditorInterface('FEN/PGN')}
+                        activeColour={activeColour}
+                        currentTab={currentTab}
+                        moveListString={moves.string}
+                        moves={{ ...moves, play: playMove }}
+                        saveLine={saveLine}
+                        notes={notes}
+                        setNotes={setNotes}
+                    />
+                )}
+            </div>
         </dialog>
     );
 }

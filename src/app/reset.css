@@ -23,11 +23,6 @@
     box-sizing: border-box;
 }
 
-body,
-p {
-    margin: 0;
-}
-
 #root {
     --content-width: min(90vw, 1600px);
 
@@ -43,7 +38,7 @@ main {
     flex: 1;
 }
 
-:is(h1, h2, h3, h4, h5, h6) {
+:is(body, p, h1, h2, h3, h4, h5, h6) {
     margin: 0;
 }
 
@@ -57,4 +52,8 @@ button {
     background-color: transparent;
     border: none;
     cursor: pointer;
+}
+
+dialog {
+    padding: 0;
 }
