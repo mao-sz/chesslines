@@ -130,7 +130,7 @@
 .noteText {
     border-radius: 4px;
     height: 9rem;
-    resize: block;
+    resize: vertical;
 }
 
 .moveList {

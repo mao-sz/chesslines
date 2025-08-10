@@ -22,6 +22,13 @@ export function ImportModal({ closeModal }: ImportModalProps) {
         dialogRef.current?.showModal();
     }, []);
 
+    function changeTabTo(newTab: typeof currentTab): () => void {
+        return () => {
+            setCurrentTab(newTab);
+            setValidationError('');
+        };
+    }
+
     async function importRepertoire(e: FormEvent): Promise<void> {
         e.preventDefault();
         const form = e.currentTarget as HTMLFormElement;
@@ -50,7 +57,7 @@ export function ImportModal({ closeModal }: ImportModalProps) {
             LOCAL_STORAGE.lineIDsToTrain.set([]);
             window.location.reload();
         } catch {
-            setValidationError('Invalid repertoire string');
+            setValidationError('Invalid repertoire data');
         }
     }
 
@@ -61,75 +68,85 @@ export function ImportModal({ closeModal }: ImportModalProps) {
             onClick={onBackdropClick(closeModal)}
             onClose={closeModal}
         >
-            <div
-                role="tablist"
-                className={`${tabStyles.tabs} ${modalStyles.tabs}`}
-            >
-                <button
-                    id={leftTabID}
-                    className={tabStyles.tab}
-                    role="tab"
-                    aria-selected={currentTab === 'text'}
-                    onClick={() => setCurrentTab('text')}
+            <div className={modalStyles.container}>
+                <div
+                    role="tablist"
+                    className={`${tabStyles.tabs} ${modalStyles.tabs}`}
                 >
-                    Import from text
-                </button>
-                <button
-                    id={rightTabID}
-                    className={tabStyles.tab}
-                    role="tab"
-                    aria-selected={currentTab === 'file'}
-                    onClick={() => setCurrentTab('file')}
+                    <button
+                        id={leftTabID}
+                        className={tabStyles.tab}
+                        role="tab"
+                        aria-selected={currentTab === 'text'}
+                        onClick={changeTabTo('text')}
+                    >
+                        Import from text
+                    </button>
+                    <button
+                        id={rightTabID}
+                        className={tabStyles.tab}
+                        role="tab"
+                        aria-selected={currentTab === 'file'}
+                        onClick={changeTabTo('file')}
+                    >
+                        Import from file
+                    </button>
+                </div>
+
+                <div
+                    role="tabpanel"
+                    aria-labelledby={
+                        currentTab === 'text' ? leftTabID : rightTabID
+                    }
                 >
-                    Import from file
-                </button>
-            </div>
-
-            <div
-                role="tabpanel"
-                aria-labelledby={currentTab === 'text' ? leftTabID : rightTabID}
-            >
-                <form onSubmit={importRepertoire} aria-label="import data">
-                    {currentTab === 'text' ? (
-                        <>
-                            <label htmlFor="repertoire-string">
-                                Repertoire string
-                            </label>
-                            <textarea
-                                id="repertoire-string"
-                                name="repertoire-string"
-                                onChange={() => setValidationError('')}
-                                required
-                            ></textarea>
-                        </>
-                    ) : (
-                        <>
-                            <label htmlFor="repertoire-file">
-                                Repertoire file (.json or .txt)
-                            </label>
-                            <input
-                                type="file"
-                                id="repertoire-file"
-                                name="repertoire-file"
-                                accept=".json,.txt"
-                                onChange={() => setValidationError('')}
-                                required
-                            />
-                        </>
-                    )}
-
-                    <div>
-                        {validationError && (
-                            <p className={modalStyles.error}>
-                                {validationError}
-                            </p>
+                    <form
+                        className={modalStyles.form}
+                        onSubmit={importRepertoire}
+                        aria-label="import data"
+                    >
+                        {currentTab === 'text' ? (
+                            <>
+                                <label htmlFor="repertoire-string">
+                                    Repertoire string
+                                </label>
+                                <textarea
+                                    id="repertoire-string"
+                                    className={modalStyles.textbox}
+                                    name="repertoire-string"
+                                    onChange={() => setValidationError('')}
+                                    rows={22}
+                                    required
+                                ></textarea>
+                            </>
+                        ) : (
+                            <>
+                                <label htmlFor="repertoire-file">
+                                    Repertoire file (.json or .txt)
+                                </label>
+                                <input
+                                    type="file"
+                                    id="repertoire-file"
+                                    name="repertoire-file"
+                                    accept=".json,.txt"
+                                    onChange={() => setValidationError('')}
+                                    required
+                                />
+                            </>
                         )}
-                        <button type="button" onClick={closeModal}>
-                            Cancel
-                        </button>
-                        <button type="submit">Import</button>
-                    </div>
-                </form>
+
+                        <div className={modalStyles.bottom}>
+                            {validationError && (
+                                <p className={modalStyles.error}>
+                                    {validationError}
+                                </p>
+                            )}
+                            <button type="button" onClick={closeModal}>
+                                Cancel
+                            </button>
+                            <button type="submit">Import</button>
+                        </div>
+                    </form>
+                </div>
             </div>
         </dialog>
     );

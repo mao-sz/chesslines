@@ -1,0 +1,56 @@
+.dialog {
+    composes: dialog from '../lines/editor.module.css';
+}
+
+.container {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.tabs button {
+    background-color: var(--bg-mid-light);
+}
+
+.form {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    margin-block: 32px;
+    margin-inline: auto;
+    width: 95%;
+    max-width: 600px;
+
+    & label {
+        font-size: large;
+        font-weight: bold;
+    }
+}
+
+.textbox {
+    composes: textbox from global;
+
+    font-family: monospace;
+    resize: vertical;
+}
+
+.bottom {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 12px;
+
+    & button {
+        background-color: var(--bg-light);
+        border-radius: 4px;
+        padding: 4px 6px;
+
+        &:hover {
+            background-color: var(--bg-mid-dark);
+        }
+    }
+}
+
+.error {
+    color: var(--text-error);
+}

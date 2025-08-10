@@ -159,7 +159,31 @@ describe('Import', () => {
         expect(lineIDsToTrainSetSpy).not.toHaveBeenCalled();
         expect(window.location.reload).not.toHaveBeenCalled();
         expect(
-            screen.getByText(/invalid repertoire string/i)
+            screen.getByText(/invalid repertoire data/i)
         ).toBeInTheDocument();
+    });
+
+    it('Removes validation error message when switching tabs', async () => {
+        const user = await openImportDialog(helpers.repertoire.empty);
+
+        const textarea = screen.getByRole('textbox', {
+            name: /repertoire string/i,
+        });
+        const importButton = screen.getByRole('button', { name: /^import$/i });
+
+        await user.type(textarea, 'flobadobdob');
+        await user.click(importButton);
+
+        const validationErrorMessage = /invalid repertoire data/i;
+        expect(screen.getByText(validationErrorMessage)).toBeInTheDocument();
+
+        const fileTabButton = screen.getByRole('tab', {
+            name: /import from file/i,
+        });
+        await user.click(fileTabButton);
+
+        expect(
+            screen.queryByText(validationErrorMessage)
+        ).not.toBeInTheDocument();
     });
 });
