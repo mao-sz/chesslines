@@ -2,7 +2,7 @@
     display: flex;
     justify-content: space-between;
     width: var(--content-width);
-    margin: 24px;
+    margin-bottom: 24px;
 
     & > * {
         display: flex;
