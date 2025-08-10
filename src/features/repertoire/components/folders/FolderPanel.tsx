@@ -43,7 +43,7 @@ export function FolderPanel({
                 {/* https://developer.mozilla.org/en-US/docs/Web/CSS/list-style#accessibility
                 list-style: none removes list accessibility role in Safari */}
                 <ul
-                    className={styles.contents}
+                    className={`${styles.contents} ${styles.base}`}
                     role="list"
                     aria-label="folders"
                 >

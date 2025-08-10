@@ -1,8 +1,8 @@
 type ExportButtonProps = { dataToExport: string; buttonText: string };
 
 export function ExportButton({ dataToExport, buttonText }: ExportButtonProps) {
-    function downloadDataAsFile(data: string): void {
-        const file = new Blob([data], { type: 'text/plain' });
+    function downloadDataAsFile(): void {
+        const file = new Blob([dataToExport], { type: 'text/plain' });
         const anchor = document.createElement('a');
         anchor.href = URL.createObjectURL(file);
         anchor.download = 'repertoire.txt';
@@ -16,7 +16,7 @@ export function ExportButton({ dataToExport, buttonText }: ExportButtonProps) {
     }
 
     return (
-        <button type="button" onClick={() => downloadDataAsFile(dataToExport)}>
+        <button type="button" onClick={downloadDataAsFile}>
             {buttonText}
         </button>
     );

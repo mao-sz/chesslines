@@ -4,6 +4,7 @@
     flex: 2;
     display: flex;
     flex-direction: column;
+    min-width: 320px;
 
     & ul {
         list-style: none;
@@ -12,6 +13,8 @@
 
 .folders {
     padding: 6px;
+    display: flex;
+    flex-direction: column;
     background-color: var(--bg-light);
     flex: 1;
     border-bottom-left-radius: var(--border-radius);
@@ -108,6 +111,14 @@
     flex-direction: column-reverse;
     gap: var(--gap-size);
     margin-top: var(--gap-size);
+
+    &.base {
+        /* I really cannot be bothered to sort this out more properly for now. I'll deal with it if I have to at a later date, but since this is mostly for personal use, this will suffice...for now.
+        I just can't seem to get a fully flexible set of containers that still overflow-scrolls, without setting a fixed height. Even 100% height doesn't work, with or without a parent "overflow container" */
+        max-height: 666px;
+        overflow-y: scroll;
+        scrollbar-color: var(--bg-mid-dark) var(--bg-light);
+    }
 }
 
 .tabs {
