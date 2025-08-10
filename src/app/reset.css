@@ -4,6 +4,10 @@
 :root {
     font-family: system-ui;
 
+    /* I really cannot be bothered to sort this out more properly for now. I'll deal with it if I have to at a later date, but since this is mostly for personal use, this will suffice...for now.
+    I just can't seem to get a fully flexible set of containers that still overflow-scrolls, without setting a fixed height. Even 100% height doesn't work, with or without a parent "overflow container" */
+    --stupid-hardcoded-overflow-fixed-height-see-reset-file-comment: 666px;
+
     &[data-theme='dark'] {
         --bg-dark: #0f0f16;
         --bg-mid-dark: #242433;
