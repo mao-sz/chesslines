@@ -152,6 +152,18 @@ describe('Opening and interaction', () => {
         await user.click(editLineButton);
         expect(screen.getByRole('dialog')).toBeInTheDocument();
     });
+
+    it("Closes FEN/PGN interface instead of switching to Board if it's for a new line", async () => {
+        const user = await openLineFolderInPanel();
+
+        const newLineButton = screen.getByRole('button', { name: /new line/i });
+        await user.click(newLineButton);
+
+        const cancelButton = screen.getByRole('button', { name: /cancel/i });
+        await user.click(cancelButton);
+
+        expect(screen.queryByRole('dialog')).not.toBeInTheDocument();
+    });
 });
 
 describe('Validation', () => {

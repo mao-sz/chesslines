@@ -148,9 +148,13 @@ export function LineEditor({
                         submitNewPosition={submitNewPosition}
                         initialisationError={initialisationError}
                         clearErrors={() => setInitialisationError(false)}
-                        switchInterface={() => {
-                            setEditorInterface('board');
-                            setInitialisationError(false);
+                        handleCancel={() => {
+                            if (id === 'new') {
+                                closeEditor();
+                            } else {
+                                setEditorInterface('board');
+                                setInitialisationError(false);
+                            }
                         }}
                     />
                 ) : (

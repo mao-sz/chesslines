@@ -8,7 +8,7 @@ type FENPGNInterfaceProps = {
     submitNewPosition: (e: FormEvent) => void;
     initialisationError: boolean;
     clearErrors: () => void;
-    switchInterface: () => void;
+    handleCancel: () => void;
 };
 
 export function FENPGNInterface({
@@ -17,7 +17,7 @@ export function FENPGNInterface({
     submitNewPosition,
     initialisationError,
     clearErrors,
-    switchInterface,
+    handleCancel,
 }: FENPGNInterfaceProps) {
     return (
         <form
@@ -56,7 +56,7 @@ export function FENPGNInterface({
                         Invalid FEN and/or PGN combination!
                     </p>
                 )}
-                <button type="button" onClick={switchInterface}>
+                <button type="button" onClick={handleCancel}>
                     Cancel
                 </button>
                 <button type="submit">Load</button>
