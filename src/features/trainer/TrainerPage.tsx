@@ -9,10 +9,10 @@ export function TrainerPage() {
     document.title = 'Chesslines | Trainer';
 
     const { repertoire, lineIDsToTrain } = useOutletContext<OutletContext>();
-    const linesToTrain: TestLine[] = lineIDsToTrain.map((id) => [
-        id,
-        repertoire.lines[id],
-    ]);
+    const linesToTrain: TestLine[] = lineIDsToTrain
+        // if storage contains stale IDs, don't crash. Just strip them out
+        .filter((id) => Object.keys(repertoire.lines).includes(id))
+        .map((id) => [id, repertoire.lines[id]]);
 
     const { currentLine, toNextLine, progress } =
         useShuffledLines(linesToTrain);

@@ -97,6 +97,15 @@ describe('Initial elements', () => {
         ).toBeInTheDocument();
     });
 
+    it("Filters out any set line IDs that don't exist in the repertoire", () => {
+        helpers.setup.trainer(helpers.testRepertoire.withSingleWhiteLine, [
+            UUIDS.lines[0],
+            UUIDS.lines[1],
+        ]);
+        render(<RouterProvider router={testRouter} />);
+        expect(screen.getByText(new RegExp(`1/1`, 'i'))).toBeInTheDocument();
+    });
+
     it('Renders "No lines" message if no test lines loaded', () => {
         helpers.setup.trainer(helpers.repertoire.empty, []);
         render(<RouterProvider router={testRouter} />);
