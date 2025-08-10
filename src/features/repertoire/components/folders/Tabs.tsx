@@ -8,7 +8,7 @@ export function Tabs({ currentTab, setCurrentTab }: TabsProps) {
     return (
         <div className={styles.tabs} role="tablist">
             <button
-                id={styles.whiteTab}
+                id={styles.leftTab}
                 className={styles.tab}
                 role="tab"
                 aria-label="white repertoire"
@@ -18,7 +18,7 @@ export function Tabs({ currentTab, setCurrentTab }: TabsProps) {
                 White
             </button>
             <button
-                id={styles.blackTab}
+                id={styles.rightTab}
                 className={styles.tab}
                 role="tab"
                 aria-label="black repertoire"

@@ -32,7 +32,7 @@ export function FolderPanel({
                 className={styles.folders}
                 role="tabpanel"
                 aria-labelledby={
-                    currentTab === 'w' ? styles.whiteTab : styles.blackTab
+                    currentTab === 'w' ? styles.leftTab : styles.rightTab
                 }
             >
                 <p>

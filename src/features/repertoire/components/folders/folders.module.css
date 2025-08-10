@@ -27,11 +27,11 @@
     }
 }
 
-.tabs:has(#whiteTab[aria-selected='true']) + .folders {
+.tabs:has(#leftTab[aria-selected='true']) + .folders {
     border-top-right-radius: var(--border-radius);
 }
 
-.tabs:has(#blackTab[aria-selected='true']) + .folders {
+.tabs:has(#rightTab[aria-selected='true']) + .folders {
     border-top-left-radius: var(--border-radius);
 }
 
@@ -150,13 +150,13 @@
     }
 }
 
-#whiteTab[aria-selected='true']::before {
+#leftTab[aria-selected='true']::before {
     border-bottom-left-radius: var(--border-radius);
     box-shadow: calc(-1 * var(--border-radius)) 0 0 0 var(--bg-light);
     right: calc(-1 * var(--size));
 }
 
-#blackTab[aria-selected='true']::before {
+#rightTab[aria-selected='true']::before {
     border-bottom-right-radius: var(--border-radius);
     box-shadow: var(--border-radius) 0 0 0 var(--bg-light);
     left: calc(-1 * var(--size));
