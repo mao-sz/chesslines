@@ -88,7 +88,6 @@ export function SidePanel({
             )}
 
             <div>
-                {/* TODO: Use location state to transfer line ID to open that line straight away */}
                 <Link
                     className={styles.lineLink}
                     to={{ pathname: '/repertoire', search: `?line=${lineID}` }}

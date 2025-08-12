@@ -1,6 +1,7 @@
 import { useOutletContext } from 'react-router';
 import { ConfirmableButton } from '@/components/util/ConfirmableButton';
 import { IconButton } from '@/components/util/IconButton';
+import { IconLink } from '@/components/util/IconLink';
 import { ICONS, STANDARD_STARTING_FEN } from '@/util/constants';
 import { convert } from '@/util/util';
 import type { ChangeEvent, DragEvent, MouseEvent } from 'react';
@@ -11,16 +12,10 @@ import styles from './lines.module.css';
 type LineProps = {
     id: UUID;
     lines: RepertoireWithMethods['lines'];
-    openLine: () => void;
     setSelectedFolderLines: StateSetter<UUID[]>;
 };
 
-export function Line({
-    id,
-    lines,
-    openLine,
-    setSelectedFolderLines,
-}: LineProps) {
+export function Line({ id, lines, setSelectedFolderLines }: LineProps) {
     const { startingFEN, PGN } = lines[id];
     const { lineIDsToTrain, setLineIDsToTrain } =
         useOutletContext<OutletContext>();
@@ -114,11 +109,10 @@ export function Line({
                         ariaLabel="delete line"
                     />
                 </ConfirmableButton>
-                <IconButton
-                    type="button"
+                <IconLink
+                    to={{ pathname: '/repertoire', search: `?line=${id}` }}
                     icon={ICONS.PENCIL}
                     ariaLabel="edit line"
-                    onClick={openLine}
                 />
             </div>
         </li>

@@ -16,23 +16,20 @@ export function RepertoirePage() {
     document.title = 'Chesslines | Repertoire';
 
     const { repertoire } = useOutletContext<OutletContext>();
-    const [searchParams] = useSearchParams();
+    const [searchParams, setSearchParams] = useSearchParams();
 
-    const searchParamLineID = (searchParams.get('line') as UUID) || null;
+    const currentOpenLine = (searchParams.get('line') as UUID) || null;
     const searchParamLineParentFolder = findParentFolder(
-        searchParamLineID,
+        currentOpenLine,
         repertoire
     );
 
     const { folders, lines } = useRepertoire(repertoire);
     const [currentTab, setCurrentTab] = useState<Colour>(
-        lines[searchParamLineID]?.player || 'w'
+        lines[currentOpenLine]?.player || 'w'
     );
     const [currentLinesFolder, setCurrentLinesFolder] =
         useState<RepertoireFolderID | null>(searchParamLineParentFolder);
-    const [currentOpenLine, setCurrentOpenLine] = useState<UUID | 'new' | null>(
-        searchParamLineID
-    );
     const [showingImportModal, setShowingImportModal] = useState(false);
 
     return (
@@ -61,14 +58,13 @@ export function RepertoirePage() {
                     currentLinesFolderId={currentLinesFolder}
                     folders={folders}
                     lines={lines}
-                    setCurrentOpenLine={setCurrentOpenLine}
                 />
                 {currentOpenLine && currentLinesFolder && (
                     <LineEditor
                         id={currentOpenLine}
                         lines={lines}
                         parentFolder={currentLinesFolder}
-                        closeEditor={() => setCurrentOpenLine(null)}
+                        closeEditor={() => setSearchParams('')}
                         currentTab={currentTab}
                     />
                 )}

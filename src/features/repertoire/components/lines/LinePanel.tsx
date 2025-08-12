@@ -1,10 +1,10 @@
 import { useState } from 'react';
 import { useOutletContext } from 'react-router';
 import { Line } from './Line';
-import { IconButton } from '@/components/util/IconButton';
+import { IconLink } from '@/components/util/IconLink';
 import { ICONS } from '@/util/constants';
 import { stripDuplicates } from '@/util/util';
-import type { OutletContext, StateSetter, UUID } from '@/types/utility';
+import type { OutletContext, UUID } from '@/types/utility';
 import type {
     RepertoireFolderID,
     RepertoireWithMethods,
@@ -15,14 +15,12 @@ type LinePanelProps = {
     currentLinesFolderId: RepertoireFolderID | null;
     folders: RepertoireWithMethods['folders'];
     lines: RepertoireWithMethods['lines'];
-    setCurrentOpenLine: StateSetter<UUID | 'new' | null>;
 };
 
 export function LinePanel({
     currentLinesFolderId,
     folders,
     lines,
-    setCurrentOpenLine,
 }: LinePanelProps) {
     const currentFolder = currentLinesFolderId
         ? folders[currentLinesFolderId]
@@ -58,12 +56,7 @@ export function LinePanel({
         <section className={styles.panel} aria-labelledby="lines-folder-name">
             <div className={styles.top}>
                 <h2 id="lines-folder-name">{currentFolder.name}</h2>
-                <IconButton
-                    type="button"
-                    icon={ICONS.PLUS}
-                    ariaLabel="new line"
-                    onClick={() => setCurrentOpenLine('new')}
-                />
+                <NewLineLink />
             </div>
 
             <div className={styles.select}>
@@ -85,7 +78,6 @@ export function LinePanel({
                         key={id}
                         id={id}
                         lines={lines}
-                        openLine={() => setCurrentOpenLine(id)}
                         setSelectedFolderLines={setSelectedFolderLines}
                     />
                 ))}
@@ -99,18 +91,21 @@ export function LinePanel({
             {currentFolder && (
                 <div className={styles.top}>
                     <h2 id="lines-folder-name">{currentFolder.name}</h2>
-                    {currentFolder?.contains === 'either' && (
-                        <IconButton
-                            type="button"
-                            icon={ICONS.PLUS}
-                            ariaLabel="new line"
-                            onClick={() => setCurrentOpenLine('new')}
-                        />
-                    )}
+                    {currentFolder?.contains === 'either' && <NewLineLink />}
                 </div>
             )}
 
             <p>No lines to show</p>
         </section>
+    );
+}
+
+function NewLineLink() {
+    return (
+        <IconLink
+            to={{ pathname: '/repertoire', search: '?line=new' }}
+            icon={ICONS.PLUS}
+            ariaLabel="new line"
+        />
     );
 }

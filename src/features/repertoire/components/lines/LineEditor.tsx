@@ -66,7 +66,7 @@ export function LineEditor({
             if (id && id !== 'new') {
                 const correspondingEditButton =
                     document.querySelector<HTMLButtonElement>(
-                        `#${convert.uuidToHtmlId(id)} button[aria-label="edit line"]`
+                        `#${convert.uuidToHtmlId(id)} a[aria-label="edit line"]`
                     );
                 correspondingEditButton?.focus();
             }
