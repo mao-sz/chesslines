@@ -9,7 +9,12 @@ vi.mock('@/util/util.ts', async (importActual) => ({
     toShuffled: vi.fn((lines) => lines),
 }));
 
-const testRouter = createMemoryRouter(routes, { initialEntries: ['/trainer'] });
+function renderRouter() {
+    const testRouter = createMemoryRouter(routes, {
+        initialEntries: ['/trainer'],
+    });
+    render(<RouterProvider router={testRouter} />);
+}
 
 describe('"Study line" link', () => {
     it('Renders in trainer page', () => {
@@ -17,7 +22,7 @@ describe('"Study line" link', () => {
             UUIDS.lines[0],
         ]);
 
-        render(<RouterProvider router={testRouter} />);
+        renderRouter();
 
         expect(
             screen.getByRole('link', { name: /open line in new tab/i })
@@ -30,7 +35,7 @@ describe('"Study line" link', () => {
             [UUIDS.lines[0]]
         );
 
-        render(<RouterProvider router={testRouter} />);
+        renderRouter();
 
         const testLineID = Object.keys(testRepertoire.lines)[0];
         const studyLineButton = screen.getByRole('link', {

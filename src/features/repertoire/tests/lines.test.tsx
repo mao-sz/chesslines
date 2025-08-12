@@ -5,7 +5,10 @@ import userEvent from '@testing-library/user-event';
 import { routes } from '@/app/routes';
 import { helpers, UUIDS } from '@/testing/helpers';
 
-const testRouter = createMemoryRouter(routes);
+function renderRouter() {
+    const testRouter = createMemoryRouter(routes);
+    render(<RouterProvider router={testRouter} />);
+}
 
 describe('Lines panel', () => {
     it('Opens lines folder in line panel when clicked on', async () => {
@@ -13,7 +16,7 @@ describe('Lines panel', () => {
             helpers.repertoire.withLineInWhite
         );
         const user = userEvent.setup();
-        render(<RouterProvider router={testRouter} />);
+        renderRouter();
 
         const whiteFolder = screen.getByRole('button', {
             name: /open white folder in lines panel/i,
@@ -30,7 +33,7 @@ describe('Lines panel', () => {
             helpers.repertoire.withLineInWhite
         );
         const user = userEvent.setup();
-        render(<RouterProvider router={testRouter} />);
+        renderRouter();
 
         const whiteFolder = screen.getByRole('button', {
             name: /open white folder in lines panel/i,
@@ -47,7 +50,7 @@ describe('Lines panel', () => {
     it('Displays special text for lines with empty PGNs', async () => {
         helpers.setup.repertoire(helpers.repertoire.withBlankLineInWhite);
         const user = userEvent.setup();
-        render(<RouterProvider router={testRouter} />);
+        renderRouter();
 
         const whiteFolder = screen.getByRole('button', {
             name: /open white folder in lines panel/i,
@@ -60,7 +63,7 @@ describe('Lines panel', () => {
     it('Does not show starting FEN if standard starting position', async () => {
         helpers.setup.repertoire(helpers.repertoire.withLineInWhite);
         const user = userEvent.setup();
-        render(<RouterProvider router={testRouter} />);
+        renderRouter();
 
         const whiteFolder = screen.getByRole('button', {
             name: /open white folder in lines panel/i,
@@ -77,7 +80,7 @@ describe('Lines panel', () => {
             helpers.repertoire.withNonstandardLineInWhite
         );
         const user = userEvent.setup();
-        render(<RouterProvider router={testRouter} />);
+        renderRouter();
 
         const whiteFolder = screen.getByRole('button', {
             name: /open white folder in lines panel/i,
@@ -91,7 +94,7 @@ describe('Lines panel', () => {
     it('Does not render new line link if open folder contains other folders', async () => {
         helpers.setup.repertoire(helpers.repertoire.empty);
         const user = userEvent.setup();
-        render(<RouterProvider router={testRouter} />);
+        renderRouter();
 
         const whiteFolder = screen.getByRole('listitem', {
             name: /white.*folder/i,

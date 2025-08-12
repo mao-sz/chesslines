@@ -10,14 +10,19 @@ vi.mock('@/util/util.ts', async (importActual) => ({
     toShuffled: vi.fn((lines) => lines),
 }));
 
-const testRouter = createMemoryRouter(routes, { initialEntries: ['/trainer'] });
+function renderRouter() {
+    const testRouter = createMemoryRouter(routes, {
+        initialEntries: ['/trainer'],
+    });
+    render(<RouterProvider router={testRouter} />);
+}
 
 describe('Initial elements', () => {
     it('Renders 8x8 chessboard with pieces', () => {
         helpers.setup.trainer(helpers.testRepertoire.withSingleWhiteLine, [
             UUIDS.lines[0],
         ]);
-        render(<RouterProvider router={testRouter} />);
+        renderRouter();
 
         expect(
             screen.getAllByRole('button', { name: /square$/i })
@@ -38,7 +43,7 @@ describe('Initial elements', () => {
         helpers.setup.trainer(helpers.testRepertoire.withSingleBlackLine, [
             UUIDS.lines[0],
         ]);
-        render(<RouterProvider router={testRouter} />);
+        renderRouter();
 
         const squares = screen.getAllByRole('button', { name: /square$/i });
         expect(squares.at(0)?.ariaLabel).toBe('h1 square');
@@ -53,7 +58,7 @@ describe('Initial elements', () => {
             helpers.testRepertoire.withSingleBlackMidwayLine,
             [UUIDS.lines[0]]
         );
-        render(<RouterProvider router={testRouter} />);
+        renderRouter();
 
         const squares = screen.getAllByRole('button', { name: /square$/i });
         expect(squares.at(0)?.ariaLabel).toBe('h1 square');
@@ -68,7 +73,7 @@ describe('Initial elements', () => {
             UUIDS.lines[0],
             UUIDS.lines[1],
         ]);
-        render(<RouterProvider router={testRouter} />);
+        renderRouter();
 
         expect(
             screen.getByRole('button', { name: /next line/i })
@@ -79,7 +84,7 @@ describe('Initial elements', () => {
         helpers.setup.trainer(helpers.testRepertoire.withSingleWhiteLine, [
             UUIDS.lines[0],
         ]);
-        render(<RouterProvider router={testRouter} />);
+        renderRouter();
 
         expect(
             screen.queryByRole('button', { name: /next line/i })
@@ -91,7 +96,7 @@ describe('Initial elements', () => {
             helpers.testRepertoire.withManyMixedLines,
             [UUIDS.lines[0], UUIDS.lines[1]]
         );
-        render(<RouterProvider router={testRouter} />);
+        renderRouter();
         expect(
             screen.getByText(new RegExp(`1/${testedLineIDs.length}`, 'i'))
         ).toBeInTheDocument();
@@ -102,13 +107,13 @@ describe('Initial elements', () => {
             UUIDS.lines[0],
             UUIDS.lines[1],
         ]);
-        render(<RouterProvider router={testRouter} />);
+        renderRouter();
         expect(screen.getByText(new RegExp(`1/1`, 'i'))).toBeInTheDocument();
     });
 
     it('Renders "No lines" message if no test lines loaded', () => {
         helpers.setup.trainer(helpers.repertoire.empty, []);
-        render(<RouterProvider router={testRouter} />);
+        renderRouter();
 
         const backToRepertoireButton = screen.getByRole('link', {
             name: /set lines to train from your repertoire/i,
@@ -144,7 +149,7 @@ describe('Initial elements', () => {
         "Ensures initial loaded position is the position before the player's first move",
         (repertoire, initialRenderedPosition) => {
             helpers.setup.trainer(repertoire, [UUIDS.lines[0]]);
-            render(<RouterProvider router={testRouter} />);
+            renderRouter();
             expect(helpers.serialiseCurrentBoard().join(' / ')).toBe(
                 initialRenderedPosition
             );
@@ -159,7 +164,7 @@ describe('Position after moves', () => {
             helpers.setup.trainer(helpers.testRepertoire.withSingleWhiteLine, [
                 UUIDS.lines[0],
             ]);
-            render(<RouterProvider router={testRouter} />);
+            renderRouter();
 
             const d2Square = screen.getByRole('button', { name: 'd2 square' });
             const d4Square = screen.getByRole('button', { name: 'd4 square' });
@@ -187,7 +192,7 @@ describe('Position after moves', () => {
             helpers.setup.trainer(helpers.testRepertoire.withSingleWhiteLine, [
                 UUIDS.lines[0],
             ]);
-            render(<RouterProvider router={testRouter} />);
+            renderRouter();
 
             const d2Square = screen.getByRole('button', { name: 'd2 square' });
             const d3Square = screen.getByRole('button', { name: 'd3 square' });
@@ -210,7 +215,7 @@ describe('Position after moves', () => {
             helpers.setup.trainer(helpers.testRepertoire.withSingleWhiteLine, [
                 UUIDS.lines[0],
             ]);
-            render(<RouterProvider router={testRouter} />);
+            renderRouter();
 
             const d2Square = screen.getByRole('button', { name: 'd2 square' });
             const d4Square = screen.getByRole('button', { name: 'd4 square' });
@@ -241,7 +246,7 @@ describe('Position after moves', () => {
             helpers.setup.trainer(helpers.testRepertoire.withSingleWhiteLine, [
                 UUIDS.lines[0],
             ]);
-            render(<RouterProvider router={testRouter} />);
+            renderRouter();
 
             const d2Square = screen.getByRole('button', { name: 'd2 square' });
             const d6Square = screen.getByRole('button', { name: 'd6 square' });
@@ -268,7 +273,7 @@ describe('Success feedback', () => {
         helpers.setup.trainer(helpers.testRepertoire.withSingleWhiteLine, [
             UUIDS.lines[0],
         ]);
-        render(<RouterProvider router={testRouter} />);
+        renderRouter();
 
         const d2Square = screen.getByRole('button', { name: 'd2 square' });
         const d3Square = screen.getByRole('button', { name: 'd3 square' });
@@ -283,7 +288,7 @@ describe('Success feedback', () => {
         helpers.setup.trainer(helpers.testRepertoire.withSingleWhiteLine, [
             UUIDS.lines[0],
         ]);
-        render(<RouterProvider router={testRouter} />);
+        renderRouter();
 
         const d2Square = screen.getByRole('button', { name: 'd2 square' });
         const d3Square = screen.getByRole('button', { name: 'd3 square' });
@@ -300,7 +305,7 @@ describe('Success feedback', () => {
             UUIDS.lines[0],
             UUIDS.lines[1],
         ]);
-        render(<RouterProvider router={testRouter} />);
+        renderRouter();
 
         const congratulatoryMessage = /well done/i;
 
@@ -329,7 +334,7 @@ describe('Progress', () => {
             helpers.testRepertoire.withManyMixedLines,
             [UUIDS.lines[0], UUIDS.lines[1]]
         );
-        render(<RouterProvider router={testRouter} />);
+        renderRouter();
 
         const nextButton = screen.getByRole('button', { name: /next line/i });
         await user.click(nextButton);

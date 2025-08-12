@@ -22,11 +22,14 @@ function getLatestUUID() {
     return spyRandomUUID.mock.results.at(-1)?.value;
 }
 
-const testRouter = createMemoryRouter(routes);
+function renderRouter() {
+    const testRouter = createMemoryRouter(routes);
+    render(<RouterProvider router={testRouter} />);
+}
 
 describe('App start', () => {
     it('Sets empty repertoire if no repertoire in local storage', () => {
-        render(<RouterProvider router={testRouter} />);
+        renderRouter();
 
         expect(repertoireGetSpy).toHaveReturnedWith({
             validationError: null,
@@ -42,7 +45,7 @@ describe('App start', () => {
             helpers.repertoire.withNestedFolders
         );
 
-        render(<RouterProvider router={testRouter} />);
+        renderRouter();
 
         expect(repertoireGetSpy).toHaveReturnedWith({
             validationError: null,
@@ -74,7 +77,7 @@ describe('App start', () => {
         (_, repertoireString, errorMessage) => {
             window.localStorage.setItem('repertoire', repertoireString);
 
-            render(<RouterProvider router={testRouter} />);
+            renderRouter();
 
             expect(repertoireGetSpy).toHaveReturnedWith({
                 validationError: errorMessage,
@@ -96,7 +99,7 @@ describe('App start', () => {
     );
 
     it('Sets empty array if no trainable line IDs in local storage', () => {
-        render(<RouterProvider router={testRouter} />);
+        renderRouter();
 
         expect(trainableLineIDsGetSpy).toHaveReturnedWith([]);
         expect(vi.mocked(useOutletContext)).toHaveReturnedWith(
@@ -110,7 +113,7 @@ describe('App start', () => {
             JSON.stringify(['foo', 234, {}])
         );
 
-        render(<RouterProvider router={testRouter} />);
+        renderRouter();
 
         expect(trainableLineIDsGetSpy).toHaveReturnedWith([]);
         expect(vi.mocked(useOutletContext)).toHaveReturnedWith(
@@ -124,7 +127,7 @@ describe('App start', () => {
             UUIDS.lines[1],
         ]);
 
-        render(<RouterProvider router={testRouter} />);
+        renderRouter();
 
         expect(trainableLineIDsGetSpy).toHaveReturnedWith(testLineIDs);
         expect(vi.mocked(useOutletContext)).toHaveReturnedWith(
@@ -141,7 +144,7 @@ describe('Editing repertoire', () => {
         );
 
         const user = userEvent.setup();
-        render(<RouterProvider router={testRouter} />);
+        renderRouter();
 
         const newFolderButton = screen.getByRole('button', {
             name: /new folder/i,
@@ -172,7 +175,7 @@ describe('Editing repertoire', () => {
         );
 
         const user = userEvent.setup();
-        render(<RouterProvider router={testRouter} />);
+        renderRouter();
 
         const newFolderButton = screen.getByRole('button', {
             name: /new folder/i,
@@ -201,7 +204,7 @@ describe('Editing repertoire', () => {
         );
 
         const user = userEvent.setup();
-        render(<RouterProvider router={testRouter} />);
+        renderRouter();
 
         const renameFolderButton = screen.getByRole('button', {
             name: /rename folder/i,
@@ -226,7 +229,7 @@ describe('Editing repertoire', () => {
         );
 
         const user = userEvent.setup();
-        render(<RouterProvider router={testRouter} />);
+        renderRouter();
 
         const whiteFolder = screen.getByRole('button', {
             name: /open white folder in lines panel/i,
@@ -270,7 +273,7 @@ describe('Editing repertoire', () => {
         );
 
         const user = userEvent.setup();
-        render(<RouterProvider router={testRouter} />);
+        renderRouter();
 
         const whiteFolder = screen.getByRole('button', {
             name: /open white folder in lines panel/i,
@@ -327,7 +330,7 @@ describe('Editing repertoire', () => {
         );
 
         const user = userEvent.setup();
-        render(<RouterProvider router={testRouter} />);
+        renderRouter();
 
         const whiteFolder = screen.getByRole('button', {
             name: /open white folder in lines panel/i,
@@ -369,7 +372,7 @@ describe('Selecting lines to train', () => {
         );
 
         const user = userEvent.setup();
-        render(<RouterProvider router={testRouter} />);
+        renderRouter();
 
         const whiteFolder = screen.getByRole('button', {
             name: /open white folder in lines panel/i,
@@ -405,7 +408,7 @@ describe('Selecting lines to train', () => {
         );
 
         const user = userEvent.setup();
-        render(<RouterProvider router={testRouter} />);
+        renderRouter();
 
         const whiteFolder = screen.getByRole('button', {
             name: /open white folder in lines panel/i,
@@ -431,7 +434,7 @@ describe('Selecting lines to train', () => {
         );
 
         const user = userEvent.setup();
-        render(<RouterProvider router={testRouter} />);
+        renderRouter();
 
         const whiteFolder = screen.getByRole('button', {
             name: /open white folder in lines panel/i,
@@ -461,7 +464,7 @@ describe('Selecting lines to train', () => {
         );
 
         const user = userEvent.setup();
-        render(<RouterProvider router={testRouter} />);
+        renderRouter();
 
         const whiteFolder = screen.getByRole('button', {
             name: /open white folder in lines panel/i,

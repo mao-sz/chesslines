@@ -5,13 +5,16 @@ import userEvent from '@testing-library/user-event';
 import { helpers } from '@/testing/helpers';
 import { routes } from '@/app/routes';
 
-const testRouter = createMemoryRouter(routes);
+function renderRouter() {
+    const testRouter = createMemoryRouter(routes);
+    render(<RouterProvider router={testRouter} />);
+}
 
 describe('Switching repertoire tabs', () => {
     it('Switches from white to black repertoire panels via tab buttons', async () => {
         helpers.setup.repertoire(helpers.repertoire.empty);
         const user = userEvent.setup();
-        render(<RouterProvider router={testRouter} />);
+        renderRouter();
 
         const whiteTabButton = screen.getByRole('tab', {
             name: /white repertoire/i,
@@ -37,7 +40,7 @@ describe('Switching repertoire tabs', () => {
 describe('New folder button', () => {
     it("Renders 'new folder' button when folder is empty", () => {
         helpers.setup.repertoire(helpers.repertoire.empty);
-        render(<RouterProvider router={testRouter} />);
+        renderRouter();
 
         expect(
             screen.getByRole('button', { name: /new folder/i })
@@ -46,7 +49,7 @@ describe('New folder button', () => {
 
     it("Renders 'new folder' button when folder contains folders", () => {
         helpers.setup.repertoire(helpers.repertoire.withFolderInWhite);
-        render(<RouterProvider router={testRouter} />);
+        renderRouter();
 
         const whiteFolder = screen.getByRole('listitem', {
             name: /white open folder/i,
@@ -61,7 +64,7 @@ describe('New folder button', () => {
 
     it("Does not render 'new folder' button for a folder containing lines", () => {
         helpers.setup.repertoire(helpers.repertoire.withLineInWhite);
-        render(<RouterProvider router={testRouter} />);
+        renderRouter();
 
         const whiteFolder = screen.getByRole('listitem', {
             name: /white.+folder/i,
@@ -74,7 +77,7 @@ describe('New folder button', () => {
 
     it("Does not render any form for 'new folder' if button not clicked", () => {
         helpers.setup.repertoire(helpers.repertoire.empty);
-        render(<RouterProvider router={testRouter} />);
+        renderRouter();
 
         expect(
             screen.queryByRole('form', { name: /^new/i })
@@ -84,7 +87,7 @@ describe('New folder button', () => {
     it('Removes new folder button when new folder button clicked and form appears', async () => {
         helpers.setup.repertoire(helpers.repertoire.empty);
         const user = userEvent.setup();
-        render(<RouterProvider router={testRouter} />);
+        renderRouter();
 
         const newFolderButton = screen.getByRole('button', {
             name: /new folder/i,
@@ -103,7 +106,7 @@ describe('New folder button', () => {
     it('Prevents a folder from being closed if new folder name form present', async () => {
         helpers.setup.repertoire(helpers.repertoire.withNestedFolders);
         const user = userEvent.setup();
-        render(<RouterProvider router={testRouter} />);
+        renderRouter();
 
         const closableFolder = screen.getByRole('listitem', {
             name: /child closed folder$/i,
@@ -127,7 +130,7 @@ describe('New folder button', () => {
     it('Adds new folder when new folder name submitted', async () => {
         helpers.setup.repertoire(helpers.repertoire.empty);
         const user = userEvent.setup();
-        render(<RouterProvider router={testRouter} />);
+        renderRouter();
 
         const newFolderButton = screen.getByRole('button', {
             name: /new folder/i,
@@ -147,7 +150,7 @@ describe('New folder button', () => {
     it('Discards new folder name form without submitting and renders new folder button when cancel button clicked', async () => {
         helpers.setup.repertoire(helpers.repertoire.empty);
         const user = userEvent.setup();
-        render(<RouterProvider router={testRouter} />);
+        renderRouter();
 
         const displayedFolderCount = screen.queryAllByRole('generic', {
             name: /folder$/i,
@@ -173,7 +176,7 @@ describe('New folder button', () => {
     it('Auto-opens closed folder when new folder is added', async () => {
         helpers.setup.repertoire(helpers.repertoire.withFolderInWhite);
         const user = userEvent.setup();
-        render(<RouterProvider router={testRouter} />);
+        renderRouter();
 
         const closedFolder = screen.getByRole('listitem', {
             name: /closed folder$/i,
@@ -194,7 +197,7 @@ describe('New folder button', () => {
 describe('Renaming folder', () => {
     it('Does not render rename form by default', () => {
         helpers.setup.repertoire(helpers.repertoire.withNestedFolders);
-        render(<RouterProvider router={testRouter} />);
+        renderRouter();
 
         expect(
             screen.queryByRole('form', { name: /rename folder/i })
@@ -204,7 +207,7 @@ describe('Renaming folder', () => {
     it('Shows rename form when edit button clicked', async () => {
         helpers.setup.repertoire(helpers.repertoire.empty);
         const user = userEvent.setup();
-        render(<RouterProvider router={testRouter} />);
+        renderRouter();
 
         const renameButton = screen.getByRole('button', {
             name: /rename folder/i,
@@ -219,7 +222,7 @@ describe('Renaming folder', () => {
     it('Renames folder when rename form submitted', async () => {
         helpers.setup.repertoire(helpers.repertoire.empty);
         const user = userEvent.setup();
-        render(<RouterProvider router={testRouter} />);
+        renderRouter();
 
         const oldFolderName = helpers.repertoire.empty.folders.w;
         const renameButton = screen.getByRole('button', {
@@ -244,7 +247,7 @@ describe('Renaming folder', () => {
     it('Prevents closing folder while rename form present', async () => {
         helpers.setup.repertoire(helpers.repertoire.withFolderInWhite);
         const user = userEvent.setup();
-        render(<RouterProvider router={testRouter} />);
+        renderRouter();
 
         const closableFolder = screen.getByRole('listitem', {
             name: /white open folder$/i,
@@ -266,7 +269,7 @@ describe('Renaming folder', () => {
     it('Does not render new folder button when rename form present', async () => {
         helpers.setup.repertoire(helpers.repertoire.withFolderInWhite);
         const user = userEvent.setup();
-        render(<RouterProvider router={testRouter} />);
+        renderRouter();
 
         const renamableFolder = screen.getByRole('listitem', {
             name: /closed folder$/i,
@@ -287,7 +290,7 @@ describe('Renaming folder', () => {
     it('Does not render delete folder button when rename form present', async () => {
         helpers.setup.repertoire(helpers.repertoire.withFolderInWhite);
         const user = userEvent.setup();
-        render(<RouterProvider router={testRouter} />);
+        renderRouter();
 
         const renamableFolder = screen.getByRole('listitem', {
             name: /closed folder$/i,

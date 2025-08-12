@@ -10,7 +10,12 @@ vi.mock('@/util/util.ts', async (importActual) => ({
     toShuffled: vi.fn((lines) => lines),
 }));
 
-const testRouter = createMemoryRouter(routes, { initialEntries: ['/trainer'] });
+function renderRouter() {
+    const testRouter = createMemoryRouter(routes, {
+        initialEntries: ['/trainer'],
+    });
+    render(<RouterProvider router={testRouter} />);
+}
 
 describe('Piece hint button', () => {
     it('Shows name of piece to move when clicked', async () => {
@@ -19,7 +24,7 @@ describe('Piece hint button', () => {
             UUIDS.lines[0],
             UUIDS.lines[1],
         ]);
-        render(<RouterProvider router={testRouter} />);
+        renderRouter();
 
         const nextLineButton = screen.getByRole('button', {
             name: /next line/i,
@@ -42,7 +47,7 @@ describe('Piece hint button', () => {
             UUIDS.lines[0],
             UUIDS.lines[1],
         ]);
-        render(<RouterProvider router={testRouter} />);
+        renderRouter();
 
         const d7Square = screen.getByRole('button', { name: /d7/i });
         const d5Square = screen.getByRole('button', { name: /d5/i });
@@ -63,7 +68,7 @@ describe('Notes button', () => {
             UUIDS.lines[0],
             UUIDS.lines[1],
         ]);
-        render(<RouterProvider router={testRouter} />);
+        renderRouter();
 
         const nextLineButton = screen.getByRole('button', {
             name: /next line/i,
@@ -84,7 +89,7 @@ describe('Notes button', () => {
         helpers.setup.trainer(helpers.testRepertoire.withSingleWhiteLine, [
             UUIDS.lines[0],
         ]);
-        render(<RouterProvider router={testRouter} />);
+        renderRouter();
 
         expect(
             screen.queryByRole('button', { name: /notes/i })

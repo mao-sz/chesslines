@@ -11,11 +11,11 @@ import type { Repertoire } from '@/types/repertoire';
 vi.stubGlobal('location', { reload: vi.fn() });
 const repertoireSetSpy = vi.spyOn(LOCAL_STORAGE.repertoire, 'set');
 const lineIDsToTrainSetSpy = vi.spyOn(LOCAL_STORAGE.lineIDsToTrain, 'set');
-const testRouter = createMemoryRouter(routes);
 
 async function openImportDialog(repertoire: Repertoire) {
     const user = userEvent.setup();
     helpers.setup.repertoire(repertoire);
+    const testRouter = createMemoryRouter(routes);
     render(<RouterProvider router={testRouter} />);
 
     const importButton = screen.getByRole('button', {

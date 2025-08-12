@@ -5,17 +5,20 @@ import { routes } from '@/app/routes';
 import { helpers } from '@/testing/helpers';
 import userEvent from '@testing-library/user-event';
 
-const testRouter = createMemoryRouter(routes);
+function renderRouter() {
+    const testRouter = createMemoryRouter(routes);
+    render(<RouterProvider router={testRouter} />);
+}
 
 describe('Initial elements', () => {
     it('Renders a button for each of white and black repertoires', () => {
-        render(<RouterProvider router={testRouter} />);
+        renderRouter();
 
         expect(screen.getAllByRole('tab')).toHaveLength(2);
     });
 
     it('Renders by default with the white repertoire tab panel showing only', () => {
-        render(<RouterProvider router={testRouter} />);
+        renderRouter();
 
         const whiteTabButton = screen.getByRole('tab', {
             name: /white repertoire/i,
@@ -35,7 +38,7 @@ describe('Initial elements', () => {
     });
 
     it('Renders an empty lines panel when first loaded', () => {
-        render(<RouterProvider router={testRouter} />);
+        renderRouter();
 
         expect(
             screen.getByRole('region', { name: /empty line panel/i })
@@ -43,7 +46,7 @@ describe('Initial elements', () => {
     });
 
     it('Does not render selected line count in header if no lines selected', () => {
-        render(<RouterProvider router={testRouter} />);
+        renderRouter();
         expect(
             screen.getByRole('link', { name: /^trainer$/i })
         ).toBeInTheDocument();
@@ -53,7 +56,7 @@ describe('Initial elements', () => {
         helpers.setup.repertoire(helpers.testRepertoire.withManyMixedLines);
 
         const user = userEvent.setup();
-        render(<RouterProvider router={testRouter} />);
+        renderRouter();
 
         const whiteFolder = screen.getByRole('button', {
             name: /open white folder in lines panel/i,
@@ -75,7 +78,7 @@ describe('Initial elements', () => {
         helpers.setup.repertoire(helpers.testRepertoire.withManyMixedLines);
 
         const user = userEvent.setup();
-        render(<RouterProvider router={testRouter} />);
+        renderRouter();
 
         const whiteFolder = screen.getByRole('button', {
             name: /open white folder in lines panel/i,
@@ -95,14 +98,14 @@ describe('Initial elements', () => {
     });
 
     it('Renders an "Import repertoire" button', () => {
-        render(<RouterProvider router={testRouter} />);
+        renderRouter();
         expect(
             screen.getByRole('button', { name: /import repertoire/i })
         ).toBeInTheDocument();
     });
 
     it('Renders an "Export repertoire" button', () => {
-        render(<RouterProvider router={testRouter} />);
+        renderRouter();
         expect(
             screen.getByRole('button', { name: /export repertoire/i })
         ).toBeInTheDocument();
