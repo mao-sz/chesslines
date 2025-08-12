@@ -88,7 +88,7 @@ describe('Lines panel', () => {
         expect(screen.getByText(line.startingFEN)).toBeInTheDocument();
     });
 
-    it('Does not render new line button if open folder contains other folders', async () => {
+    it('Does not render new line link if open folder contains other folders', async () => {
         helpers.setup.repertoire(helpers.repertoire.empty);
         const user = userEvent.setup();
         render(<RouterProvider router={testRouter} />);
@@ -104,7 +104,7 @@ describe('Lines panel', () => {
         await user.click(whiteFolderOpenButton);
 
         expect(
-            screen.getByRole('button', { name: /new line/i })
+            screen.getByRole('link', { name: /new line/i })
         ).toBeInTheDocument();
 
         const newFolderButton = within(whiteFolder).getByRole('button', {
@@ -118,7 +118,7 @@ describe('Lines panel', () => {
         await user.type(newFolderNameInput, 'new folder name[Enter]');
 
         expect(
-            screen.queryByRole('button', { name: /new line/i })
+            screen.queryByRole('link', { name: /new line/i })
         ).not.toBeInTheDocument();
     });
 });

@@ -233,8 +233,8 @@ describe('Editing repertoire', () => {
         });
         await user.click(whiteFolder);
 
-        const newLineButton = screen.getByRole('button', { name: /new line/i });
-        await user.click(newLineButton);
+        const newLineLink = screen.getByRole('link', { name: /new line/i });
+        await user.click(newLineLink);
 
         // setting starting position
         const loadPositionButton = screen.getByRole('button', {
@@ -277,8 +277,8 @@ describe('Editing repertoire', () => {
         });
         await user.click(whiteFolder);
 
-        const newLineButton = screen.getByRole('button', { name: /new line/i });
-        await user.click(newLineButton);
+        const newLineLink = screen.getByRole('link', { name: /new line/i });
+        await user.click(newLineLink);
 
         // setting starting position
         const loadPositionButton = screen.getByRole('button', {
@@ -291,10 +291,10 @@ describe('Editing repertoire', () => {
         await user.click(saveButton);
         const newFolderUUID = getLatestUUID();
 
-        const editLineButton = screen.getAllByRole('button', {
+        const editLineLink = screen.getAllByRole('link', {
             name: /edit line/i,
         })[0];
-        await user.click(editLineButton);
+        await user.click(editLineLink);
 
         const d2Square = screen.getByRole('button', { name: /d2/i });
         const d4Square = screen.getByRole('button', { name: /d4/i });
@@ -334,8 +334,8 @@ describe('Editing repertoire', () => {
         });
         await user.click(whiteFolder);
 
-        const newLineButton = screen.getByRole('button', { name: /new line/i });
-        await user.click(newLineButton);
+        const newLineLink = screen.getByRole('link', { name: /new line/i });
+        await user.click(newLineLink);
 
         // setting starting position
         const loadPositionButton = screen.getByRole('button', {

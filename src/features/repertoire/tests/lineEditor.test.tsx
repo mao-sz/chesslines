@@ -1,17 +1,18 @@
 import { createMemoryRouter, RouterProvider } from 'react-router';
-import { describe, it, expect } from 'vitest';
-import { render, screen, within } from '@testing-library/react';
+import { describe, it, expect, afterEach } from 'vitest';
+import { cleanup, render, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { routes } from '@/app/routes';
 import { helpers } from '@/testing/helpers';
 import { STANDARD_STARTING_FEN } from '@/util/constants';
 import type { Repertoire } from '@/types/repertoire';
 
-const testRouter = createMemoryRouter(routes);
+afterEach(cleanup);
 
 async function openLineFolderInPanel(
     repertoire: Repertoire = helpers.repertoire.withLineInWhite
 ) {
+    const testRouter = createMemoryRouter(routes);
     helpers.setup.repertoire(repertoire);
     render(<RouterProvider router={testRouter} />);
 
@@ -27,10 +28,8 @@ async function openLineEditor(
     repertoire: Repertoire = helpers.repertoire.withLineInWhite
 ) {
     const user = await openLineFolderInPanel(repertoire);
-    const editLineButton = screen.getAllByRole('button', {
-        name: /edit line/i,
-    })[0];
-    await user.click(editLineButton);
+    const editLineLink = screen.getAllByRole('link', { name: /edit line/i })[0];
+    await user.click(editLineLink);
     return user;
 }
 
@@ -88,13 +87,14 @@ describe('Opening and interaction', () => {
     it('Opens line editor with the FEN/PGN interface when new line button clicked', async () => {
         const user = await openLineFolderInPanel();
 
-        const newLineButton = screen.getByRole('button', { name: /new line/i });
-        await user.click(newLineButton);
+        const newLineLink = screen.getByRole('link', { name: /new line/i });
+        await user.click(newLineLink);
 
         const lineEditor = screen.getByRole('dialog');
-        const startingFENInput = within(lineEditor).getByRole('textbox', {
-            name: /custom starting FEN/i,
-        }) as HTMLInputElement;
+        const startingFENInput = (await within(lineEditor).findByRole(
+            'textbox',
+            { name: /custom starting FEN/i }
+        )) as HTMLInputElement;
         const PGNTextarea = within(lineEditor).getByRole('textbox', {
             name: /PGN/i,
         }) as HTMLTextAreaElement;
@@ -115,10 +115,10 @@ describe('Opening and interaction', () => {
 
         expect(within(lineItem).queryByText(/d4/i)).not.toBeInTheDocument();
 
-        const editLineButton = within(lineItem).getByRole('button', {
+        const editLineLink = within(lineItem).getByRole('link', {
             name: /edit line/i,
         });
-        await user.click(editLineButton);
+        await user.click(editLineLink);
 
         const lineEditor = screen.getByRole('dialog');
         const submitButton = within(lineEditor).getByRole('button', {
@@ -146,18 +146,18 @@ describe('Opening and interaction', () => {
 
         expect(lineEditor).not.toBeInTheDocument();
 
-        const editLineButton = screen.getAllByRole('button', {
+        const editLineLink = screen.getAllByRole('link', {
             name: /edit line/i,
         })[0];
-        await user.click(editLineButton);
+        await user.click(editLineLink);
         expect(screen.getByRole('dialog')).toBeInTheDocument();
     });
 
     it("Closes FEN/PGN interface instead of switching to Board if it's for a new line", async () => {
         const user = await openLineFolderInPanel();
 
-        const newLineButton = screen.getByRole('button', { name: /new line/i });
-        await user.click(newLineButton);
+        const newLineLink = screen.getByRole('link', { name: /new line/i });
+        await user.click(newLineLink);
 
         const cancelButton = screen.getByRole('button', { name: /cancel/i });
         await user.click(cancelButton);
@@ -178,8 +178,8 @@ describe('Validation', () => {
         expect(within(linesPanel).getAllByRole('listitem')).toHaveLength(1);
         expect(screen.queryByText(`PGN: ${newPGN}`)).not.toBeInTheDocument();
 
-        const newLineButton = screen.getByRole('button', { name: /new line/i });
-        await user.click(newLineButton);
+        const newLineLink = screen.getByRole('link', { name: /new line/i });
+        await user.click(newLineLink);
 
         const lineEditor = screen.getByRole('dialog');
         const FENInput = within(lineEditor).getByRole('textbox', {
@@ -229,8 +229,8 @@ describe('Validation', () => {
     ])('Prevents FEN/PGN loading if %s', async (_, newStartingFEN, newPGN) => {
         const user = await openLineFolderInPanel();
 
-        const newLineButton = screen.getByRole('button', { name: /new line/i });
-        await user.click(newLineButton);
+        const newLineLink = screen.getByRole('link', { name: /new line/i });
+        await user.click(newLineLink);
 
         const lineEditor = screen.getByRole('dialog');
         const FENInput = within(lineEditor).getByRole('textbox', {
