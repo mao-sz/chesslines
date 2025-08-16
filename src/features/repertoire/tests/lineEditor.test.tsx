@@ -17,10 +17,10 @@ async function openLineFolderInPanel(
     render(<RouterProvider router={testRouter} />);
 
     const user = userEvent.setup();
-    const whiteFolder = screen.getByRole('button', {
-        name: /open white folder in lines panel/i,
+    const linesFolder = screen.getByRole('button', {
+        name: /open child folder in lines panel/i,
     });
-    await user.click(whiteFolder);
+    await user.click(linesFolder);
     return user;
 }
 
@@ -173,7 +173,7 @@ describe('Validation', () => {
         const newPGN = '1. d4 d5 2. c4';
 
         const user = await openLineFolderInPanel();
-        const linesPanel = screen.getByRole('region', { name: /white/i });
+        const linesPanel = screen.getByRole('region', { name: /child/i });
 
         expect(within(linesPanel).getAllByRole('listitem')).toHaveLength(1);
         expect(screen.queryByText(`PGN: ${newPGN}`)).not.toBeInTheDocument();
