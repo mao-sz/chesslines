@@ -14,8 +14,8 @@ describe('useRepertoire', () => {
     it('Initialises folders with starting empty white/black folders only', () => {
         const { result } = callUseRepertoire();
         expect(result.current.folders).toEqual({
-            w: { name: 'White', contains: 'either', children: [] },
-            b: { name: 'Black', contains: 'either', children: [] },
+            w: { name: 'White', contains: 'folders', children: [] },
+            b: { name: 'Black', contains: 'folders', children: [] },
         });
     });
 
@@ -31,14 +31,16 @@ describe('useRepertoire', () => {
 
         const uuid = getLatestUUID();
         expect(result.current.folders).toEqual({
-            w: { name: 'White', contains: 'either', children: [] },
+            w: { name: 'White', contains: 'folders', children: [] },
             b: { name: 'Black', contains: 'folders', children: [uuid] },
             [uuid]: { name: 'Black->This', contains: 'either', children: [] },
         });
     });
 
     it('Adds new line', () => {
-        const { result, rerender } = callUseRepertoire();
+        const { result, rerender } = callUseRepertoire(
+            helpers.repertoire.withLineInWhite
+        );
         result.current.lines.create(
             {
                 player: 'w',
@@ -47,24 +49,28 @@ describe('useRepertoire', () => {
                 PGN: '1. e4 e5 2. Nc3',
                 notes: [''],
             },
-            'w'
+            UUIDS.folders[0]
         );
         rerender();
 
         const uuid = getLatestUUID();
-        expect(result.current.lines).toEqual({
-            [uuid]: {
-                player: 'w',
-                startingFEN:
-                    'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1',
-                PGN: '1. e4 e5 2. Nc3',
-                notes: [''],
-            },
-        });
+        expect(result.current.lines).toEqual(
+            expect.objectContaining({
+                [uuid]: {
+                    player: 'w',
+                    startingFEN:
+                        'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1',
+                    PGN: '1. e4 e5 2. Nc3',
+                    notes: [''],
+                },
+            })
+        );
     });
 
     it("Sets new line's parent folder to a lines type with the UUID as a child", () => {
-        const { result, rerender } = callUseRepertoire();
+        const { result, rerender } = callUseRepertoire(
+            helpers.repertoire.withFolderInWhite
+        );
         result.current.lines.create(
             {
                 player: 'w',
@@ -73,12 +79,14 @@ describe('useRepertoire', () => {
                 PGN: '1. e4 e5 2. Nc3',
                 notes: [''],
             },
-            'w'
+            UUIDS.folders[0]
         );
         rerender();
 
         const uuid = getLatestUUID();
-        expect(result.current.folders.w.children.at(-1)).toBe(uuid);
+        expect(result.current.folders[UUIDS.folders[0]].children.at(-1)).toBe(
+            uuid
+        );
     });
 
     it("Updates an existing folder's name", () => {
@@ -90,37 +98,25 @@ describe('useRepertoire', () => {
     });
 
     it("Updates an existing folder's location", () => {
-        const { result, rerender } = callUseRepertoire();
-        result.current.folders.create('Black->This', 'b');
+        const { result, rerender } = callUseRepertoire(
+            helpers.repertoire.manyFoldersAndLines
+        );
+        result.current.folders.updateLocation(UUIDS.folders[2], 'w');
         rerender();
 
-        const uuid = getLatestUUID();
-        result.current.folders.updateLocation(uuid, 'w');
-        rerender();
-
-        expect(result.current.folders).toEqual({
-            w: { name: 'White', contains: 'folders', children: [uuid] },
-            b: { name: 'Black', contains: 'either', children: [] },
-            [uuid]: { name: 'Black->This', contains: 'either', children: [] },
+        expect(result.current.folders.w.children).toContain(UUIDS.folders[2]);
+        expect(result.current.folders[UUIDS.folders[1]]).toEqual({
+            name: 'folder folder',
+            contains: 'either',
+            children: [],
         });
     });
 
     it("Updates an existing line's contents", () => {
-        const { result, rerender } = callUseRepertoire();
-        result.current.lines.create(
-            {
-                player: 'w',
-                startingFEN:
-                    'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1',
-                PGN: '1. e4 e5 2. Nc3',
-                notes: ['', '', '', ''],
-            },
-            'w'
+        const { result, rerender } = callUseRepertoire(
+            helpers.repertoire.withLineInWhite
         );
-        rerender();
-
-        const uuid = getLatestUUID();
-        result.current.lines.updateLine(uuid, {
+        result.current.lines.updateLine(UUIDS.lines[0], {
             player: 'w',
             startingFEN:
                 'rnbqkbnr/pp1ppppp/8/2p5/4P3/8/PPPP1PPP/RNBQKBNR w KQkq - 0 2',
@@ -131,7 +127,7 @@ describe('useRepertoire', () => {
         rerender();
 
         expect(result.current.lines).toEqual({
-            [uuid]: {
+            [UUIDS.lines[0]]: {
                 player: 'w',
                 startingFEN:
                     'rnbqkbnr/pp1ppppp/8/2p5/4P3/8/PPPP1PPP/RNBQKBNR w KQkq - 0 2',
@@ -142,28 +138,18 @@ describe('useRepertoire', () => {
     });
 
     it("Updates an existing line's location", () => {
-        const { result, rerender } = callUseRepertoire();
-        result.current.lines.create(
-            {
-                player: 'w',
-                startingFEN:
-                    'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1',
-                PGN: '1. e4 e5 2. Nc3',
-
-                notes: [''],
-            },
-            'w'
+        const { result, rerender } = callUseRepertoire(
+            helpers.repertoire.manyFoldersAndLines
         );
+        result.current.lines.updateLocation(UUIDS.lines[0], UUIDS.folders[0]);
         rerender();
 
-        const uuid = getLatestUUID();
-        result.current.lines.updateLocation(uuid, 'b');
-        rerender();
-
-        expect(result.current.folders).toEqual({
-            w: { name: 'White', contains: 'either', children: [] },
-            b: { name: 'Black', contains: 'lines', children: [uuid] },
-        });
+        expect(result.current.folders[UUIDS.folders[0]].children).toContain(
+            UUIDS.lines[0]
+        );
+        expect(result.current.folders[UUIDS.folders[3]].children).not.toContain(
+            UUIDS.lines[0]
+        );
     });
 
     it('Deletes an existing folder with no children', () => {
@@ -176,8 +162,8 @@ describe('useRepertoire', () => {
         rerender();
 
         expect(result.current.folders).toEqual({
-            w: { name: 'White', contains: 'either', children: [] },
-            b: { name: 'Black', contains: 'either', children: [] },
+            w: { name: 'White', contains: 'folders', children: [] },
+            b: { name: 'Black', contains: 'folders', children: [] },
         });
     });
 
@@ -213,54 +199,50 @@ describe('useRepertoire', () => {
         expect(isWhiteFolderDeleted).toBe(false);
         expect(isBlackFolderDeleted).toBe(false);
         expect(result.current.folders).toEqual({
-            w: { name: 'White', contains: 'either', children: [] },
-            b: { name: 'Black', contains: 'either', children: [] },
+            w: { name: 'White', contains: 'folders', children: [] },
+            b: { name: 'Black', contains: 'folders', children: [] },
         });
     });
 
     it('Deletes an existing line', () => {
-        const { result, rerender } = callUseRepertoire();
-        result.current.lines.create(
-            {
-                player: 'w',
-                startingFEN:
-                    'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1',
-                PGN: '1. e4 e5 2. Nc3',
-                notes: ['', '', '', ''],
-            },
-            'w'
+        const { result, rerender } = callUseRepertoire(
+            helpers.repertoire.withLineInWhite
         );
-        rerender();
 
-        const uuid = getLatestUUID();
-        result.current.lines.delete(uuid);
+        result.current.lines.delete(UUIDS.lines[0]);
         rerender();
 
         expect(result.current.lines).toEqual({});
     });
 
     it('Removes lines ID from parent folder children array when deleted', () => {
-        const { result, rerender } = callUseRepertoire();
-        result.current.lines.create(
-            {
-                player: 'w',
-                startingFEN:
-                    'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1',
-                PGN: '1. e4 e5 2. Nc3',
-                notes: ['', '', '', ''],
-            },
-            'w'
+        const { result, rerender } = callUseRepertoire(
+            helpers.repertoire.withLineInWhite
         );
+
+        result.current.lines.delete(UUIDS.lines[0]);
+        rerender();
+
+        expect(result.current.folders[UUIDS.folders[0]]).toEqual({
+            name: 'Child',
+            contains: 'either',
+            children: [],
+        });
+    });
+
+    it("Keeps base folders' .contains as 'folders' even if empty", () => {
+        const { result, rerender } = callUseRepertoire();
+        result.current.folders.create('Black->This', 'b');
         rerender();
 
         const uuid = getLatestUUID();
-        result.current.lines.delete(uuid);
+        result.current.folders.updateLocation(uuid, 'w');
         rerender();
 
-        expect(result.current.folders.w).toEqual({
-            name: 'White',
-            contains: 'either',
-            children: [],
+        expect(result.current.folders).toEqual({
+            w: { name: 'White', contains: 'folders', children: [uuid] },
+            b: { name: 'Black', contains: 'folders', children: [] },
+            [uuid]: { name: 'Black->This', contains: 'either', children: [] },
         });
     });
 });

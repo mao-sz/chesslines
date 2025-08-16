@@ -492,8 +492,8 @@ const testRepertoire = {
 };
 
 const hooks = {
-    callUseRepertoire() {
-        return renderHook(() => useRepertoire(EMPTY_REPERTOIRE));
+    callUseRepertoire(repertoire: Repertoire = EMPTY_REPERTOIRE) {
+        return renderHook(() => useRepertoire(repertoire));
     },
     callUseDeepContainsSelectedLine(
         folders: Repertoire['folders'],

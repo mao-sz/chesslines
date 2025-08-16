@@ -44,14 +44,16 @@ export function useRepertoire(repertoire: Repertoire) {
             const oldParentChildrenWithoutFolder = oldParent.children.filter(
                 (ids) => ids !== idToMove
             );
+            const isBaseFolder = oldParentId === 'w' || oldParentId === 'b';
 
             setFolders({
                 ...folders,
                 [oldParentId]: {
                     ...oldParent,
-                    contains: oldParentChildrenWithoutFolder.length
-                        ? 'folders'
-                        : 'either',
+                    contains:
+                        isBaseFolder || oldParentChildrenWithoutFolder.length
+                            ? 'folders'
+                            : 'either',
                     children: oldParentChildrenWithoutFolder,
                 },
                 [newParentId]: {
@@ -80,14 +82,16 @@ export function useRepertoire(repertoire: Repertoire) {
             const oldParentChildrenWithoutFolder = oldParent.children.filter(
                 (ids) => ids !== idToDelete
             );
+            const isBaseFolder = oldParentId === 'w' || oldParentId === 'b';
 
             setFolders({
                 ...remainingFolders,
                 [oldParentId]: {
                     ...oldParent,
-                    contains: oldParentChildrenWithoutFolder.length
-                        ? 'folders'
-                        : 'either',
+                    contains:
+                        isBaseFolder || oldParentChildrenWithoutFolder.length
+                            ? 'folders'
+                            : 'either',
                     children: oldParentChildrenWithoutFolder,
                 },
             });
@@ -97,7 +101,7 @@ export function useRepertoire(repertoire: Repertoire) {
     const lineMethods = {
         create(
             { player, startingFEN, PGN, notes }: RepertoireLine,
-            parent: RepertoireFolderID
+            parent: UUID
         ): void {
             const newLineUUID = crypto.randomUUID();
             const newParentFolder = {
@@ -118,7 +122,7 @@ export function useRepertoire(repertoire: Repertoire) {
         ): void {
             setLines({ ...lines, [id]: { player, startingFEN, PGN, notes } });
         },
-        updateLocation(idToMove: UUID, newParentId: RepertoireFolderID): void {
+        updateLocation(idToMove: UUID, newParentId: UUID): void {
             const [oldParentId, oldParent] = findParentFolder(
                 idToMove,
                 folders

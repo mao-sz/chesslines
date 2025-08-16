@@ -37,12 +37,9 @@ export type RepertoireWithMethods = Repertoire & {
         delete: (id: RepertoireFolderID) => boolean;
     };
     lines: {
-        create: (line: RepertoireLine, parent: RepertoireFolderID) => void;
+        create: (line: RepertoireLine, parent: UUID) => void;
         updateLine: (id: UUID, line: RepertoireLine) => void;
-        updateLocation: (
-            idToMove: UUID,
-            newParentId: RepertoireFolderID
-        ) => void;
+        updateLocation: (idToMove: UUID, newParentId: UUID) => void;
         delete: (id: UUID) => void;
     };
 };
