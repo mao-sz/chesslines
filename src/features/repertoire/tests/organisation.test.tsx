@@ -89,47 +89,32 @@ describe('Moving folders', () => {
         helpers.setup.repertoire(helpers.repertoire.manyFoldersAndLines);
         const { container } = renderRouter();
 
-        const lineFolder = screen.getByRole('listitem', {
-            name: /^line folder/i,
-        });
-        const whiteFolder = screen.getByRole('listitem', { name: /white/i });
-        await expect(container).toMatchFileSnapshot(
-            './__snapshots__/organisationOriginalFolderState.html'
-        );
-
-        // user-events cannot simulate drag* events - must manually fire
-        fireEvent.drag(lineFolder);
-        fireEvent.drop(whiteFolder, {
-            dataTransfer: {
-                getData: () => `folder ${convert.htmlIdToUuid(lineFolder.id)}`,
-            },
-        });
-        await expect(container).toMatchFileSnapshot(
-            './__snapshots__/organisationOriginalFolderState.html'
-        );
-    });
-
-    it('Prevents dragging base colour folders', async () => {
-        helpers.setup.repertoire(helpers.repertoire.manyFoldersAndLines);
-        const { container } = renderRouter();
-
+        const user = userEvent.setup();
         const folderFolder = screen.getByRole('listitem', {
-            name: /folder folder/i,
+            name: /^folder folder/i,
         });
-        const whiteFolder = screen.getByRole('listitem', { name: /white/i });
+        const openFolderFolderButton = within(folderFolder).getByRole(
+            'button',
+            { name: /open folder folder/i }
+        );
+        await user.click(openFolderFolderButton);
+
+        const emptyFolder = screen.getByRole('listitem', {
+            name: /^empty folder/i,
+        });
         await expect(container).toMatchFileSnapshot(
-            './__snapshots__/organisationOriginalFolderState.html'
+            './__snapshots__/organisationNestedFolderState.html'
         );
 
         // user-events cannot simulate drag* events - must manually fire
-        fireEvent.drag(whiteFolder);
+        fireEvent.drag(emptyFolder);
         fireEvent.drop(folderFolder, {
             dataTransfer: {
-                getData: () => `folder ${convert.htmlIdToUuid(whiteFolder.id)}`,
+                getData: () => `folder ${convert.htmlIdToUuid(emptyFolder.id)}`,
             },
         });
         await expect(container).toMatchFileSnapshot(
-            './__snapshots__/organisationOriginalFolderState.html'
+            './__snapshots__/organisationNestedFolderState.html'
         );
     });
 
