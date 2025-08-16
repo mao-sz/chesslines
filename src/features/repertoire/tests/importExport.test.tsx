@@ -81,7 +81,7 @@ describe('Import', () => {
 
     it('Saves valid repertoire string to local storage', async () => {
         const repertoireString =
-            '{"folders":{"w":{"name":"White","contains":"lines","children":["5ce93b80-bb2d-4351-a6ef-c3582ef34e0c"]},"b":{"name":"Black","contains":"folders","children":["70dcfb82-002d-4dac-94f1-9f7954220a19"]},"70dcfb82-002d-4dac-94f1-9f7954220a19":{"name":"test","contains":"lines","children":["077e2625-bb27-465d-837e-f1a8a5df7ff4","0985f53d-03a8-4eb6-9f98-2b33e9455287"]}},"lines":{"077e2625-bb27-465d-837e-f1a8a5df7ff4":{"player":"b","startingFEN":"rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b KQkq - 0 1","PGN":"1... c5 2. d4 cxd4","notes":["","","",""]},"0985f53d-03a8-4eb6-9f98-2b33e9455287":{"player":"b","startingFEN":"rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1","PGN":"1. d4 d5","notes":["","",""]},"5ce93b80-bb2d-4351-a6ef-c3582ef34e0c":{"player":"w","startingFEN":"rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1","PGN":"1. e4 e5 2. Nc3 Nc6 3. Bc4 Bc5 4. Qg4","notes":["","","","","","","","Yes!"]}}}';
+            '{"folders":{"w":{"name":"White","contains":"folders","children":["68cafccd-d7b8-4f92-9153-9df59eee4f03"]},"b":{"name":"Black","contains":"folders","children":[]},"68cafccd-d7b8-4f92-9153-9df59eee4f03":{"name":"Child","contains":"folders","children":["68cafccd-d7b8-4f92-9153-9df59eee4f04"]},"68cafccd-d7b8-4f92-9153-9df59eee4f04":{"name":"Child of child","contains":"either","children":[]}},"lines":{}}';
 
         const user = await openImportDialog(helpers.repertoire.empty);
         const textarea = screen.getByRole('textbox', {
@@ -102,7 +102,7 @@ describe('Import', () => {
 
     it('Saves valid repertoire string from uploaded file to local storage', async () => {
         const repertoireString =
-            '{"folders":{"w":{"name":"White","contains":"lines","children":["5ce93b80-bb2d-4351-a6ef-c3582ef34e0c"]},"b":{"name":"Black","contains":"folders","children":["70dcfb82-002d-4dac-94f1-9f7954220a19"]},"70dcfb82-002d-4dac-94f1-9f7954220a19":{"name":"test","contains":"lines","children":["077e2625-bb27-465d-837e-f1a8a5df7ff4","0985f53d-03a8-4eb6-9f98-2b33e9455287"]}},"lines":{"077e2625-bb27-465d-837e-f1a8a5df7ff4":{"player":"b","startingFEN":"rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b KQkq - 0 1","PGN":"1... c5 2. d4 cxd4","notes":["","","",""]},"0985f53d-03a8-4eb6-9f98-2b33e9455287":{"player":"b","startingFEN":"rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1","PGN":"1. d4 d5","notes":["","",""]},"5ce93b80-bb2d-4351-a6ef-c3582ef34e0c":{"player":"w","startingFEN":"rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1","PGN":"1. e4 e5 2. Nc3 Nc6 3. Bc4 Bc5 4. Qg4","notes":["","","","","","","","Yes!"]}}}';
+            '{"folders":{"w":{"name":"White","contains":"folders","children":["68cafccd-d7b8-4f92-9153-9df59eee4f03"]},"b":{"name":"Black","contains":"folders","children":[]},"68cafccd-d7b8-4f92-9153-9df59eee4f03":{"name":"Child","contains":"folders","children":["68cafccd-d7b8-4f92-9153-9df59eee4f04"]},"68cafccd-d7b8-4f92-9153-9df59eee4f04":{"name":"Child of child","contains":"either","children":[]}},"lines":{}}';
 
         const user = await openImportDialog(helpers.repertoire.empty);
         const fileTab = screen.getByRole('tab', { name: /import from file/i });
@@ -129,39 +129,50 @@ describe('Import', () => {
         expect(window.location.reload).toHaveBeenCalled();
     });
 
-    it('Invalidates invalid repertoire string data', async () => {
-        const repertoireString = 'flobadobdob';
+    it.each([
+        ['flobadobdob'],
+        [
+            // base w folder can only contain folders
+            '{"folders":{"w":{"name":"White","contains":"lines","children":["5ce93b80-bb2d-4351-a6ef-c3582ef34e0c"]},"b":{"name":"Black","contains":"folders","children":["70dcfb82-002d-4dac-94f1-9f7954220a19"]},"70dcfb82-002d-4dac-94f1-9f7954220a19":{"name":"test","contains":"lines","children":["077e2625-bb27-465d-837e-f1a8a5df7ff4","0985f53d-03a8-4eb6-9f98-2b33e9455287"]}},"lines":{"077e2625-bb27-465d-837e-f1a8a5df7ff4":{"player":"b","startingFEN":"rnbqkbnr/pppppppp/8/8/4P3/8/PPPP1PPP/RNBQKBNR b KQkq - 0 1","PGN":"1... c5 2. d4 cxd4","notes":["","","",""]},"0985f53d-03a8-4eb6-9f98-2b33e9455287":{"player":"b","startingFEN":"rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1","PGN":"1. d4 d5","notes":["","",""]},"5ce93b80-bb2d-4351-a6ef-c3582ef34e0c":{"player":"w","startingFEN":"rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1","PGN":"1. e4 e5 2. Nc3 Nc6 3. Bc4 Bc5 4. Qg4","notes":["","","","","","","","Yes!"]}}}',
+        ],
+    ])(
+        'Invalidates invalid repertoire string data',
+        async (repertoireString) => {
+            const user = await openImportDialog(helpers.repertoire.empty);
+            // ensure setup storage calls don't contaminate test
+            vi.resetAllMocks();
 
-        const user = await openImportDialog(helpers.repertoire.empty);
-        // ensure setup storage calls don't contaminate test
-        vi.resetAllMocks();
+            const fileTab = screen.getByRole('tab', {
+                name: /import from file/i,
+            });
+            await user.click(fileTab);
 
-        const fileTab = screen.getByRole('tab', { name: /import from file/i });
-        await user.click(fileTab);
+            const fileInput = screen.getByLabelText(
+                /repertoire file \(.json or .txt\)/i
+            ) as HTMLInputElement;
+            // IMPORTANT! Bug in user-event where file inputs fail validation when required
+            // https://github.com/testing-library/user-event/issues/801
+            fileInput.required = false;
+            const importButton = screen.getByRole('button', {
+                name: /^import$/i,
+            });
 
-        const fileInput = screen.getByLabelText(
-            /repertoire file \(.json or .txt\)/i
-        ) as HTMLInputElement;
-        // IMPORTANT! Bug in user-event where file inputs fail validation when required
-        // https://github.com/testing-library/user-event/issues/801
-        fileInput.required = false;
-        const importButton = screen.getByRole('button', { name: /^import$/i });
+            await user.upload(
+                fileInput,
+                new File([repertoireString], 'repertoire.txt', {
+                    type: 'text/plain',
+                })
+            );
+            await user.click(importButton);
 
-        await user.upload(
-            fileInput,
-            new File([repertoireString], 'repertoire.txt', {
-                type: 'text/plain',
-            })
-        );
-        await user.click(importButton);
-
-        expect(repertoireSetSpy).not.toHaveBeenCalled();
-        expect(lineIDsToTrainSetSpy).not.toHaveBeenCalled();
-        expect(window.location.reload).not.toHaveBeenCalled();
-        expect(
-            screen.getByText(/invalid repertoire data/i)
-        ).toBeInTheDocument();
-    });
+            expect(repertoireSetSpy).not.toHaveBeenCalled();
+            expect(lineIDsToTrainSetSpy).not.toHaveBeenCalled();
+            expect(window.location.reload).not.toHaveBeenCalled();
+            expect(
+                screen.getByText(/invalid repertoire data/i)
+            ).toBeInTheDocument();
+        }
+    );
 
     it('Removes validation error message when switching tabs', async () => {
         const user = await openImportDialog(helpers.repertoire.empty);
