@@ -18,27 +18,27 @@ describe('Lines panel', () => {
         const user = userEvent.setup();
         renderRouter();
 
-        const whiteFolder = screen.getByRole('button', {
-            name: /open white folder in lines panel/i,
+        const lineFolder = screen.getByRole('button', {
+            name: /open child folder in lines panel/i,
         });
-        await user.click(whiteFolder);
+        await user.click(lineFolder);
 
         expect(
-            screen.getByRole('region', { name: testRepertoire.folders.w.name })
+            screen.getByRole('region', { name: testRepertoire.folders[UUIDS.folders[0]].name })
         ).toBeInTheDocument();
     });
 
-    it("Lists open lines folder's lines in line panel", async () => {
+    it("Lists open linesFolder's lines in line panel", async () => {
         const testRepertoire = helpers.setup.repertoire(
             helpers.repertoire.withLineInWhite
         );
         const user = userEvent.setup();
         renderRouter();
 
-        const whiteFolder = screen.getByRole('button', {
-            name: /open white folder in lines panel/i,
+        const lineFolder = screen.getByRole('button', {
+            name: /open child folder in lines panel/i,
         });
-        await user.click(whiteFolder);
+        await user.click(lineFolder);
 
         const line = testRepertoire.lines[UUIDS.lines[0]];
         expect(
@@ -52,10 +52,10 @@ describe('Lines panel', () => {
         const user = userEvent.setup();
         renderRouter();
 
-        const whiteFolder = screen.getByRole('button', {
-            name: /open white folder in lines panel/i,
+        const lineFolder = screen.getByRole('button', {
+            name: /open child folder in lines panel/i,
         });
-        await user.click(whiteFolder);
+        await user.click(lineFolder);
 
         expect(screen.getByText(/no moves set/i)).toBeInTheDocument();
     });
@@ -65,10 +65,10 @@ describe('Lines panel', () => {
         const user = userEvent.setup();
         renderRouter();
 
-        const whiteFolder = screen.getByRole('button', {
-            name: /open white folder in lines panel/i,
+        const lineFolder = screen.getByRole('button', {
+            name: /open child folder in lines panel/i,
         });
-        await user.click(whiteFolder);
+        await user.click(lineFolder);
 
         expect(
             screen.queryByText(/custom starting fen:/i)
@@ -82,35 +82,35 @@ describe('Lines panel', () => {
         const user = userEvent.setup();
         renderRouter();
 
-        const whiteFolder = screen.getByRole('button', {
-            name: /open white folder in lines panel/i,
+        const lineFolder = screen.getByRole('button', {
+            name: /open child folder in lines panel/i,
         });
-        await user.click(whiteFolder);
+        await user.click(lineFolder);
 
         const line = testRepertoire.lines[UUIDS.lines[0]];
         expect(screen.getByText(line.startingFEN)).toBeInTheDocument();
     });
 
     it('Does not render new line link if open folder contains other folders', async () => {
-        helpers.setup.repertoire(helpers.repertoire.empty);
+        helpers.setup.repertoire(helpers.repertoire.withFolderInWhite);
         const user = userEvent.setup();
         renderRouter();
 
-        const whiteFolder = screen.getByRole('listitem', {
-            name: /white.*folder/i,
+        const emptyFolder = screen.getByRole('listitem', {
+            name: /child closed folder/i,
         });
 
         // open White folder in panel (opens because it could contain lines)
-        const whiteFolderOpenButton = within(whiteFolder).getByRole('button', {
-            name: /open white folder in lines panel/i,
+        const emptyFolderOpenButton = within(emptyFolder).getByRole('button', {
+            name: /open child folder in lines panel/i,
         });
-        await user.click(whiteFolderOpenButton);
+        await user.click(emptyFolderOpenButton);
 
         expect(
             screen.getByRole('link', { name: /new line/i })
         ).toBeInTheDocument();
 
-        const newFolderButton = within(whiteFolder).getByRole('button', {
+        const newFolderButton = within(emptyFolder).getByRole('button', {
             name: /new folder/i,
         });
         await user.click(newFolderButton);
