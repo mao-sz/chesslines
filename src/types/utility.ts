@@ -3,7 +3,6 @@ import type { Repertoire } from './repertoire';
 
 export type UUID = `${string}-${string}-${string}-${string}-${string}`;
 export type StateSetter<T> = Dispatch<SetStateAction<T>>;
-export type NonEmptyArray<T> = [T, ...T[]];
 
 type FontAwesomeIconName =
     | 'trash'
@@ -28,3 +27,5 @@ export type OutletContext = {
     lineIDsToTrain: UUID[];
     setLineIDsToTrain: StateSetter<UUID[]>;
 };
+
+export type Prettify<T> = { [K in keyof T]: T[K] } & {};

@@ -23,8 +23,8 @@ export const STANDARD_STARTING_FEN =
 
 export const EMPTY_REPERTOIRE: Repertoire = {
     folders: {
-        w: { name: 'White', contains: 'either', children: [] },
-        b: { name: 'Black', contains: 'either', children: [] },
+        w: { name: 'White', contains: 'folders', children: [] },
+        b: { name: 'Black', contains: 'folders', children: [] },
     },
     lines: {},
 };

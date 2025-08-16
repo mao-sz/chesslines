@@ -1,9 +1,9 @@
 import { renderHook, screen } from '@testing-library/react';
+import { useDeepContainsSelectedLine } from '@/hooks/useDeepContainsSelectedLine';
 import { useRepertoire } from '@/hooks/useRepertoire';
-import { STANDARD_STARTING_FEN } from '@/util/constants';
+import { EMPTY_REPERTOIRE, STANDARD_STARTING_FEN } from '@/util/constants';
 import type { UUID } from '@/types/utility';
 import type { Repertoire, RepertoireFolderID } from '@/types/repertoire';
-import { useDeepContainsSelectedLine } from '@/hooks/useDeepContainsSelectedLine';
 
 export const UUIDS: Record<'folders' | 'lines', UUID[]> = {
     lines: [
@@ -21,13 +21,7 @@ export const UUIDS: Record<'folders' | 'lines', UUID[]> = {
 
 const repertoire = {
     get empty(): Repertoire {
-        return {
-            folders: {
-                w: { name: 'White', contains: 'either', children: [] },
-                b: { name: 'Black', contains: 'either', children: [] },
-            },
-            lines: {},
-        };
+        return EMPTY_REPERTOIRE;
     },
     get withFolderInWhite(): Repertoire {
         return {
@@ -37,7 +31,7 @@ const repertoire = {
                     contains: 'folders',
                     children: [UUIDS.folders[0]],
                 },
-                b: { name: 'Black', contains: 'either', children: [] },
+                b: { name: 'Black', contains: 'folders', children: [] },
                 [UUIDS.folders[0]]: {
                     name: 'Child',
                     contains: 'either',
@@ -52,10 +46,15 @@ const repertoire = {
             folders: {
                 w: {
                     name: 'White',
+                    contains: 'folders',
+                    children: [UUIDS.folders[0]],
+                },
+                b: { name: 'Black', contains: 'folders', children: [] },
+                [UUIDS.folders[0]]: {
+                    name: 'Child',
                     contains: 'lines',
                     children: [UUIDS.lines[0]],
                 },
-                b: { name: 'Black', contains: 'either', children: [] },
             },
             lines: {
                 [UUIDS.lines[0]]: {
@@ -73,10 +72,15 @@ const repertoire = {
             folders: {
                 w: {
                     name: 'White',
+                    contains: 'folders',
+                    children: [UUIDS.folders[0]],
+                },
+                b: { name: 'Black', contains: 'folders', children: [] },
+                [UUIDS.folders[0]]: {
+                    name: 'Child',
                     contains: 'lines',
                     children: [UUIDS.lines[0]],
                 },
-                b: { name: 'Black', contains: 'either', children: [] },
             },
             lines: {
                 [UUIDS.lines[0]]: {
@@ -94,10 +98,15 @@ const repertoire = {
             folders: {
                 w: {
                     name: 'White',
+                    contains: 'folders',
+                    children: [UUIDS.folders[0]],
+                },
+                b: { name: 'Black', contains: 'folders', children: [] },
+                [UUIDS.folders[0]]: {
+                    name: 'Child',
                     contains: 'lines',
                     children: [UUIDS.lines[0]],
                 },
-                b: { name: 'Black', contains: 'either', children: [] },
             },
             lines: {
                 [UUIDS.lines[0]]: {
@@ -115,10 +124,15 @@ const repertoire = {
             folders: {
                 w: {
                     name: 'White',
+                    contains: 'folders',
+                    children: [UUIDS.folders[0]],
+                },
+                b: { name: 'Black', contains: 'folders', children: [] },
+                [UUIDS.folders[0]]: {
+                    name: 'Child',
                     contains: 'lines',
                     children: [UUIDS.lines[0]],
                 },
-                b: { name: 'Black', contains: 'either', children: [] },
             },
             lines: {
                 [UUIDS.lines[0]]: {
@@ -144,10 +158,15 @@ const repertoire = {
             folders: {
                 w: {
                     name: 'White',
+                    contains: 'folders',
+                    children: [UUIDS.folders[0]],
+                },
+                b: { name: 'Black', contains: 'folders', children: [] },
+                [UUIDS.folders[0]]: {
+                    name: 'Child',
                     contains: 'lines',
                     children: [UUIDS.lines[0]],
                 },
-                b: { name: 'Black', contains: 'either', children: [] },
             },
             lines: {
                 [UUIDS.lines[0]]: {
@@ -172,7 +191,7 @@ const repertoire = {
                         UUIDS.folders[3],
                     ],
                 },
-                b: { name: 'Black', contains: 'either', children: [] },
+                b: { name: 'Black', contains: 'folders', children: [] },
                 [UUIDS.folders[0]]: {
                     name: 'line folder',
                     contains: 'lines',
@@ -227,7 +246,7 @@ const repertoire = {
                     contains: 'folders',
                     children: [UUIDS.folders[0]],
                 },
-                b: { name: 'Black', contains: 'either', children: [] },
+                b: { name: 'Black', contains: 'folders', children: [] },
                 [UUIDS.folders[0]]: {
                     name: 'Child',
                     contains: 'folders',
@@ -250,10 +269,15 @@ const testRepertoire = {
             folders: {
                 w: {
                     name: 'White',
+                    contains: 'folders',
+                    children: [UUIDS.folders[0]],
+                },
+                b: { name: 'Black', contains: 'folders', children: [] },
+                [UUIDS.folders[0]]: {
+                    name: 'Child',
                     contains: 'lines',
                     children: [UUIDS.lines[0]],
                 },
-                b: { name: 'Black', contains: 'either', children: [] },
             },
             lines: {
                 [UUIDS.lines[0]]: {
@@ -268,9 +292,14 @@ const testRepertoire = {
     get withSingleBlackLine(): Repertoire {
         return {
             folders: {
-                w: { name: 'White', contains: 'either', children: [] },
+                w: { name: 'White', contains: 'folders', children: [] },
                 b: {
                     name: 'Black',
+                    contains: 'folders',
+                    children: [UUIDS.folders[0]],
+                },
+                [UUIDS.folders[0]]: {
+                    name: 'Child',
                     contains: 'lines',
                     children: [UUIDS.lines[0]],
                 },
@@ -290,10 +319,15 @@ const testRepertoire = {
             folders: {
                 w: {
                     name: 'White',
+                    contains: 'folders',
+                    children: [UUIDS.folders[0]],
+                },
+                b: { name: 'Black', contains: 'folders', children: [] },
+                [UUIDS.folders[0]]: {
+                    name: 'Child',
                     contains: 'lines',
                     children: [UUIDS.lines[0]],
                 },
-                b: { name: 'Black', contains: 'either', children: [] },
             },
             lines: {
                 [UUIDS.lines[0]]: {
@@ -309,9 +343,14 @@ const testRepertoire = {
     get withSingleBlackMidwayLine(): Repertoire {
         return {
             folders: {
-                w: { name: 'White', contains: 'either', children: [] },
+                w: { name: 'White', contains: 'folders', children: [] },
                 b: {
                     name: 'Black',
+                    contains: 'folders',
+                    children: [UUIDS.folders[0]],
+                },
+                [UUIDS.folders[0]]: {
+                    name: 'Child',
                     contains: 'lines',
                     children: [UUIDS.lines[0]],
                 },
@@ -327,13 +366,17 @@ const testRepertoire = {
             },
         };
     },
-
     get forHintsTesting(): Repertoire {
         return {
             folders: {
-                w: { name: 'White', contains: 'either', children: [] },
+                w: { name: 'White', contains: 'folders', children: [] },
                 b: {
                     name: 'Black',
+                    contains: 'folders',
+                    children: [UUIDS.folders[0]],
+                },
+                [UUIDS.folders[0]]: {
+                    name: 'First',
                     contains: 'lines',
                     children: [UUIDS.lines[0], UUIDS.lines[1]],
                 },
@@ -359,11 +402,21 @@ const testRepertoire = {
             folders: {
                 w: {
                     name: 'White',
-                    contains: 'lines',
-                    children: [UUIDS.lines[0], UUIDS.lines[2]],
+                    contains: 'folders',
+                    children: [UUIDS.folders[0]],
                 },
                 b: {
                     name: 'Black',
+                    contains: 'folders',
+                    children: [UUIDS.folders[1]],
+                },
+                [UUIDS.folders[0]]: {
+                    name: 'Child of white',
+                    contains: 'lines',
+                    children: [UUIDS.lines[0], UUIDS.lines[2]],
+                },
+                [UUIDS.folders[1]]: {
+                    name: 'Child of black',
                     contains: 'lines',
                     children: [UUIDS.lines[1]],
                 },
@@ -395,11 +448,21 @@ const testRepertoire = {
             folders: {
                 w: {
                     name: 'White',
-                    contains: 'lines',
-                    children: [UUIDS.lines[0], UUIDS.lines[2]],
+                    contains: 'folders',
+                    children: [UUIDS.folders[0]],
                 },
                 b: {
                     name: 'Black',
+                    contains: 'folders',
+                    children: [UUIDS.folders[1]],
+                },
+                [UUIDS.folders[0]]: {
+                    name: 'Child of white',
+                    contains: 'lines',
+                    children: [UUIDS.lines[0], UUIDS.lines[2]],
+                },
+                [UUIDS.folders[1]]: {
+                    name: 'Child of black',
                     contains: 'lines',
                     children: [UUIDS.lines[1]],
                 },
@@ -430,15 +493,7 @@ const testRepertoire = {
 
 const hooks = {
     callUseRepertoire() {
-        return renderHook(() =>
-            useRepertoire({
-                folders: {
-                    w: { name: 'White', contains: 'either', children: [] },
-                    b: { name: 'Black', contains: 'either', children: [] },
-                },
-                lines: {},
-            })
-        );
+        return renderHook(() => useRepertoire(EMPTY_REPERTOIRE));
     },
     callUseDeepContainsSelectedLine(
         folders: Repertoire['folders'],
