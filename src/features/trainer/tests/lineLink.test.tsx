@@ -55,7 +55,7 @@ describe('"Study line" link', () => {
             helpers.testRepertoire.withSingleWhiteLine,
             [UUIDS.lines[0]]
         );
-        const testLineParentFolder = testRepertoire.folders.w;
+        const testLineParentFolder = testRepertoire.folders[UUIDS.folders[0]];
         const testLineID = Object.keys(testRepertoire.lines)[0];
         const studyLineRouter = createMemoryRouter(routes, {
             initialEntries: [`/repertoire?line=${testLineID}`],
