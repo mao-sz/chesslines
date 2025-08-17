@@ -64,7 +64,7 @@ describe('App start', () => {
         ],
         [
             'missing "b" folder',
-            '{"folders":{"w":{"name":"White","contains":"either","children":[]}},"lines":{}}',
+            '{"folders":{"w":{"name":"White","contains":"folders","children":[]}},"lines":{}}',
             '✖ Invalid input: expected object, received undefined\n  → at folders.b',
         ],
         [
@@ -138,16 +138,12 @@ describe('App start', () => {
 
 describe('Editing repertoire', () => {
     it('Sets updated repertoire after adding folder', async () => {
-        window.localStorage.setItem(
-            'repertoire',
-            JSON.stringify(EMPTY_REPERTOIRE)
-        );
-
+        helpers.setup.repertoire(EMPTY_REPERTOIRE);
         const user = userEvent.setup();
         renderRouter();
 
         const newFolderButton = screen.getByRole('button', {
-            name: /new folder/i,
+            name: /new white folder/i,
         });
         await user.click(newFolderButton);
         await user.keyboard('added[Space]folder[Enter]');
@@ -159,7 +155,6 @@ describe('Editing repertoire', () => {
             contains: 'either',
             children: [],
         };
-        updatedRepertoire.folders.w.contains = 'folders';
         updatedRepertoire.folders.w.children = [newFolderUUID];
 
         expect(repertoireSetSpy).toHaveBeenCalledWith(updatedRepertoire);
@@ -169,19 +164,9 @@ describe('Editing repertoire', () => {
     });
 
     it('Sets updated repertoire after deleting folder', async () => {
-        window.localStorage.setItem(
-            'repertoire',
-            JSON.stringify(EMPTY_REPERTOIRE)
-        );
-
+        helpers.setup.repertoire(helpers.repertoire.withFolderInWhite);
         const user = userEvent.setup();
         renderRouter();
-
-        const newFolderButton = screen.getByRole('button', {
-            name: /new folder/i,
-        });
-        await user.click(newFolderButton);
-        await user.keyboard('added[Space]folder[Enter]');
 
         const deleteFolderButton = screen.getByRole('button', {
             name: /delete folder/i,
@@ -198,9 +183,8 @@ describe('Editing repertoire', () => {
     });
 
     it('Sets updated repertoire after renaming folder', async () => {
-        window.localStorage.setItem(
-            'repertoire',
-            JSON.stringify(EMPTY_REPERTOIRE)
+        const testRepertoire = helpers.setup.repertoire(
+            helpers.repertoire.withFolderInWhite
         );
 
         const user = userEvent.setup();
@@ -213,8 +197,8 @@ describe('Editing repertoire', () => {
         await user.clear(screen.getByRole('textbox'));
         await user.keyboard('renamed[Enter]');
 
-        const updatedRepertoire = structuredClone(EMPTY_REPERTOIRE);
-        updatedRepertoire.folders.w.name = 'renamed';
+        const updatedRepertoire = structuredClone(testRepertoire);
+        updatedRepertoire.folders[UUIDS.folders[0]].name = 'renamed';
 
         expect(repertoireSetSpy).toHaveBeenCalledWith(updatedRepertoire);
         expect(window.localStorage.getItem('repertoire')).toBe(
@@ -223,18 +207,17 @@ describe('Editing repertoire', () => {
     });
 
     it('Sets updated repertoire after adding line', async () => {
-        window.localStorage.setItem(
-            'repertoire',
-            JSON.stringify(EMPTY_REPERTOIRE)
+        const testRepertoire = helpers.setup.repertoire(
+            helpers.repertoire.withFolderInWhite
         );
 
         const user = userEvent.setup();
         renderRouter();
 
-        const whiteFolder = screen.getByRole('button', {
-            name: /open white folder in lines panel/i,
+        const folder = screen.getByRole('button', {
+            name: /open child folder in lines panel/i,
         });
-        await user.click(whiteFolder);
+        await user.click(folder);
 
         const newLineLink = screen.getByRole('link', { name: /new line/i });
         await user.click(newLineLink);
@@ -249,16 +232,16 @@ describe('Editing repertoire', () => {
         const saveButton = screen.getByRole('button', { name: /save/i });
         await user.click(saveButton);
 
-        const newFolderUUID = getLatestUUID();
-        const updatedRepertoire = structuredClone(EMPTY_REPERTOIRE);
-        updatedRepertoire.lines[newFolderUUID] = {
+        const newLineUUID = getLatestUUID();
+        const updatedRepertoire = structuredClone(testRepertoire);
+        updatedRepertoire.lines[newLineUUID] = {
             player: 'w',
             startingFEN: STANDARD_STARTING_FEN,
             PGN: '',
             notes: [''],
         };
-        updatedRepertoire.folders.w.contains = 'lines';
-        updatedRepertoire.folders.w.children = [newFolderUUID];
+        updatedRepertoire.folders[UUIDS.folders[0]].contains = 'lines';
+        updatedRepertoire.folders[UUIDS.folders[0]].children = [newLineUUID];
 
         expect(repertoireSetSpy).toHaveBeenCalledWith(updatedRepertoire);
         expect(window.localStorage.getItem('repertoire')).toBe(
@@ -267,55 +250,38 @@ describe('Editing repertoire', () => {
     });
 
     it('Sets updated repertoire after editing line', async () => {
-        window.localStorage.setItem(
-            'repertoire',
-            JSON.stringify(EMPTY_REPERTOIRE)
+        const testRepertoire = helpers.setup.repertoire(
+            helpers.testRepertoire.withSingleWhiteLine
         );
 
         const user = userEvent.setup();
         renderRouter();
 
-        const whiteFolder = screen.getByRole('button', {
-            name: /open white folder in lines panel/i,
+        const folder = screen.getByRole('button', {
+            name: /open child folder in lines panel/i,
         });
-        await user.click(whiteFolder);
-
-        const newLineLink = screen.getByRole('link', { name: /new line/i });
-        await user.click(newLineLink);
-
-        // setting starting position
-        const loadPositionButton = screen.getByRole('button', {
-            name: /load/i,
-        });
-        await user.click(loadPositionButton);
-
-        // saving line
-        const saveButton = screen.getByRole('button', { name: /save/i });
-        await user.click(saveButton);
-        const newFolderUUID = getLatestUUID();
+        await user.click(folder);
 
         const editLineLink = screen.getAllByRole('link', {
             name: /edit line/i,
         })[0];
         await user.click(editLineLink);
 
-        const d2Square = screen.getByRole('button', { name: /d2/i });
-        const d4Square = screen.getByRole('button', { name: /d4/i });
+        const d7Square = screen.getByRole('button', { name: /d7/i });
+        const d5Square = screen.getByRole('button', { name: /d5/i });
 
-        await user.click(d2Square);
-        await user.click(d4Square);
+        await user.click(d7Square);
+        await user.click(d5Square);
         const saveButtonForEdit = screen.getByRole('button', { name: /save/i });
         await user.click(saveButtonForEdit);
 
-        const updatedRepertoire = structuredClone(EMPTY_REPERTOIRE);
-        updatedRepertoire.lines[newFolderUUID] = {
+        const updatedRepertoire = structuredClone(testRepertoire);
+        updatedRepertoire.lines[UUIDS.lines[0]] = {
             player: 'w',
             startingFEN: STANDARD_STARTING_FEN,
-            PGN: '1. d4',
-            notes: ['', ''],
+            PGN: '1. d4 d5',
+            notes: ['', '', ''],
         };
-        updatedRepertoire.folders.w.contains = 'lines';
-        updatedRepertoire.folders.w.children = [newFolderUUID];
 
         expect(repertoireSetSpy).toHaveBeenCalledWith(updatedRepertoire);
         expect(window.localStorage.getItem('repertoire')).toBe(
@@ -324,31 +290,14 @@ describe('Editing repertoire', () => {
     });
 
     it('Sets updated repertoire after deleting line', async () => {
-        window.localStorage.setItem(
-            'repertoire',
-            JSON.stringify(EMPTY_REPERTOIRE)
-        );
-
+        helpers.setup.repertoire(helpers.repertoire.withLineInWhite);
         const user = userEvent.setup();
         renderRouter();
 
-        const whiteFolder = screen.getByRole('button', {
-            name: /open white folder in lines panel/i,
+        const lineFolder = screen.getByRole('button', {
+            name: /open child folder in lines panel/i,
         });
-        await user.click(whiteFolder);
-
-        const newLineLink = screen.getByRole('link', { name: /new line/i });
-        await user.click(newLineLink);
-
-        // setting starting position
-        const loadPositionButton = screen.getByRole('button', {
-            name: /load/i,
-        });
-        await user.click(loadPositionButton);
-
-        // saving line
-        const saveButton = screen.getByRole('button', { name: /save/i });
-        await user.click(saveButton);
+        await user.click(lineFolder);
 
         const deleteLineButton = screen.getByRole('button', {
             name: /delete line/i,
@@ -358,9 +307,11 @@ describe('Editing repertoire', () => {
         const confirmButton = screen.getByRole('button', { name: /confirm/i });
         await user.click(confirmButton);
 
-        expect(repertoireSetSpy).toHaveBeenCalledWith(EMPTY_REPERTOIRE);
+        expect(repertoireSetSpy).toHaveBeenCalledWith(
+            helpers.repertoire.withFolderInWhite
+        );
         expect(window.localStorage.getItem('repertoire')).toBe(
-            JSON.stringify(EMPTY_REPERTOIRE)
+            JSON.stringify(helpers.repertoire.withFolderInWhite)
         );
     });
 });
@@ -370,35 +321,28 @@ describe('Selecting lines to train', () => {
         const testRepertoire = helpers.setup.repertoire(
             helpers.testRepertoire.withManyMixedLines
         );
+        const testLines = testRepertoire.folders[UUIDS.folders[0]].children;
 
         const user = userEvent.setup();
         renderRouter();
 
-        const whiteFolder = screen.getByRole('button', {
-            name: /open white folder in lines panel/i,
+        const lineFolder = screen.getByRole('button', {
+            name: /open child of white folder in lines panel/i,
         });
-        await user.click(whiteFolder);
+        await user.click(lineFolder);
 
         const lines = within(
             screen.getByRole('list', { name: /lines/i })
         ).getAllByRole('checkbox');
 
         await user.click(lines[0]);
-        expect(trainableLineIDsSetSpy).toHaveBeenCalledWith([
-            testRepertoire.folders.w.children[0],
-        ]);
+        expect(trainableLineIDsSetSpy).toHaveBeenCalledWith([testLines[0]]);
 
         await user.click(lines[1]);
-        expect(trainableLineIDsSetSpy).toHaveBeenCalledWith([
-            testRepertoire.folders.w.children[0],
-            testRepertoire.folders.w.children[1],
-        ]);
+        expect(trainableLineIDsSetSpy).toHaveBeenCalledWith(testLines);
 
         expect(window.localStorage.getItem('line_ids_to_train')).toBe(
-            JSON.stringify([
-                testRepertoire.folders.w.children[0],
-                testRepertoire.folders.w.children[1],
-            ])
+            JSON.stringify(testLines)
         );
     });
 
@@ -406,14 +350,14 @@ describe('Selecting lines to train', () => {
         const testRepertoire = helpers.setup.repertoire(
             helpers.testRepertoire.withManyMixedLines
         );
-
         const user = userEvent.setup();
         renderRouter();
 
-        const whiteFolder = screen.getByRole('button', {
-            name: /open white folder in lines panel/i,
+        const lineFolderUUID = UUIDS.folders[0];
+        const lineFolder = screen.getByRole('button', {
+            name: /open child of white folder in lines panel/i,
         });
-        await user.click(whiteFolder);
+        await user.click(lineFolder);
 
         const selectAllLinesButton = screen.getByRole('button', {
             name: /select all/i,
@@ -421,25 +365,22 @@ describe('Selecting lines to train', () => {
         await user.click(selectAllLinesButton);
 
         expect(trainableLineIDsSetSpy).toHaveBeenCalledWith(
-            testRepertoire.folders.w.children
+            testRepertoire.folders[lineFolderUUID].children
         );
         expect(window.localStorage.getItem('line_ids_to_train')).toBe(
-            JSON.stringify(testRepertoire.folders.w.children)
+            JSON.stringify(testRepertoire.folders[lineFolderUUID].children)
         );
     });
 
     it('Sets updated trainable line IDs after de-selecting line', async () => {
-        const testRepertoire = helpers.setup.repertoire(
-            helpers.testRepertoire.withManyMixedLines
-        );
-
+        helpers.setup.repertoire(helpers.testRepertoire.withManyMixedLines);
         const user = userEvent.setup();
         renderRouter();
 
-        const whiteFolder = screen.getByRole('button', {
-            name: /open white folder in lines panel/i,
+        const lineFolder = screen.getByRole('button', {
+            name: /open child of white folder in lines panel/i,
         });
-        await user.click(whiteFolder);
+        await user.click(lineFolder);
 
         const lines = within(
             screen.getByRole('list', { name: /lines/i })
@@ -449,27 +390,25 @@ describe('Selecting lines to train', () => {
         await user.click(lines[1]);
         await user.click(lines[0]);
 
-        expect(trainableLineIDsSetSpy).toHaveBeenCalledWith([
-            testRepertoire.folders.w.children[1],
-        ]);
+        const deselectedLineUUID = UUIDS.lines[2];
 
+        expect(trainableLineIDsSetSpy).toHaveBeenCalledWith([
+            deselectedLineUUID,
+        ]);
         expect(window.localStorage.getItem('line_ids_to_train')).toBe(
-            JSON.stringify([testRepertoire.folders.w.children[1]])
+            JSON.stringify([deselectedLineUUID])
         );
     });
 
     it('Removes trainable line ID when line is deleted', async () => {
-        const testRepertoire = helpers.setup.repertoire(
-            helpers.testRepertoire.withManyMixedLines
-        );
-
+        helpers.setup.repertoire(helpers.testRepertoire.withManyMixedLines);
         const user = userEvent.setup();
         renderRouter();
 
-        const whiteFolder = screen.getByRole('button', {
-            name: /open white folder in lines panel/i,
+        const lineFolder = screen.getByRole('button', {
+            name: /open child of white folder in lines panel/i,
         });
-        await user.click(whiteFolder);
+        await user.click(lineFolder);
 
         const lines = within(
             screen.getByRole('list', { name: /lines/i })
@@ -486,12 +425,11 @@ describe('Selecting lines to train', () => {
         const confirmButton = screen.getByRole('button', { name: /confirm/i });
         await user.click(confirmButton);
 
-        expect(trainableLineIDsSetSpy).toHaveBeenCalledWith([
-            testRepertoire.folders.w.children[1],
-        ]);
+        const deletedLineUUID = UUIDS.lines[2];
 
+        expect(trainableLineIDsSetSpy).toHaveBeenCalledWith([deletedLineUUID]);
         expect(window.localStorage.getItem('line_ids_to_train')).toBe(
-            JSON.stringify([testRepertoire.folders.w.children[1]])
+            JSON.stringify([deletedLineUUID])
         );
     });
 });
