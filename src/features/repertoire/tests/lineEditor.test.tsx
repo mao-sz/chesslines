@@ -1,13 +1,11 @@
 import { createMemoryRouter, RouterProvider } from 'react-router';
-import { describe, it, expect, afterEach } from 'vitest';
-import { cleanup, render, screen, within } from '@testing-library/react';
+import { describe, it, expect } from 'vitest';
+import { render, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { routes } from '@/app/routes';
 import { helpers } from '@/testing/helpers';
 import { STANDARD_STARTING_FEN } from '@/util/constants';
 import type { Repertoire } from '@/types/repertoire';
-
-afterEach(cleanup);
 
 async function openLineFolderInPanel(
     repertoire: Repertoire = helpers.repertoire.withLineInWhite
