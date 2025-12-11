@@ -55,8 +55,14 @@ const zodFolder = zod.discriminatedUnion('contains', [
         children: zod.tuple([zodUUID], zodUUID),
     }),
 ]);
+const zodBaseFolder = zod.object({
+    name: zod.string(),
+    contains: zod.literal('folders'),
+    children: zod.array(zodUUID),
+});
+
 const zodRepertoireFolders = zod
-    .object({ w: zodFolder, b: zodFolder })
+    .object({ w: zodBaseFolder, b: zodBaseFolder })
     .catchall(zodFolder);
 
 export const StoredRepertoire = zod.object({

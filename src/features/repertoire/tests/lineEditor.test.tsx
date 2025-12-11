@@ -1,13 +1,11 @@
 import { createMemoryRouter, RouterProvider } from 'react-router';
-import { describe, it, expect, afterEach } from 'vitest';
-import { cleanup, render, screen, within } from '@testing-library/react';
+import { describe, it, expect } from 'vitest';
+import { render, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { routes } from '@/app/routes';
 import { helpers } from '@/testing/helpers';
 import { STANDARD_STARTING_FEN } from '@/util/constants';
 import type { Repertoire } from '@/types/repertoire';
-
-afterEach(cleanup);
 
 async function openLineFolderInPanel(
     repertoire: Repertoire = helpers.repertoire.withLineInWhite
@@ -17,10 +15,10 @@ async function openLineFolderInPanel(
     render(<RouterProvider router={testRouter} />);
 
     const user = userEvent.setup();
-    const whiteFolder = screen.getByRole('button', {
-        name: /open white folder in lines panel/i,
+    const linesFolder = screen.getByRole('button', {
+        name: /open child folder in lines panel/i,
     });
-    await user.click(whiteFolder);
+    await user.click(linesFolder);
     return user;
 }
 
@@ -173,7 +171,7 @@ describe('Validation', () => {
         const newPGN = '1. d4 d5 2. c4';
 
         const user = await openLineFolderInPanel();
-        const linesPanel = screen.getByRole('region', { name: /white/i });
+        const linesPanel = screen.getByRole('region', { name: /child/i });
 
         expect(within(linesPanel).getAllByRole('listitem')).toHaveLength(1);
         expect(screen.queryByText(`PGN: ${newPGN}`)).not.toBeInTheDocument();

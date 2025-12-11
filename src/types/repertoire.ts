@@ -1,5 +1,5 @@
 import type { Colour } from './chessboard';
-import type { NonEmptyArray, UUID } from './utility';
+import type { Prettify, UUID } from './utility';
 
 export type LineNotes = [string, ...string[]];
 export type RepertoireLine = {
@@ -13,18 +13,21 @@ type RepertoireLines = Record<UUID, RepertoireLine>;
 
 type Folder = { name: string };
 type EmptyFolder = Folder & { contains: 'either'; children: [] };
-type NonEmptyFolder = Folder & {
+type PopulatedFolder = Folder & {
     contains: 'folders' | 'lines';
-    children: NonEmptyArray<UUID>;
+    children: UUID[];
 };
-export type RepertoireFolder = EmptyFolder | NonEmptyFolder;
-type RepertoireFolders = Record<Colour | UUID, RepertoireFolder>;
+export type RepertoireFolder = EmptyFolder | PopulatedFolder;
+type BaseFolder = Prettify<PopulatedFolder & { contains: 'folders' }>;
 
-export type RepertoireFolderID = keyof RepertoireFolders;
+export type RepertoireFolderID = UUID | Colour;
 
-export type Repertoire = { folders: RepertoireFolders; lines: RepertoireLines };
-export type RepertoireWithMethods = {
-    folders: RepertoireFolders & {
+export type Repertoire = {
+    folders: { w: BaseFolder; b: BaseFolder; [id: UUID]: RepertoireFolder };
+    lines: RepertoireLines;
+};
+export type RepertoireWithMethods = Repertoire & {
+    folders: {
         create: (name: string, parent: RepertoireFolderID) => void;
         updateName: (id: RepertoireFolderID, newName: string) => void;
         updateLocation: (
@@ -33,13 +36,10 @@ export type RepertoireWithMethods = {
         ) => void;
         delete: (id: RepertoireFolderID) => boolean;
     };
-    lines: RepertoireLines & {
-        create: (line: RepertoireLine, parent: RepertoireFolderID) => void;
+    lines: {
+        create: (line: RepertoireLine, parent: UUID) => void;
         updateLine: (id: UUID, line: RepertoireLine) => void;
-        updateLocation: (
-            idToMove: UUID,
-            newParentId: RepertoireFolderID
-        ) => void;
+        updateLocation: (idToMove: UUID, newParentId: UUID) => void;
         delete: (id: UUID) => void;
     };
 };

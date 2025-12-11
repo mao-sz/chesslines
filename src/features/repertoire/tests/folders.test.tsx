@@ -38,12 +38,25 @@ describe('Switching repertoire tabs', () => {
 });
 
 describe('New folder button', () => {
-    it("Renders 'new folder' button when folder is empty", () => {
+    it("Renders top-level 'new folder' button", () => {
         helpers.setup.repertoire(helpers.repertoire.empty);
         renderRouter();
 
         expect(
-            screen.getByRole('button', { name: /new folder/i })
+            screen.getByRole('button', { name: /new top-level white folder/i })
+        ).toBeInTheDocument();
+    });
+
+    it("Renders folder-specific 'new folder' button when folder is empty", () => {
+        helpers.setup.repertoire(helpers.repertoire.withFolderInWhite);
+        renderRouter();
+
+        const emptyFolder = screen.getByRole('listitem', {
+            name: /child closed folder/i,
+        });
+
+        expect(
+            within(emptyFolder).getByRole('button', { name: /new folder/i })
         ).toBeInTheDocument();
     });
 
@@ -51,12 +64,12 @@ describe('New folder button', () => {
         helpers.setup.repertoire(helpers.repertoire.withFolderInWhite);
         renderRouter();
 
-        const whiteFolder = screen.getByRole('listitem', {
-            name: /white open folder/i,
+        const folderFolder = screen.getByRole('listitem', {
+            name: /child closed folder/i,
         });
 
         expect(
-            within(whiteFolder).getAllByRole('button', {
+            within(folderFolder).getAllByRole('button', {
                 name: /new folder/i,
             })[0]
         ).toBeInTheDocument();
@@ -67,7 +80,7 @@ describe('New folder button', () => {
         renderRouter();
 
         const whiteFolder = screen.getByRole('listitem', {
-            name: /white.+folder/i,
+            name: /child closed folder/i,
         });
 
         expect(
@@ -85,7 +98,7 @@ describe('New folder button', () => {
     });
 
     it('Removes new folder button when new folder button clicked and form appears', async () => {
-        helpers.setup.repertoire(helpers.repertoire.empty);
+        helpers.setup.repertoire(helpers.repertoire.withFolderInWhite);
         const user = userEvent.setup();
         renderRouter();
 
@@ -115,7 +128,6 @@ describe('New folder button', () => {
             'button',
             { name: /open child folder/i }
         );
-        // open the first child folder
         await user.click(closableFolderOpenButton);
 
         const newFolderButton = within(closableFolder).getAllByRole('button', {
@@ -127,13 +139,13 @@ describe('New folder button', () => {
         expect(closableFolder).toHaveAccessibleName(/child open folder$/i);
     });
 
-    it('Adds new folder when new folder name submitted', async () => {
+    it('Adds new top-level folder when new folder name submitted', async () => {
         helpers.setup.repertoire(helpers.repertoire.empty);
         const user = userEvent.setup();
         renderRouter();
 
         const newFolderButton = screen.getByRole('button', {
-            name: /new folder/i,
+            name: /new top-level white folder/i,
         });
         await user.click(newFolderButton);
 
@@ -147,12 +159,35 @@ describe('New folder button', () => {
         ).toBeInTheDocument();
     });
 
-    it('Discards new folder name form without submitting and renders new folder button when cancel button clicked', async () => {
-        helpers.setup.repertoire(helpers.repertoire.empty);
+    it('Adds new folder as a child of another folder', async () => {
+        helpers.setup.repertoire(helpers.repertoire.withFolderInWhite);
         const user = userEvent.setup();
         renderRouter();
 
-        const displayedFolderCount = screen.queryAllByRole('generic', {
+        const folder = screen.getByRole('listitem', {
+            name: /child closed folder/i,
+        });
+        const newFolderButton = screen.getByRole('button', {
+            name: /new folder/i,
+        });
+        await user.click(newFolderButton);
+
+        const newFolderNameInput = screen.getByRole('textbox', {
+            name: /name/i,
+        });
+        await user.type(newFolderNameInput, 'new folder name[Enter]');
+
+        expect(
+            within(folder).getByRole('heading', { name: /new folder name/i })
+        ).toBeInTheDocument();
+    });
+
+    it('Discards new folder name form without submitting and renders new folder button when cancel button clicked', async () => {
+        helpers.setup.repertoire(helpers.repertoire.withFolderInWhite);
+        const user = userEvent.setup();
+        renderRouter();
+
+        const displayedFolderCount = screen.queryAllByRole('listitem', {
             name: /folder$/i,
         }).length;
 
@@ -169,7 +204,7 @@ describe('New folder button', () => {
             screen.getByRole('button', { name: /new folder/i })
         ).toBeInTheDocument();
         expect(
-            screen.queryAllByRole('generic', { name: /folder$/i })
+            screen.queryAllByRole('listitem', { name: /folder$/i })
         ).toHaveLength(displayedFolderCount);
     });
 
@@ -205,7 +240,7 @@ describe('Renaming folder', () => {
     });
 
     it('Shows rename form when edit button clicked', async () => {
-        helpers.setup.repertoire(helpers.repertoire.empty);
+        helpers.setup.repertoire(helpers.repertoire.withFolderInWhite);
         const user = userEvent.setup();
         renderRouter();
 
@@ -220,11 +255,10 @@ describe('Renaming folder', () => {
     });
 
     it('Renames folder when rename form submitted', async () => {
-        helpers.setup.repertoire(helpers.repertoire.empty);
+        helpers.setup.repertoire(helpers.repertoire.withFolderInWhite);
         const user = userEvent.setup();
         renderRouter();
 
-        const oldFolderName = helpers.repertoire.empty.folders.w;
         const renameButton = screen.getByRole('button', {
             name: /rename folder/i,
         });
@@ -240,30 +274,31 @@ describe('Renaming folder', () => {
             screen.getByRole('listitem', { name: /^renamed folder/i })
         ).toBeInTheDocument();
         expect(
-            screen.queryByRole('listitem', { name: `${oldFolderName}` })
+            screen.queryByRole('listitem', { name: /child/i })
         ).not.toBeInTheDocument();
     });
 
     it('Prevents closing folder while rename form present', async () => {
-        helpers.setup.repertoire(helpers.repertoire.withFolderInWhite);
+        helpers.setup.repertoire(helpers.repertoire.withNestedFolders);
         const user = userEvent.setup();
         renderRouter();
 
         const closableFolder = screen.getByRole('listitem', {
-            name: /white open folder$/i,
+            name: /child closed folder$/i,
         });
-        const closableFolderCloseButton = within(closableFolder).getByRole(
+        const closableFolderToggleOpenButton = within(closableFolder).getByRole(
             'button',
-            { name: /close white folder/i }
+            { name: /open child folder/i }
         );
+        await user.click(closableFolderToggleOpenButton);
 
         const renameButton = within(closableFolder).getAllByRole('button', {
             name: /rename folder/i,
         })[0];
         await user.click(renameButton);
-        await user.click(closableFolderCloseButton);
+        await user.click(closableFolderToggleOpenButton);
 
-        expect(closableFolder).toHaveAccessibleName(/white open folder$/i);
+        expect(closableFolder).toHaveAccessibleName(/child open folder$/i);
     });
 
     it('Does not render new folder button when rename form present', async () => {

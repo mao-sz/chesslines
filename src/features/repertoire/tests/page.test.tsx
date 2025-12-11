@@ -58,10 +58,10 @@ describe('Initial elements', () => {
         const user = userEvent.setup();
         renderRouter();
 
-        const whiteFolder = screen.getByRole('button', {
-            name: /open white folder in lines panel/i,
+        const linesFolder = screen.getByRole('button', {
+            name: /open child of white folder in lines panel/i,
         });
-        await user.click(whiteFolder);
+        await user.click(linesFolder);
 
         const lines = within(
             screen.getByRole('list', { name: /lines/i })
@@ -80,10 +80,10 @@ describe('Initial elements', () => {
         const user = userEvent.setup();
         renderRouter();
 
-        const whiteFolder = screen.getByRole('button', {
-            name: /open white folder in lines panel/i,
+        const linesFolder = screen.getByRole('button', {
+            name: /open child of white folder in lines panel/i,
         });
-        await user.click(whiteFolder);
+        await user.click(linesFolder);
 
         const lines = within(
             screen.getByRole('list', { name: /lines/i })
