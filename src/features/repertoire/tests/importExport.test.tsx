@@ -169,7 +169,7 @@ describe('Import', () => {
             expect(lineIDsToTrainSetSpy).not.toHaveBeenCalled();
             expect(window.location.reload).not.toHaveBeenCalled();
             expect(
-                screen.getByText(/invalid repertoire data/i)
+                await screen.findByText(/invalid repertoire data/i)
             ).toBeInTheDocument();
         }
     );
