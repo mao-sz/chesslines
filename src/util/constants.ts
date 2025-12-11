@@ -1,5 +1,11 @@
+import type { Colour } from '@/types/chessboard';
 import type { Repertoire } from '@/types/repertoire';
 import type { FontAwesomeIcon } from '@/types/utility';
+
+export const COLOURS = { w: 'white', b: 'black' } as const satisfies Record<
+    Colour,
+    string
+>;
 
 export const ICONS = {
     TICK: 'fa-solid fa-check',
