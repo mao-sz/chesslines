@@ -24,7 +24,9 @@ describe('Lines panel', () => {
         await user.click(lineFolder);
 
         expect(
-            screen.getByRole('region', { name: testRepertoire.folders[UUIDS.folders[0]].name })
+            screen.getByRole('region', {
+                name: testRepertoire.folders[UUIDS.folders[0]].name,
+            })
         ).toBeInTheDocument();
     });
 
