@@ -1,0 +1,44 @@
+name: Format and Lint
+on:
+    pull_request:
+        paths:
+            - '**/*.ts'
+            - '**/*.tsx'
+            - '**/*.json'
+            - '**/*.yml'
+
+jobs:
+    prettier:
+        name: Check formatting
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v4
+            - uses: tj-actions/changed-files@v46
+              id: changed-files
+              with:
+                  files: |
+                      **/*.ts
+                      **/*.tsx
+                      **/*.json
+                      **/*.yml
+                  separator: ' '
+            - uses: creyD/prettier_action@v4.3
+              if: steps.changed-files.outputs.all_changed_files
+              with:
+                  dry: True
+                  prettier_options: --check ${{ steps.changed-files.outputs.all_changed_files }}
+
+    eslint:
+        name: Check linting
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v4
+            - uses: tj-actions/changed-files@v46
+              id: changed-files
+              with:
+                  files: |
+                      **/*.ts
+                      **/*.tsx
+                  separator: ' '
+            - if: steps.changed-files.outputs.all_changed_files
+              run: npm install && npx eslint -- ${{ steps.changed-files.outputs.all_changed_files }}
