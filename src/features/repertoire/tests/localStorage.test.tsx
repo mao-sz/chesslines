@@ -143,7 +143,7 @@ describe('Editing repertoire', () => {
         renderRouter();
 
         const newFolderButton = screen.getByRole('button', {
-            name: /new white folder/i,
+            name: /new top-level white folder/i,
         });
         await user.click(newFolderButton);
         await user.keyboard('added[Space]folder[Enter]');

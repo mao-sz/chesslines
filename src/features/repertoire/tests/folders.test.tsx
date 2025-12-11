@@ -43,7 +43,7 @@ describe('New folder button', () => {
         renderRouter();
 
         expect(
-            screen.getByRole('button', { name: /new white folder/i })
+            screen.getByRole('button', { name: /new top-level white folder/i })
         ).toBeInTheDocument();
     });
 
@@ -145,7 +145,7 @@ describe('New folder button', () => {
         renderRouter();
 
         const newFolderButton = screen.getByRole('button', {
-            name: /new white folder/i,
+            name: /new top-level white folder/i,
         });
         await user.click(newFolderButton);
 

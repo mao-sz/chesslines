@@ -56,12 +56,26 @@ export function FolderPanel({
                     with <ContainsSelectedLinesBadge />
                 </p>
 
-                <IconButton
-                    type="button"
-                    icon={ICONS.NEW_FOLDER}
-                    ariaLabel={`new ${COLOURS[currentTab]} folder`}
-                    onClick={() => setIsCreatingNewFolder(true)}
-                />
+                <div className={styles.newTopLevelFolderButton}>
+                    <IconButton
+                        type="button"
+                        icon={ICONS.NEW_FOLDER}
+                        ariaLabel={`new top-level ${COLOURS[currentTab]} folder`}
+                        onClick={() => setIsCreatingNewFolder(true)}
+                    />
+                </div>
+
+                {isCreatingNewFolder && (
+                    <div className="listItem">
+                        <FolderNameForm
+                            ariaLabel="new folder"
+                            handleSubmit={createFolder}
+                            submit={{ icon: ICONS.TICK, text: 'Create folder' }}
+                            cancel={{ icon: ICONS.CROSS, text: 'Cancel' }}
+                            discardForm={() => setIsCreatingNewFolder(false)}
+                        />
+                    </div>
+                )}
 
                 {/* https://developer.mozilla.org/en-US/docs/Web/CSS/list-style#accessibility
                 list-style: none removes list accessibility role in Safari */}
@@ -80,16 +94,6 @@ export function FolderPanel({
                             setCurrentLinesFolder={setCurrentLinesFolder}
                         />
                     ))}
-
-                    {isCreatingNewFolder && (
-                        <FolderNameForm
-                            ariaLabel="new folder"
-                            handleSubmit={createFolder}
-                            submit={{ icon: ICONS.TICK, text: 'Create folder' }}
-                            cancel={{ icon: ICONS.CROSS, text: 'Cancel' }}
-                            discardForm={() => setIsCreatingNewFolder(false)}
-                        />
-                    )}
                 </ul>
             </div>
         </div>

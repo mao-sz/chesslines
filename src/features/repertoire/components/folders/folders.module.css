@@ -13,16 +13,14 @@
 
 .folders {
     padding: 6px;
+    padding-top: 12px;
     display: flex;
     flex-direction: column;
+    gap: 12px;
     background-color: var(--bg-light);
     flex: 1;
     border-bottom-left-radius: var(--border-radius);
     border-bottom-right-radius: var(--border-radius);
-
-    & > :first-child {
-        margin: 12px 4px;
-    }
 
     & > .contents {
         margin: 0;
@@ -185,6 +183,12 @@
 .newFolder {
     margin-inline-start: var(--list-item-indent);
     z-index: 1000;
+}
+
+.newTopLevelFolderButton {
+    align-self: flex-end;
+    background-color: var(--bg-mid-light);
+    border-radius: 4px;
 }
 
 .highlighted {
