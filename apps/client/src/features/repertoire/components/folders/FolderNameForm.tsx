@@ -1,13 +1,13 @@
 import { TextInput } from '@/components/util/TextInput';
 import { IconButton } from '@/components/util/IconButton';
-import type { FormEvent } from 'react';
+import type { SubmitEvent } from 'react';
 import type { FontAwesomeIcon } from '@/types';
 import styles from './folders.module.css';
 
 type FolderNameFormProps = {
     ariaLabel: string;
     defaultValue?: string;
-    handleSubmit: (e: FormEvent) => void;
+    handleSubmit: (e: SubmitEvent) => void;
     submit: { icon: FontAwesomeIcon; text: string };
     cancel: { icon: FontAwesomeIcon; text: string };
     discardForm: () => void;

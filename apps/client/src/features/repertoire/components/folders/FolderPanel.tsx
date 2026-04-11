@@ -1,4 +1,4 @@
-import { type FormEvent, useState } from 'react';
+import { type SubmitEvent, useState } from 'react';
 import { Tabs } from './Tabs';
 import { Folder } from './Folder';
 import { FolderNameForm } from './FolderNameForm';
@@ -32,7 +32,7 @@ export function FolderPanel({
     const folderIDs = folders[currentTab].children;
     const [isCreatingNewFolder, setIsCreatingNewFolder] = useState(false);
 
-    function createFolder(e: FormEvent) {
+    function createFolder(e: SubmitEvent) {
         e.preventDefault();
         const form = e.currentTarget as HTMLFormElement;
         const input = form.elements[0] as HTMLInputElement;

@@ -1,4 +1,4 @@
-import { type FormEvent, useEffect, useRef, useState } from 'react';
+import { type SubmitEvent, useEffect, useRef, useState } from 'react';
 import { LOCAL_STORAGE } from '@/util/localStorage';
 import { onBackdropClick } from '@/util/util';
 import { StoredRepertoire } from '@chesslines/zodSchemas';
@@ -29,7 +29,7 @@ export function ImportModal({ closeModal }: ImportModalProps) {
         };
     }
 
-    async function importRepertoire(e: FormEvent): Promise<void> {
+    async function importRepertoire(e: SubmitEvent): Promise<void> {
         e.preventDefault();
         const form = e.currentTarget as HTMLFormElement;
 

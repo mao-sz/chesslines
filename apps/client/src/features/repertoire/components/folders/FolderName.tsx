@@ -1,14 +1,14 @@
 import { FolderNameForm } from './FolderNameForm';
 import { IconButton } from '@/components/util/IconButton';
 import { ICONS } from '@/util/constants';
-import type { FormEvent } from 'react';
+import type { SubmitEvent } from 'react';
 import type { StateSetter } from '@/types';
 
 type FolderNameProps = {
     name: string;
     isRenaming: boolean;
     setIsRenaming: StateSetter<boolean>;
-    updateFolderName: (e: FormEvent) => void;
+    updateFolderName: (e: SubmitEvent) => void;
 };
 
 export function FolderName({
