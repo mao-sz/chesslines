@@ -10,8 +10,8 @@ export function Header({ selectedLinesCount }: HeaderProps) {
             <div className={styles.left}>
                 Chesslines
                 <a
-                    href="https://github.com/MaoShizhong/chesslines"
-                    target="_black"
+                    href="https://github.com/mao-sz/chesslines"
+                    target="_blank"
                     rel="noreferrer"
                 >
                     <i
