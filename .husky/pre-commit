@@ -1,2 +1,2 @@
 lint-staged
-npm run test:once
+npm run test:once -w client
