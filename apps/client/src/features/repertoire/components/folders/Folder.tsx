@@ -128,7 +128,9 @@ export function Folder({
             folders.updateLocation(draggedUUID, id);
             setIsOpen(true);
         } else if (type === 'line' && folder.contains !== 'folders') {
-            lines.updateLocation(draggedUUID, id);
+            if (id !== 'w' && id !== 'b') {
+                lines.updateLocation(draggedUUID, id);
+            }
         }
     }
 

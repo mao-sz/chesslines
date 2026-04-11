@@ -76,6 +76,10 @@ export function LineEditor({
 
     function saveLine(e: FormEvent) {
         e.preventDefault();
+        // Top-level w/b folders can only contain folders
+        if (parentFolder === 'w' || parentFolder === 'b') {
+            return;
+        }
 
         if (id === 'new') {
             lines.create(
