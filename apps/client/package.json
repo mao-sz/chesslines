@@ -1,0 +1,41 @@
+{
+    "name": "client",
+    "private": true,
+    "description": "Front end for the Chesslines opening move trainer",
+    "type": "module",
+    "scripts": {
+        "build": "npm run check && tsc -b && vite build",
+        "check": "npm run lint && npm run format:check -- . && tsc -b",
+        "dev": "vite",
+        "format": "prettier --ignore-path=../../.prettierignore --write",
+        "format:check": "prettier --ignore-path=../../.prettierignore --check",
+        "lint": "eslint .",
+        "prepare": "husky",
+        "preview": "vite preview",
+        "test": "vitest",
+        "test:once": "vitest run"
+    },
+    "dependencies": {
+        "@chesslines/zodSchemas": "^1.0.0",
+        "@chesslines/types": "^1.0.0",
+        "@maoshizhong/chess": "^2.2.1",
+        "react": "^19.0.0",
+        "react-dom": "^19.0.0",
+        "react-router": "^7.6.3"
+    },
+    "devDependencies": {
+        "@csstools/postcss-global-data": "^3.0.0",
+        "@testing-library/jest-dom": "^6.6.3",
+        "@testing-library/react": "^16.2.0",
+        "@testing-library/user-event": "^14.6.1",
+        "@types/react": "^19.0.8",
+        "@types/react-dom": "^19.0.3",
+        "@vitejs/plugin-react": "^4.3.4",
+        "blob-polyfill": "^9.0.20240710",
+        "jsdom": "^26.0.0",
+        "postcss-custom-media": "^11.0.6",
+        "vite": "^6.3.5",
+        "vite-tsconfig-paths": "^5.1.4",
+        "vitest": "^4.0.0"
+    }
+}

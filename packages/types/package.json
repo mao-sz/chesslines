@@ -1,0 +1,11 @@
+{
+    "name": "@chesslines/types",
+    "version": "1.0.0",
+    "private": true,
+    "type": "module",
+    "exports": {
+        "./chessboard": "./chessboard.ts",
+        "./repertoire": "./repertoire.ts",
+        "./utility": "./utility.ts"
+    }
+}
