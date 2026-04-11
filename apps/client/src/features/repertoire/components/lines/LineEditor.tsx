@@ -1,4 +1,10 @@
-import { type FormEvent, useEffect, useRef, useState } from 'react';
+import {
+    type MouseEvent,
+    type SubmitEvent,
+    useEffect,
+    useRef,
+    useState,
+} from 'react';
 import { useOutletContext } from 'react-router';
 import { FENPGNInterface } from './FENPGNInterface';
 import { BoardInterface } from './BoardInterface';
@@ -74,7 +80,7 @@ export function LineEditor({
         };
     }, [id]);
 
-    function saveLine(e: FormEvent) {
+    function saveLine(e: MouseEvent) {
         e.preventDefault();
         // Top-level w/b folders can only contain folders
         if (parentFolder === 'w' || parentFolder === 'b') {
@@ -110,7 +116,7 @@ export function LineEditor({
         closeEditor();
     }
 
-    function submitNewPosition(e: FormEvent) {
+    function submitNewPosition(e: SubmitEvent) {
         e.preventDefault();
         const form = e.currentTarget as HTMLFormElement;
 

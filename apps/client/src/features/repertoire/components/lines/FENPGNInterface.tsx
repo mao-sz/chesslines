@@ -1,11 +1,11 @@
 import { STANDARD_STARTING_FEN } from '@/util/constants';
-import type { FormEvent } from 'react';
+import type { SubmitEvent } from 'react';
 import styles from './editor.module.css';
 
 type FENPGNInterfaceProps = {
     startingFEN: string;
     moveListString: string;
-    submitNewPosition: (e: FormEvent) => void;
+    submitNewPosition: (e: SubmitEvent) => void;
     initialisationError: boolean;
     clearErrors: () => void;
     handleCancel: () => void;

@@ -1,4 +1,9 @@
-import { useLayoutEffect, useRef, type FormEvent } from 'react';
+import {
+    useLayoutEffect,
+    useRef,
+    type InputEvent,
+    type SubmitEvent,
+} from 'react';
 import { ConfirmableButton } from '@/components/util/ConfirmableButton';
 import styles from './page.module.css';
 import { ExportButton } from '@/components/util/ExportButton';
@@ -22,7 +27,7 @@ export function RepertoireErrorPage({
         }
     }, []);
 
-    function reloadWithNewRepertoireData(e: FormEvent): void {
+    function reloadWithNewRepertoireData(e: SubmitEvent): void {
         e.preventDefault();
         const form = e.currentTarget as HTMLFormElement;
         const textArea = form.elements[0] as HTMLTextAreaElement;
@@ -54,7 +59,7 @@ export function RepertoireErrorPage({
                     id={id}
                     className={styles.data}
                     defaultValue={invalidRepertoireString}
-                    onInput={(e: FormEvent) => {
+                    onInput={(e: InputEvent) => {
                         // ensure textarea height grows with text input to fit content
                         const textArea = e.currentTarget as HTMLTextAreaElement;
                         textArea.style.height = `${textArea.scrollHeight}px`;

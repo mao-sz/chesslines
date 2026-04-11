@@ -1,4 +1,9 @@
-import { DragEvent, type FormEvent, MouseEvent, useState } from 'react';
+import {
+    type DragEvent,
+    type SubmitEvent,
+    type MouseEvent,
+    useState,
+} from 'react';
 import { FolderNameForm } from './FolderNameForm';
 import { FolderName } from './FolderName';
 import { ContainsSelectedLinesBadge } from './ContainsSelectedLinesBadge';
@@ -67,7 +72,7 @@ export function Folder({
         setIsCreatingNewFolder(true);
     }
 
-    function createFolder(e: FormEvent) {
+    function createFolder(e: SubmitEvent) {
         e.preventDefault();
         const form = e.currentTarget as HTMLFormElement;
         const input = form.elements[0] as HTMLInputElement;
@@ -76,7 +81,7 @@ export function Folder({
         setIsOpen(true);
     }
 
-    function updateFolderName(e: FormEvent) {
+    function updateFolderName(e: SubmitEvent) {
         e.preventDefault();
         const form = e.currentTarget as HTMLFormElement;
         const input = form.elements[0] as HTMLInputElement;
