@@ -10,11 +10,14 @@
         "url": "git+https://github.com/mao-sz/chesslines.git"
     },
     "type": "module",
+    "devEngines": {
+        "runtime": {
+            "name": "node",
+            "version": ">=24"
+        }
+    },
     "scripts": {
-        "build": "npm run build:client",
-        "build:client": "npm run build -w client",
-        "dev": "npm run dev:client",
-        "dev:client": "npm run dev --w client",
+        "build": "npm run build -w client -w server",
         "lint": "eslint . && prettier --check ."
     },
     "workspaces": [
@@ -40,7 +43,7 @@
         "husky": "^9.1.7",
         "lint-staged": "^16.1.2",
         "prettier": "^3.5.1",
-        "typescript": "~5.7.2",
+        "typescript": "^6.0.2",
         "typescript-eslint": "^8.22.0"
     }
 }

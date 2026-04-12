@@ -1,0 +1,28 @@
+{
+    "name": "server",
+    "private": true,
+    "description": "Back end for the Chesslines opening move trainer",
+    "type": "module",
+    "scripts": {
+        "clean": "rm -rf dist",
+        "build": "npm run clean && tsc",
+        "dev": "node --env-file=.env --watch src/app.ts",
+        "format": "prettier --ignore-path=../../.prettierignore --write",
+        "format:check": "prettier --ignore-path=../../.prettierignore --check",
+        "start": "npm run build && node --env-file-if-exists=.env dist/app.js"
+    },
+    "dependencies": {
+        "@chesslines/zodSchemas": "^1.0.0",
+        "connect-mongo": "^6.0.0",
+        "express": "^5.2.1",
+        "express-rate-limit": "^8.3.2",
+        "express-session": "^1.19.0",
+        "mongodb": "^7.1.1",
+        "morgan": "^1.10.1"
+    },
+    "devDependencies": {
+        "@types/express": "^5.0.6",
+        "@types/node": "^25.6.0",
+        "mongodb-memory-server": "^11.0.1"
+    }
+}

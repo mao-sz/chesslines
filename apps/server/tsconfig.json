@@ -1,0 +1,26 @@
+{
+    "compilerOptions": {
+        "target": "ES2022",
+        "lib": ["ES2023"],
+        "module": "ESNext",
+        "skipLibCheck": true,
+        "paths": { "@/*": ["./src/*"] },
+
+        /* Bundler mode */
+        "moduleResolution": "bundler",
+        "isolatedModules": true,
+        "moduleDetection": "force",
+        "rootDir": "src",
+        "outDir": "dist",
+
+        /* Linting */
+        "types": ["node"],
+        "strict": true,
+        "noUnusedLocals": true,
+        "noUnusedParameters": true,
+        "noFallthroughCasesInSwitch": true,
+        "noUncheckedSideEffectImports": true,
+        "erasableSyntaxOnly": true
+    },
+    "include": ["src"]
+}
