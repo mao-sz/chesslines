@@ -1,2 +1,26 @@
+#!/usr/bin/env sh
+
+changes_made_to() {
+    if git diff --cached --name-only | grep --quiet "^$1"
+    then
+        return 0
+    else
+        return 1
+    fi
+}
+
+# script
 lint-staged
-npm run test:once -w client
+if changes_made_to "packages/zodSchemas"; then
+    echo "Changes made to shared runtime code - running all tests"
+    npm run test:once -w client # -w server
+fi
+if changes_made_to "apps/client"; then
+    echo "Changes made to client code - running client tests"
+    npm run test:once -w client
+fi
+if changes_made_to "apps/server"; then
+    # echo "Changes made to server code - running server tests"
+    # npm run test:once -w server
+    true # remove when above is uncommented
+fi
